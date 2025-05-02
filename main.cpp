@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <vector>
-#include "Loader.h"
+#include "Loader.hpp"
 
 int main() {
     std::string file_path_obj = "test.obj";

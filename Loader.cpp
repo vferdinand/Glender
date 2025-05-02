@@ -1,6 +1,6 @@
-#include "Loader.h"
+#include "Loader.hpp"
 
-#include "Vertex.h"
+#include "Vertex.hpp"
 
 #include <fstream>
 #include <sstream>
