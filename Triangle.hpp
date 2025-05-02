@@ -1,4 +1,4 @@
-#include "vertex.h"
+#include "Vertex.hpp"
 #include <array>
 #include <vector>
 #include <cstdint>
