@@ -14,9 +14,9 @@ int main() {
     const std::vector<Triangle>& triangles = loader.getTriangles();
 
     std::cout << "Loaded " << vertices.size() << " vertices:\n";
-    //for (const auto& v : vertices) {
-    //    std::cout << "v " << v.x << " " << v.y << " " << v.z << "\n";
-    //}
+    for (const auto& v : vertices) {
+        std::cout << "v " << v.x << " " << v.y << " " << v.z << "\n";
+    }
 
     std::cout << "\nLoaded " << triangles.size() << " triangles:\n";
     for (const auto& t : triangles) {
