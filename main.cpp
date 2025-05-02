@@ -4,7 +4,7 @@
 //#include "Triangle.hpp"
 
 int main() {
-    std::string file_path_obj = "Dragon.obj";
+    std::string file_path_obj = "test.obj";
 
     Loader loader(file_path_obj);
 
