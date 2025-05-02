@@ -2,6 +2,7 @@
 #define LOADER_H
 
 #include "Vertex.hpp"
+#include "Triangle.hpp"
 
 #include <string>
 #include <vector>
@@ -11,7 +12,7 @@ class Loader {
 private:
 	std::string filePath;
 	std::vector<Vertex> vertices;  
-    std::vector<float> triangles;    
+    std::vector<Triangle> triangles;    
 
 
 public:
@@ -20,7 +21,7 @@ public:
     bool load();
 
     const std::vector<Vertex>& getVertices() const;
-    const std::vector<float>& getTriangles() const;
+    const std::vector<Triangle>& getTriangles() const;
 };
 
 #endif
