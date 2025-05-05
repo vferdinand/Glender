@@ -1,3 +1,4 @@
+#pragma once
 #include "Structs.hpp"
 #include <array>
 #include <vector>

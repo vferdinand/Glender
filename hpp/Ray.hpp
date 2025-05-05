@@ -1,5 +1,4 @@
-#ifndef RAY_H
-#define RAY_H
+#pragma once
 
 #include "Structs.hpp"
 
@@ -11,5 +10,3 @@ class Ray {
         const Point3D getOrigin();
         const Vector3D getVector3D();
 };
-
-#endif

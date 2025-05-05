@@ -1,0 +1,3 @@
+/home/niclas/Studium/GitRepos/Glender/Glender/build/CMakeFiles/lib.dir
+/home/niclas/Studium/GitRepos/Glender/Glender/build/CMakeFiles/edit_cache.dir
+/home/niclas/Studium/GitRepos/Glender/Glender/build/CMakeFiles/rebuild_cache.dir

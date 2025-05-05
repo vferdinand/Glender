@@ -1,5 +1,7 @@
+#pragma once
+
 #include "Ray.hpp"
-#include "Vector3D.hpp"
+#include "Structs.hpp"
 
 
 class Camera {
@@ -26,5 +28,4 @@ class Camera {
         float get_height() const;
         int get_width_pixels() const;
         int get_length_pixels() const;
-        
 };

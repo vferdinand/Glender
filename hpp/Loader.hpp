@@ -1,5 +1,4 @@
-#ifndef LOADER_H
-#define LOADER_H
+#pragma once
 
 #include "Structs.hpp"
 #include "Triangle.hpp"
@@ -29,5 +28,3 @@ public:
     const std::vector<Vertex>& getVertices() const;
     const std::vector<Triangle>& getTriangles() const;
 };
-
-#endif

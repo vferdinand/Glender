@@ -1,0 +1,2 @@
+/usr/bin/ar qc liblib.a CMakeFiles/lib.dir/implementation/Camera.cpp.o CMakeFiles/lib.dir/implementation/Loader.cpp.o CMakeFiles/lib.dir/implementation/main.cpp.o CMakeFiles/lib.dir/implementation/Scene.cpp.o CMakeFiles/lib.dir/implementation/Ray.cpp.o CMakeFiles/lib.dir/implementation/Triangle.cpp.o CMakeFiles/lib.dir/implementation/Hitpoint.cpp.o
+/usr/bin/ranlib liblib.a

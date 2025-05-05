@@ -1,5 +1,4 @@
-#ifndef HITPOINT_H
-#define HITPOINT_H
+#pragma once
 
 #include "Structs.hpp"
 #include "Triangle.hpp"
@@ -17,4 +16,4 @@ class Hitpoint {
     const Triangle* getTriangle();
 };
 
-#endif
+//#endif
