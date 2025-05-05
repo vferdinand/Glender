@@ -8,8 +8,8 @@ class Ray {
         Point3D origin;
         Vector3D direction;
     public:
-        const Point3D getOrigin() const;
-        const Vector3D getVector3D() const;
+        const Point3D getOrigin();
+        const Vector3D getVector3D();
 };
 
 #endif
