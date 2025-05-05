@@ -1,13 +1,5 @@
 #include "../hpp/Loader.hpp"
 
-//#include "Vertex.hpp"
-
-#include <fstream>
-#include <sstream>
-#include <iostream>
-
-//Loader::Loader(const std::string& file_path) : filePath(file_path) {}
-
 Loader::Loader(){}
 
 bool Loader::loadOBJ(const std::string& filePath) {
