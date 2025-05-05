@@ -1,3 +1,4 @@
-# ignore ALL .json, .obj files
+# ignore ALL .json, .obj, .pdf files
 *.json
 *.obj
+*.pdf
