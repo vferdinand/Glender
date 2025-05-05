@@ -1,7 +1,5 @@
 #include "../hpp/Loader.hpp"
 
-//#include "Vertex.hpp"
-
 #include <fstream>
 #include <sstream>
 #include <iostream>
