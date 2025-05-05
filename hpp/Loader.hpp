@@ -1,7 +1,7 @@
 #ifndef LOADER_H
 #define LOADER_H
 
-#include "Vertex.hpp"
+#include "Structs.hpp"
 #include "Triangle.hpp"
 
 #include <string>
