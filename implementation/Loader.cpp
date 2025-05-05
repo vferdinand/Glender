@@ -1,14 +1,5 @@
 #include "../hpp/Loader.hpp"
 
-<<<<<<< HEAD
-#include <fstream>
-#include <sstream>
-#include <iostream>
-
-//Loader::Loader(const std::string& file_path) : filePath(file_path) {}
-
-=======
->>>>>>> main
 Loader::Loader(){}
 
 bool Loader::loadOBJ(const std::string& filePath) {
