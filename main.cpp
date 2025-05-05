@@ -6,9 +6,9 @@
 int main() {
     std::string file_path_obj = "test.obj";
 
-    Loader loader(file_path_obj);
+    Loader loader;
 
-    loader.load();
+    loader.loadOBJ(file_path_obj);
 
     const std::vector<Vertex>& vertices = loader.getVertices();
     const std::vector<Triangle>& triangles = loader.getTriangles();

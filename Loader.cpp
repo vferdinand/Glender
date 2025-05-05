@@ -6,9 +6,11 @@
 #include <sstream>
 #include <iostream>
 
-Loader::Loader(const std::string& file_path) : filePath(file_path) {}
+//Loader::Loader(const std::string& file_path) : filePath(file_path) {}
 
-bool Loader::load() {
+Loader::Loader(){}
+
+bool Loader::loadOBJ(const std::string& filePath) {
     std::ifstream file(filePath);
 
     if (!file.is_open()) {
