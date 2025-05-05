@@ -8,7 +8,7 @@ class Camera {
         Vector3D eye;
         Vector3D view;
 
-        float with;
+        float width;
         float height;
 
         int widthPixels;
@@ -27,4 +27,4 @@ class Camera {
         int get_width_pixels() const;
         int get_length_pixels() const;
         
-}
+};
