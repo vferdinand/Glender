@@ -1,4 +1,4 @@
-#include "Scene.hpp"
+#include "../hpp/Scene.hpp"
 
 void Scene::addTriangle(Triangle tri) {
     triangles.push_back(std::move(tri));

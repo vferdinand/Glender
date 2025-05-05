@@ -1,4 +1,4 @@
-#include "Triangle.hpp"
+#include "../hpp/Triangle.hpp"
 #include <stdexcept>
 
 Triangle::Triangle(const std::vector<uint32_t>& indices) {
