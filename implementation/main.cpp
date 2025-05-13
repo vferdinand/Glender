@@ -12,6 +12,7 @@ int main() {
 
     const std::vector<Vertex>& vertices = loader.getVertices();
     const std::vector<Triangle>& triangles = loader.getTriangles();
+    const std::vector<RGBA>& colors = loader.getColors();
 
     std::cout << "Loaded " << vertices.size() << " vertices:\n";
     for (const auto& v : vertices) {
@@ -22,6 +23,11 @@ int main() {
     for (const auto& t : triangles) {
         const auto& idx = t.getIndices();
         std::cout << "f " << idx[0] << " " << idx[1] << " " << idx[2] << "\n";
+    }
+
+    std::cout << "\nLoaded " << colors.size() << " colors:\n";
+    for (const auto& c : colors) {
+        std::cout << "r " << c.r << " g " << c.g << " b " << c.b << " a " << c.a << "\n";
     }
 
     return 0;
