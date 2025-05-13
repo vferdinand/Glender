@@ -1,14 +1,15 @@
 #include "../hpp/Camera.hpp"
 #include <cmath>
 
-Camera::Camera(){}
+Camera::Camera()
+    : width(0), height(0), widthPixels(0), lengthPixels(0) {}
 
 
 Vector3D Camera::get_pixel ( int x , int y ) const {
     return Vector3D();
 }
 
-Ray Camera::get_ray ( int x , int y ) const {
+Ray Camera::calculate_ray ( int x , int y ) const {
     //calculate basevectors 
     Vector3D forward = normalize(view);
     Vector3D right = normalize(cross(Vector3D{0, 1, 0}, forward));
@@ -26,9 +27,11 @@ Ray Camera::get_ray ( int x , int y ) const {
     Point3D pixel_pos = eye + (forward + right * u + up * v);
     Vector3D direction = normalize(pixel_pos - eye);
 
-    
-
     return Ray(eye, direction);
+}
+
+const std::vector<Ray>& Camera::get_rays() const {
+    return rays;
 }
 
 Point3D Camera::get_eye() const {
@@ -68,13 +71,8 @@ Vector3D Camera::cross(const Vector3D& a, const Vector3D& b) {
     );
 }
 
-void Camera::initialize(const Point3D& eye_pos, 
-                       const Vector3D& view_dir,
-                       float img_width, 
-                       float img_height,
-                       int pixel_width, 
-                       int pixel_length) {
-    eye = eye_pos;
+void Camera::initialize(const Point3D& eye_pos, const Vector3D& view_dir, float img_width, float img_height, int pixel_width, int pixel_length) {
+    eye = eye_pos; 
     view = view_dir;    
     width = img_width;
     height = img_height;

@@ -37,16 +37,18 @@ int main() {
     // Rays erzeugen
     for (int y = 0; y < camera.get_length_pixels(); ++y) {
         for (int x = 0; x < camera.get_width_pixels(); ++x) {
-            rays.push_back(camera.get_ray(x, y));
+            rays.push_back(camera.calculate_ray(x, y));
         }
     }
 
     // Ausgabe
     for (size_t i = 0; i < rays.size(); ++i) {
         const auto& ray = rays[i];
-        std::cout << "Ray " << i << ": Dir = ("
+        std::cout << "Ray " << i << ": Directio = ("
                   << ray.getDirection().x << ", "
                   << ray.getDirection().y << ", "
                   << ray.getDirection().z << ")\n";
     }
+    std::cout << rays.size() << std::endl;
+
 }
