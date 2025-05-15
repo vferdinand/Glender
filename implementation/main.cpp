@@ -4,11 +4,11 @@
 //#include "Triangle.hpp"
 
 int main() {
-    std::string file_path_obj = "test.obj";
-
+    std::string file_path_obj = "cube.obj";
+    std::string file_path_mtl = "cube.mtl";
     Loader loader;
 
-    loader.loadOBJ(file_path_obj);
+    loader.loadOBJ(file_path_obj, file_path_mtl);
 
     const std::vector<Vertex>& vertices = loader.getVertices();
     const std::vector<Triangle>& triangles = loader.getTriangles();
@@ -22,7 +22,7 @@ int main() {
     std::cout << "\nLoaded " << triangles.size() << " triangles:\n";
     for (const auto& t : triangles) {
         const auto& idx = t.getIndices();
-        std::cout << "f " << idx[0] << " " << idx[1] << " " << idx[2] << "\n";
+        std::cout << "f " << idx[0] << " " << idx[1] << " " << idx[2] << " color: " << t.getColorIndex() << "\n";
     }
 
     std::cout << "\nLoaded " << colors.size() << " colors:\n";
