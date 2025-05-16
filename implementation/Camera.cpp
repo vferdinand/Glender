@@ -1,13 +1,7 @@
 #include "../hpp/Camera.hpp"
 #include <cmath>
 
-Camera::Camera()
-    : width(0), height(0), widthPixels(0), lengthPixels(0) {}
-
-
-Vector3D Camera::get_pixel ( int x , int y ) const {
-    return Vector3D();
-}
+//Camera::Camera(): width(5), height(5), widthPixels(10),lengthPixels(10) {}
 
 Ray Camera::calculate_ray ( int x , int y ) const {
     //calculate basevectors 
@@ -78,4 +72,17 @@ void Camera::initialize(const Point3D& eye_pos, const Vector3D& view_dir, float 
     height = img_height;
     widthPixels = pixel_width;
     lengthPixels = pixel_length;
+}
+
+std::vector<Ray> Camera::generate_rays() const {
+    std::vector<Ray> rays;
+    rays.reserve(get_width_pixels() * get_length_pixels()); // optional: reservieren für bessere Performance
+
+    for (int y = 0; y < get_length_pixels(); ++y) {
+        for (int x = 0; x < get_width_pixels(); ++x) {
+            rays.push_back(calculate_ray(x, y));
+        }
+    }
+
+    return rays;
 }

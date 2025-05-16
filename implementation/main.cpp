@@ -28,19 +28,11 @@ int main() {
     return 0; */
 
     Camera camera;
-    camera.initialize(Point3D{0, 0, 0}, Vector3D {0, 0, -1}, 2.0f, 2.0f, 3, 3);
+    camera.initialize(Point3D{0, 0, 0}, Vector3D {0, 0, -1}, 2.0f, 2.0f, 5, 5);
       
     // Dynamischer Container
-    std::vector<Ray> rays;
-    rays.reserve(camera.get_width_pixels() * camera.get_length_pixels());
-
-    // Rays erzeugen
-    for (int y = 0; y < camera.get_length_pixels(); ++y) {
-        for (int x = 0; x < camera.get_width_pixels(); ++x) {
-            rays.push_back(camera.calculate_ray(x, y));
-        }
-    }
-
+    std::vector<Ray> rays = camera.generate_rays();
+    
     // Ausgabe
     for (size_t i = 0; i < rays.size(); ++i) {
         const auto& ray = rays[i];

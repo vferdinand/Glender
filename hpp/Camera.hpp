@@ -18,11 +18,10 @@ class Camera {
 
         std::vector<Ray> rays;
     public:
-        Camera();
+       // Camera();
         void initialize(const Point3D& eye_pos, const Vector3D& view_dir, float img_width, float img_height, int pixel_width, int pixel_length);
-    
+        std::vector<Ray> generate_rays() const;
         Ray calculate_ray(int x, int y) const ;
-        Vector3D get_pixel(int x, int y) const;
         static Vector3D normalize(const Vector3D& v);
         static Vector3D cross(const Vector3D& a, const Vector3D& b);
 
