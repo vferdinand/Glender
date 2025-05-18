@@ -16,5 +16,3 @@ class Hitpoint {
     const float getDistance();
     const Triangle* getTriangle();
 };
-
-//#endif
