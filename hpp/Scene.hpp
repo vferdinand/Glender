@@ -19,7 +19,7 @@ class Scene {
         //Bündelt calculateHitpoints und convertHitpointsToImage
         Image generateImage();
         //Berechnung der Schnittpunkte von Rays und Triangles
-        std::vector<Hitpoint> calculateHitpoints(std::vector<Ray>& rays,std::vector<Triangle>& triangles, std::vector<Vertex>& vertices);
+        std::vector<std::vector<Hitpoint>> calculateHitpoints(const std::vector<std::vector<Ray>>& rays,const std::vector<Triangle>& triangles,const std::vector<Vertex>& vertices);
         //Farbe der Dreiecke Pixeln zuweisen
         Image convertHitpointsToImage(std::vector<Hitpoint> hitpoints);
         //getter für Dreieck-Vektor
