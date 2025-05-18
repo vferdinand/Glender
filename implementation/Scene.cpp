@@ -9,76 +9,62 @@ const std::vector<Triangle>& Scene::getTriangles() const {
 }
 
 Image Scene::generateImage() {
-    convertHitpointsToImage(calculateHitpoints());
+    //convertHitpointsToImage(calculateHitpoints());
 }
 
 std::vector<Hitpoint> Scene::calculateHitpoints(std::vector<Ray>& rays, std::vector<Triangle>& triangles, std::vector<Vertex>& vertices) {
-    
-    /*for (const auto& ray : rays) {
-        for (const auto& triangle : triangles) {
-            std::vector<uint32_t> indices = triangle.getIndices();
-            Vertex a = vertices.at(indices.at(0));
-            Vertex b = vertices.at(indices.at(1));
-            Vertex c = vertices.at(indices.at(2));
-    */
-           
            
     std::vector<Hitpoint> hitpoints;
     const float EPS = 1e-6f;
 
-    for (const auto& ray : rays) {
-        // Ray‐Origin und ‐Direction in Eigen‐Vektoren
-        Eigen::Vector3f orig(ray.origin.x, ray.origin.y, ray.origin.z);
-        Eigen::Vector3f dir(ray.direction.x, ray.direction.y, ray.direction.z);
+    for (auto& ray : rays) {
+        //Startpunkt des Strahls
+        Point3D orig_p = ray.getOrigin();
+        //Richtung des Strahls
+        Vector3D dir_v = ray.getVector3D();
+
+        Eigen::Vector3f orig(orig_p.x, orig_p.y, orig_p.z);
+        Eigen::Vector3f dir(dir_v.x, dir_v.y, dir_v.z);
+
 
         for (const auto& tri : triangles) {
-            auto idx = tri.getIndices();
-            const auto& A = vertices[idx[0]].position;
-            const auto& B = vertices[idx[1]].position;
-            const auto& C = vertices[idx[2]].position;
+            const auto& idx = tri.getIndices();
+            Eigen::Vector3f b(vertices[idx[1]].x, vertices[idx[1]].y, vertices[idx[1]].z);
+            Eigen::Vector3f a(vertices[idx[0]].x, vertices[idx[0]].y, vertices[idx[0]].z);
+            Eigen::Vector3f c(vertices[idx[2]].x, vertices[idx[2]].y, vertices[idx[2]].z);
 
-            Eigen::Vector3f a(A.x, A.y, A.z);
-            Eigen::Vector3f b(B.x, B.y, B.z);
-            Eigen::Vector3f c(C.x, C.y, C.z);
-
-            // Möller–Trumbore
             Eigen::Vector3f edge1 = b - a;
             Eigen::Vector3f edge2 = c - a;
-            Eigen::Vector3f pvec  = dir.cross(edge2);
+            Eigen::Vector3f pvec = dir.cross(edge2);
             float det = edge1.dot(pvec);
-            if (std::abs(det) < EPS) 
+            if (std::abs(det) < EPS)
                 continue;
 
             float invDet = 1.0f / det;
             Eigen::Vector3f tvec = orig - a;
             float u = tvec.dot(pvec) * invDet;
-            if (u < 0.0f || u > 1.0f) 
+            if (u < 0.0f || u > 1.0f)
                 continue;
 
             Eigen::Vector3f qvec = tvec.cross(edge1);
             float v = dir.dot(qvec) * invDet;
-            if (v < 0.0f || u + v > 1.0f) 
+            if (v < 0.0f || (u + v) > 1.0f)
                 continue;
 
             float t = edge2.dot(qvec) * invDet;
-            if (t <= EPS) 
+            if (t <= EPS)
                 continue;
 
-            // Treffer!
-            Point3D intersection {
-                orig.x() + dir.x() * t,
-                orig.y() + dir.y() * t,
-                orig.z() + dir.z() * t
-            };
+            Eigen::Vector3f hitPos = orig + dir * t;
             Hitpoint hp;
-            hp.position = intersection;
-            hp.distance = t;
-            hp.triangle = &tri;
+            Point3D p = { hitPos.x(), hitPos.y(), hitPos.z() };
+            hp.setPosition(p);
+            hp.setDistance(t);
+            hp.setTriangle(&tri);
             hitpoints.push_back(hp);
-            }
+            
         }
     }
-
     return hitpoints;
 }
 

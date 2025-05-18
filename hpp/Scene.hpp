@@ -3,6 +3,7 @@
 #include <Eigen/Dense>
 #include "Triangle.hpp"
 #include "Hitpoint.hpp"
+#include "Ray.hpp"
 #include "Image.hpp"
 #include "Camera.hpp"
 
