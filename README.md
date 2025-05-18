@@ -6,5 +6,4 @@ bearbeitungsvorgang wie im swp, bearbeitung in externen branch und bei fertiger 
 
 if you know you know
 
-
-compiler-Befehl falls Cmake nicht geht: g++ implementation/*.cpp -Ihpp -std=c++17 -Wall -Wextra -o main
+Eigen/Dense ist muss installiert sein,um zu compilen
