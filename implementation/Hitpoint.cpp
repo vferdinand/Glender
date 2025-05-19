@@ -11,3 +11,14 @@ const float Hitpoint::getDistance() {
 const Triangle* Hitpoint::getTriangle() {
     return triangle;
 }
+void Hitpoint::setPosition(const Point3D& pos) {
+    position = pos;
+}
+
+void Hitpoint::setDistance(float d) {
+    distance = d;
+}
+
+void Hitpoint::setTriangle(const Triangle* tri) {
+    triangle = tri;
+}

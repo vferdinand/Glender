@@ -7,6 +7,8 @@ struct Point3D;
 struct Vector3D;
 
 
+#include <iostream>
+
 struct Vertex {
     float x, y, z;
 };
@@ -66,3 +68,9 @@ struct RGBA {
     double b = 0.0;
     double a = 1.0;
 };
+
+// Overload the stream operator
+inline std::ostream& operator<<(std::ostream& os, const RGBA& color) {
+    os << color.r;
+    return os;
+}
