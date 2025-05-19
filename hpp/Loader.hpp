@@ -14,6 +14,7 @@
 class Loader {
 private:
 	std::vector<Vertex> vertices;
+    std::vector<Vector3D> verticesNormals;
     std::vector<Triangle> triangles;
     std::vector<RGBA> colors;
     std::vector<std::string> materialNames;
