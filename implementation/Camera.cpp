@@ -58,7 +58,7 @@ std::vector<Ray> Camera::generate_rays() const {
     return rays;
 }
 
-const std::vector<Ray>& Camera::get_rays() const {
+std::vector<Ray>& Camera::get_rays() {
     return rays;
 }
 

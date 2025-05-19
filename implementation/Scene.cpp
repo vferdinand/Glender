@@ -29,7 +29,11 @@ Image Scene::transformHitpointsToImage(std::vector<std::vector<Hitpoint>> hitpoi
     return image;
 }
 
-Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints, size_t height, size_t width){
+Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints){
+    
+    size_t width = camera.get_width_pixels();
+    size_t height = camera.get_length_pixels();
+
     Image image(height, width);
 
     for(size_t i = 0; i < height; i++){
@@ -45,14 +49,9 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints, size_t h
     return image;
 }
 
-
-const std::vector<Triangle>& Scene::getTriangles() const {
-    return triangles;
-}
-
 Image Scene::generateImage() {
 
-    //convertHitpointsToImage(calculateHitpoints());
+    return transformHitpointsToImage(calculateHitpoints(camera.get_rays()));
 }
 
 std::vector<Hitpoint> Scene::calculateHitpoints(std::vector<Ray>& rays) {

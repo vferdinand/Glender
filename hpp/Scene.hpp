@@ -18,11 +18,9 @@ class Scene {
 
         Camera camera;
         Image transformHitpointsToImage(std::vector<std::vector<Hitpoint>> hitpoints);
-        Image transformHitpointsToImage(std::vector<Hitpoint> hitpoints, size_t height, size_t width);
+        Image transformHitpointsToImage(std::vector<Hitpoint> hitpoints);
         //Berechnung der Schnittpunkte von Rays und Triangles
-        std::vector<Hitpoint> calculateHitpoints(std::vector<Ray>& rays);
-        //Farbe der Dreiecke Pixeln zuweisen
-        const std::vector<Triangle>& getTriangles() const;
+        std::vector<Hitpoint> calculateHitpoints(std::vector<Ray>& rays);    
         
         public:
         Scene(const std::string filePathObj, const std::string filePathMtl);
