@@ -16,6 +16,7 @@ class Scene {
         std::vector<RGBA> colors;
 
         Image transformHitpointsToImage(std::vector<std::vector<Hitpoint>> hitpoints);
+        Image transformHitpointsToImage(std::vector<Hitpoint> hitpoints, size_t height, size_t width);
         //Berechnung der Schnittpunkte von Rays und Triangles
         std::vector<std::vector<Hitpoint>> calculateHitpoints(const std::vector<std::vector<Ray>>& rays);
         //Farbe der Dreiecke Pixeln zuweisen

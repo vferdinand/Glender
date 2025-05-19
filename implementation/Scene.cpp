@@ -19,6 +19,24 @@ Image Scene::transformHitpointsToImage(std::vector<std::vector<Hitpoint>> hitpoi
     return image;
 }
 
+
+Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints, size_t height, size_t width){
+    Image image(height, width);
+
+    for(size_t i = 0; i < height; i++){
+        for(size_t j = 0; j < width; j++){
+            RGBA col = {0.0, 0.0, 0.0, 0.0};
+            if(hitpoints.at(i*height + j).getDistance() != std::numeric_limits<float>::max()){
+                col = colors.at(hitpoints.at(i*height + j).getTriangle()->getColorIndex());
+            }
+            image.set(i, j, col);
+        }
+    }
+
+    return image;
+}
+
+
 const std::vector<Triangle>& Scene::getTriangles() const {
     return triangles;
 }
