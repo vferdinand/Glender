@@ -6,7 +6,22 @@ Scene::Scene(const std::string filePathObj, const std::string filePathMtl){
     vertices = loader.getVertices();
     triangles = loader.getTriangles();
     colors = loader.getColors();
-    camera.initialize(Point3D{0, 0, 0}, Vector3D {1, -2, 1}, 2.0f, 2.0f, 5, 5);
+    std::cout << "Loaded " << vertices.size() << " vertices:\n";
+    for (const auto& v : vertices) {
+        std::cout << "v " << v.x << " " << v.y << " " << v.z << "\n";
+    }
+    std::cout << "\nLoaded " << triangles.size() << " triangles:\n";
+    for (const auto& t : triangles) {
+        const auto& idx = t.getIndices();
+        std::cout << "f " << idx[0] << " " << idx[1] << " " << idx[2] << " color: " << t.getColorIndex() << "\n";
+    }
+    std::cout << "\nLoaded " << colors.size() << " colors:\n";
+    for (const auto& c : colors) {
+        std::cout << "r " << c.r << " g " << c.g << " b " << c.b << " a " << c.a << "\n";
+    }
+
+    camera.initialize(Point3D{0, 0, 0}, Vector3D {1, -1, 1}, 2.0f, 2.0f, 5, 5);
+    //camera.generate_rays(); funktioniert nicht wie gefordert
 }
 
 Image Scene::transformHitpointsToImage(std::vector<std::vector<Hitpoint>> hitpoints){
@@ -30,17 +45,18 @@ Image Scene::transformHitpointsToImage(std::vector<std::vector<Hitpoint>> hitpoi
 }
 
 Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints){
-    
     size_t width = camera.get_width_pixels();
     size_t height = camera.get_length_pixels();
+
+    std::cout << "Hitpoints size: " << hitpoints.size() << " width:" << width << " height: " << height << std::endl;
 
     Image image(height, width);
 
     for(size_t i = 0; i < height; i++){
         for(size_t j = 0; j < width; j++){
             RGBA col = {0.0, 0.0, 0.0, 0.0};
-            if(hitpoints.at(i*height + j).getDistance() != std::numeric_limits<float>::max()){
-                col = colors.at(hitpoints.at(i*height + j).getTriangle()->getColorIndex());
+            if(hitpoints.at(i*width + j).getDistance() != std::numeric_limits<float>::max()){
+                col = colors.at(hitpoints.at(i*width + j).getTriangle()->getColorIndex());
             }
             image.set(i, j, col);
         }
@@ -50,12 +66,22 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints){
 }
 
 Image Scene::generateImage() {
+    std::vector<Ray> rays = camera.generate_rays();
 
-    return transformHitpointsToImage(calculateHitpoints(camera.get_rays()));
+    for (size_t i = 1; i < rays.size() + 1; ++i) {
+        const auto& ray = rays[i];
+        std::cout << "Ray " << i << ": Directio = ("
+                  << ray.getDirection().x << ", "
+                  << ray.getDirection().y << ", "
+                  << ray.getDirection().z << ")\n";
+    }
+
+    return transformHitpointsToImage(calculateHitpoints(rays));
 }
 
 std::vector<Hitpoint> Scene::calculateHitpoints(std::vector<Ray>& rays) {
-           
+    std::cout << "Rays size: " << rays.size() << std::endl;
+
     std::vector<Hitpoint> hitpoints;
     const float EPS = 1e-6f;
 
@@ -68,6 +94,7 @@ std::vector<Hitpoint> Scene::calculateHitpoints(std::vector<Ray>& rays) {
         Eigen::Vector3f orig(orig_p.x, orig_p.y, orig_p.z);
         Eigen::Vector3f dir(dir_v.x, dir_v.y, dir_v.z);
 
+        Hitpoint hp;
 
         for (const auto& tri : triangles) {
             const auto& idx = tri.getIndices();
@@ -98,14 +125,16 @@ std::vector<Hitpoint> Scene::calculateHitpoints(std::vector<Ray>& rays) {
                 continue;
 
             Eigen::Vector3f hitPos = orig + dir * t;
-            Hitpoint hp;
+            Hitpoint hp_tmp;
             Point3D p = { hitPos.x(), hitPos.y(), hitPos.z() };
-            hp.setPosition(p);
-            hp.setDistance(t);
-            hp.setTriangle(&tri);
-            hitpoints.push_back(hp);
-            
+            hp_tmp.setPosition(p);
+            hp_tmp.setDistance(t);
+            hp_tmp.setTriangle(&tri);
+            if (hp_tmp.getDistance() < hp.getDistance()) {
+                hp = hp_tmp;
+            }
         }
+        hitpoints.push_back(hp);
     }
     return hitpoints;
 }

@@ -17,7 +17,6 @@ bool Loader::initializeColor(const std::string& filePathMTL){
     while (std::getline(fileMTL, line)) {
         std::istringstream iss(line);
         std::string prefix;
-        std::cout << ": " << line << std::endl;
         iss >> prefix;        
         if (prefix == "newmtl") {
             std::string name;

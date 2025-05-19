@@ -1,14 +1,19 @@
 #include <iostream>
 #include "../hpp/Loader.hpp"
 #include "../hpp/Camera.hpp"
+#include "../hpp/Image.hpp"
+#include "../hpp/Scene.hpp"
 //#include "Vertex.hpp"
 //#include "Triangle.hpp"
 
 int main() {
-/*
     std::string file_path_obj = "cube.obj";
     std::string file_path_mtl = "cube.mtl";
 
+    /*
+    /////////////////////////////////////////////////////////////////////
+    // Loader Beispiel 
+    /////////////////////////////////////////////////////////////////////
     Loader loader;
 
     loader.loadOBJ(file_path_obj, file_path_mtl);
@@ -32,8 +37,12 @@ int main() {
     for (const auto& c : colors) {
         std::cout << "r " << c.r << " g " << c.g << " b " << c.b << " a " << c.a << "\n";
     }
-
-    return 0; */
+    */
+   
+    /*
+    /////////////////////////////////////////////////////////////////////
+    // Camera Beispiel
+    /////////////////////////////////////////////////////////////////////
 
     Camera camera;
     camera.initialize(Point3D{0, 0, 0}, Vector3D {1, -2, 1}, 2.0f, 2.0f, 5, 5);
@@ -46,4 +55,13 @@ int main() {
                   << ray.getDirection().y << ", "
                   << ray.getDirection().z << ")\n";
     }
+    */
+
+    /////////////////////////////////////////////////////////////////////
+    // Scene Beispiel
+    /////////////////////////////////////////////////////////////////////
+    Scene scene(file_path_obj, file_path_mtl);
+    Image image = scene.generateImage();
+    image.print();
+    //image.save("output.png");
 }
