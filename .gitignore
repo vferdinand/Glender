@@ -1,4 +1,5 @@
 # ignore ALL .json, .obj, .pdf files
 *.json
 *.obj
+*.mtl
 Projekt-Stand-2025-04-15.pdf
