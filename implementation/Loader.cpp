@@ -45,8 +45,12 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ){
     while (std::getline(fileOBJ, line)) {
         std::istringstream iss(line);
         std::string prefix;
-        iss >> prefix;        
-        if (prefix == "v") {
+        iss >> prefix;
+        if (prefix == "vn") {
+            Vector3D v;
+            iss >> v.x >> v.y >> v.z;
+            verticesNormals.push_back(v);
+        }else if (prefix == "v") {
             Vertex v;
             iss >> v.x >> v.y >> v.z;
             vertices.push_back(v);
