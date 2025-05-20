@@ -7,7 +7,7 @@ Scene::Scene(const std::string filePathObj, const std::string filePathMtl){
     triangles = loader.getTriangles();
     colors = loader.getColors();
 
-    camera.initialize(Point3D{-2.0, -2.0, -2.0}, Vector3D {1, 1, 1}, 1.0f, 1.0f, 40, 40);
+    camera.initialize(Point3D{-2.0, -2.0, -2.0}, Vector3D {1, 1, 1}, 1.0f, 1.0f, 70, 70);
     //camera.generate_rays(); funktioniert nicht wie gefordert
 }
 

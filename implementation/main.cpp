@@ -60,8 +60,44 @@ int main() {
     /////////////////////////////////////////////////////////////////////
     // Scene Beispiel
     /////////////////////////////////////////////////////////////////////
+   // Szene einmalig laden
     Scene scene(file_path_obj, file_path_mtl);
-    Image image = scene.generateImage();
-    image.print();
+
+    // Kreisbahn-Parameter
+    const double radius    = 4.0;    // Abstand von (0,0,0)
+    const double height    = 2.5;    // y-Höhe der Kamera
+    const double stepAngle = 0.02;   // Drehgeschwindigkeit pro Frame
+
+    double angle = 0.0;
+
+    // unendliche Render-Schleife
+    while (true) {
+        // 1) Berechne neue Kameraposition in der XZ-Ebene
+        double camX = radius * std::cos(angle);
+        double camZ = radius * std::sin(angle);
+        Point3D camPos{ camX, height, camZ };
+
+        // 2) Initialisiere Kamera: Position = camPos, Blickrichtung = auf (0,0,0)
+        scene.camera.initialize(
+            camPos,
+            Vector3D{ -camX, -height, -camZ },  // Richtung: Ziel (0,0,0) minus Position
+            2.0f, 2.0f,
+            70, 70
+        );
+
+        // 3) Raytracing & Bild ausgeben
+        Image img = scene.generateImage();
+        img.print();
+
+        // 4) Winkel weiterschalten und bei 2π zurücksetzen
+        angle += stepAngle;
+        if (angle >= 2.0 * M_PI) {
+            angle -= 2.0 * M_PI;
+        }
+    }
+
+    return 0;
+
+    
     //image.save("output.png");
 }
