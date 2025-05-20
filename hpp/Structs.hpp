@@ -71,12 +71,28 @@ struct RGBA {
 
 // Overload the stream operator
 inline std::ostream& operator<<(std::ostream& os, const RGBA& color) {
-    if (color.r == 1.0){
-        os << "r";
-    }else if (color.g == 1.0){
-        os << "g";
-    }else if (color.b == 1.0){
-        os << "b";
-    }
+    float r = color.r, g = color.g, b = color.b;
+
+    if (r == 1.0f && g == 0.0f && b == 0.0f)
+        os << "r";  // Red
+    else if (r == 0.0f && g == 1.0f && b == 0.0f)
+        os << "g";  // Green
+    else if (r == 0.0f && g == 0.0f && b == 1.0f)
+        os << "b";  // Blue
+    else if (r == 1.0f && g == 1.0f && b == 0.0f)
+        os << "y";  // Yellow
+    else if (r == 1.0f && g == 0.5f && b == 0.0f)
+        os << "o";  // Orange
+    else if (r == 0.5f && g == 0.0f && b == 0.5f)
+        os << "p";  // Purple
+    else if (r == 0.0f && g == 1.0f && b == 1.0f)
+        os << "c";  // Cyan
+    else if (r == 1.0f && g == 1.0f && b == 1.0f)
+        os << "w";  // White
+    else if (r == 0.0f && g == 0.0f && b == 0.0f)
+        os << " ";  // Black
+    else
+        os << ".";  // Unrecognized / other
     return os;
 }
+
