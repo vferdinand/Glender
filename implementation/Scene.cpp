@@ -20,7 +20,7 @@ Scene::Scene(const std::string filePathObj, const std::string filePathMtl){
         std::cout << "r " << c.r << " g " << c.g << " b " << c.b << " a " << c.a << "\n";
     }
 
-    camera.initialize(Point3D{0, 0, 0}, Vector3D {1, -1, 1}, 2.0f, 2.0f, 5, 5);
+    camera.initialize(Point3D{0, 0, 0}, Vector3D {1, 1, 1}, 10.0f, 10.0f, 20, 20);
     //camera.generate_rays(); funktioniert nicht wie gefordert
 }
 

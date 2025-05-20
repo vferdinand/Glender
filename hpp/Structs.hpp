@@ -71,6 +71,12 @@ struct RGBA {
 
 // Overload the stream operator
 inline std::ostream& operator<<(std::ostream& os, const RGBA& color) {
-    os << color.r;
+    if (color.r == 1.0){
+        os << "r";
+    }else if (color.g == 1.0){
+        os << "g";
+    }else if (color.b == 1.0){
+        os << "b";
+    }
     return os;
 }

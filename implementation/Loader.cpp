@@ -9,7 +9,7 @@ bool Loader::initializeColor(const std::string& filePathMTL){
         return false;
     }
 
-    colors.push_back({0.0,0.0,0.0,1.0});
+    colors.push_back({1.0,1.0,1.0,1.0});
     materialNames.push_back("");
 
     std::string line;
