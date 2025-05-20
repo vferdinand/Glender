@@ -7,7 +7,7 @@
 //#include "Triangle.hpp"
 
 int main() {
-    std::string file_path_obj = "cube.obj";
+    std::string file_path_obj = "cube2.obj";
     std::string file_path_mtl = "cube.mtl";
 
     /*
