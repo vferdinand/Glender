@@ -6,21 +6,8 @@ Scene::Scene(const std::string filePathObj, const std::string filePathMtl){
     vertices = loader.getVertices();
     triangles = loader.getTriangles();
     colors = loader.getColors();
-    std::cout << "Loaded " << vertices.size() << " vertices:\n";
-    for (const auto& v : vertices) {
-        std::cout << "v " << v.x << " " << v.y << " " << v.z << "\n";
-    }
-    std::cout << "\nLoaded " << triangles.size() << " triangles:\n";
-    for (const auto& t : triangles) {
-        const auto& idx = t.getIndices();
-        std::cout << "f " << idx[0] << " " << idx[1] << " " << idx[2] << " color: " << t.getColorIndex() << "\n";
-    }
-    std::cout << "\nLoaded " << colors.size() << " colors:\n";
-    for (const auto& c : colors) {
-        std::cout << "r " << c.r << " g " << c.g << " b " << c.b << " a " << c.a << "\n";
-    }
 
-    camera.initialize(Point3D{-5, -5, -5}, Vector3D {1, 1, 1}, 1.0f, 1.0f, 10, 10);
+    camera.initialize(Point3D{-2.4, -2.4, -2.4}, Vector3D {1, 1, 1}, 1.0f, 1.0f, 40, 40);
     //camera.generate_rays(); funktioniert nicht wie gefordert
 }
 
@@ -67,15 +54,6 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints){
 
 Image Scene::generateImage() {
     std::vector<Ray> rays = camera.generate_rays();
-
-    for (size_t i = 1; i < rays.size() + 1; ++i) {
-        const auto& ray = rays[i];
-        std::cout << "Ray " << i << ": Directio = ("
-                  << ray.getDirection().x << ", "
-                  << ray.getDirection().y << ", "
-                  << ray.getDirection().z << ")\n";
-    }
-
     return transformHitpointsToImage(calculateHitpoints(rays));
 }
 
