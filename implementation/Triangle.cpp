@@ -13,6 +13,6 @@ const std::vector<uint32_t>& Triangle::getIndices() const {
     return vertexIndices;
 }
 
-const u_int16_t Triangle::getColorIndex() const{
+u_int16_t Triangle::getColorIndex() const{
     return colorIndex;
 }

@@ -1,17 +1,6 @@
 #include "../hpp/Camera.hpp"
 #include <cmath>
 
-//Camera::Camera(): width(5), height(5), widthPixels(10),lengthPixels(10) {}
-
-void Camera::initialize(const Point3D& eye_pos, const Vector3D& view_dir, float width, float height, int pixel_width, int pixel_length) {
-    eye = eye_pos; 
-    view = view_dir;    
-    this->width = width;
-    this->height = height;
-    widthPixels = pixel_width;
-    lengthPixels = pixel_length;
-}
-
 Vector3D Camera::normalize(const Vector3D& v) {
     float len = std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
     return (len > 0.0f) ? v/len : Vector3D(0, 0, 1);
@@ -58,7 +47,7 @@ std::vector<Ray> Camera::generate_rays() const {
     return rays;
 }
 
-std::vector<Ray>& Camera::get_rays() {
+const std::vector<Ray>& Camera::get_rays() const {
     return rays;
 }
 
