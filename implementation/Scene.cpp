@@ -7,7 +7,7 @@ Scene::Scene(const std::string filePathObj, const std::string filePathMtl){
     triangles = loader.getTriangles();
     colors = loader.getColors();
 
-    camera.initialize(Point3D{-2.0, -2.0, -2.0}, Vector3D {1, 1, 1}, 1.0f, 1.0f, 70, 70);
+    camera.initialize(Point3D{-2.0, -2.0, -2.0}, Vector3D {1, 1, 1}, 1.0f, 1.0f, 50, 50);
     //camera.generate_rays(); funktioniert nicht wie gefordert
 }
 
@@ -35,7 +35,7 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints){
     size_t width = camera.get_width_pixels();
     size_t height = camera.get_length_pixels();
 
-    std::cout << "Hitpoints size: " << hitpoints.size() << " width:" << width << " height: " << height << std::endl;
+    //std::cout << "Hitpoints size: " << hitpoints.size() << " width:" << width << " height: " << height << std::endl;
 
     Image image(height, width);
 
@@ -58,7 +58,7 @@ Image Scene::generateImage() {
 }
 
 std::vector<Hitpoint> Scene::calculateHitpoints(std::vector<Ray>& rays) {
-    std::cout << "Rays size: " << rays.size() << std::endl;
+    //std::cout << "Rays size: " << rays.size() << std::endl;
 
     std::vector<Hitpoint> hitpoints;
     const float EPS = 1e-6f;
