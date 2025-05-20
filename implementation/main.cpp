@@ -28,7 +28,7 @@ int main() {
     return 0; */
 
     Camera camera;
-    camera.initialize(Point3D{0, 0, 0}, Vector3D {1, -2, 1}, 2.0f, 2.0f, 5, 5);
+    camera.initialize(Point3D{0, 0, 0}, Vector3D {1, -2, 1}, 2.0f, 2.0f, 3, 3);
     std::vector<Ray> rays = camera.generate_rays();
 
     for (size_t i = 1; i < rays.size() + 1; ++i) {
