@@ -6,8 +6,8 @@
 void Camera::initialize(const Point3D& eye_pos, const Vector3D& view_dir, float width, float height, int pixel_width, int pixel_length) {
     eye = eye_pos; 
     view = view_dir;    
-    width = width;
-    height = height;
+    this->width = width;
+    this->height = height;
     widthPixels = pixel_width;
     lengthPixels = pixel_length;
 }
