@@ -11,29 +11,38 @@ class Camera {
         Point3D eye;
         Vector3D view;
         
-        //Höhe und Breite eines Pixels
+
         float width;
         float height;
 
-        //Anzahl der Pixel auf horizontaler/ vertikaler Ebene
         int widthPixels;
         int lengthPixels;
 
         //Vektor der alle generierten Strahlen enthält
         std::vector<Ray> rays;
     public:
-
         /**
-         * Initialisiert die Position der Kamera(Camera) und ich welche Richtung diese schaut.
-         * 
-         * @param eye_pos Ortsvektor der Kamera
-         * @param view_dir Blickrichtung der Kamera
-         * @param width Breite eines einzelnen Pixels
-         * @param height Höhe eines einzelnen Pixels
-         * @param pixel_width Anzahl der Pixel in der horizontalen Ebene
-         * @param pixel_height Anzahl der Pixeln in der vertikalen Ebene        
-        */
-        void initialize(const Point3D& eye_pos, const Vector3D& view_dir, float width, float height, int pixel_width, int pixel_length);
+         * Konstruktor.
+         * @param eyePos Ausgangsposition der Kamera
+         * @param viewDir Ausrichtung der Kamera
+         * @param pixelWidth Breite eines Pixels
+         * @param pixelHeight Höhe eines Pixels
+         * @param horizontalPixels Anzahl der Pixel in der Horizontale
+         * @param verticalPixels Anzahl der Pixel in der Vertikale
+         */
+        Camera(const Point3D& eyePos = Point3D(), 
+           const Vector3D& viewDir = Vector3D(0, 0, 1), 
+           float pixelWidth = 0.1f, 
+           float pixelHeight = 0.1f, 
+           int horizontalPixels = 1,
+           int verticalPixels = 5)
+        : eye(eyePos), 
+          view(viewDir), 
+          width(pixelWidth),
+          height(pixelHeight),
+          widthPixels(horizontalPixels),
+          lengthPixels(verticalPixels)  
+          {}
        
         /**
          * Normalisiert einen Vektor, sodass er die Länge 1 hat.
@@ -55,10 +64,10 @@ class Camera {
 
         /**
          * Berechnet den Strahl (Ray), der durch das Pixel an Position (x,y) geht.
-         * Der Strahl startet im Kamerapunkt (eye) und geht durch die Mitte des angegebenen Pixels.
+         * Der Strahl startet im Kamerapunkt (eye) und verläuft durch die Mitte des angegebenen Pixels.
          * 
-         * @param x X-Koordinate des Pixels (von links nach rechts)
-         * @param y Y-Koordinate des Pixels (von oben nach unten)
+         * @param x X-Koordinate des Pixels 
+         * @param y Y-Koordinate des Pixels 
          * @return Der berechnete Strahl
          */
         Ray calculate_ray(int x, int y) const ;
@@ -70,7 +79,6 @@ class Camera {
          * @return Vektor mit allen generierten Strahlen
          */
         std::vector<Ray> generate_rays() const;
-
         const std::vector<Ray>& get_rays() const;
         Point3D get_eye() const;
         Vector3D get_view() const;

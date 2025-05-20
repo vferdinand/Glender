@@ -1,16 +1,20 @@
 #include "../hpp/Camera.hpp"
 #include <cmath>
 
-//Camera::Camera(): width(5), height(5), widthPixels(10),lengthPixels(10) {}
-
-void Camera::initialize(const Point3D& eye_pos, const Vector3D& view_dir, float width, float height, int pixel_width, int pixel_length) {
-    eye = eye_pos; 
-    view = view_dir;    
-    width = width;
-    height = height;
-    widthPixels = pixel_width;
-    lengthPixels = pixel_length;
-}
+//erzeugt error, funktioniert auch ohne implementierung in cpp und nur deklaration in hpp
+/*mera::Camera(const Point3D& eyePos, 
+               const Vector3D& viewDir, 
+               float pixelWidth, 
+               float pixelHeight, 
+               int horizontalPixels, 
+               int verticalPixels)
+    : eye(eyePos), 
+      view(viewDir), 
+      width(pixelWidth),
+      height(pixelHeight),
+      widthPixels(horizontalPixels),
+      lengthPixels(verticalPixels) 
+      {}*/
 
 Vector3D Camera::normalize(const Vector3D& v) {
     float len = std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
