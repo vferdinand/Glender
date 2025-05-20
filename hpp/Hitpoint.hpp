@@ -13,7 +13,7 @@ class Hitpoint {
     public:
     Hitpoint();
     const Point3D getPosition();
-    const float getDistance();
+    float getDistance();
     const Triangle* getTriangle();
 
     void setPosition(const Point3D& pos);
