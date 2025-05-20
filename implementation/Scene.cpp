@@ -7,8 +7,8 @@ Scene::Scene(const std::string filePathObj, const std::string filePathMtl){
     triangles = loader.getTriangles();
     colors = loader.getColors();
 
-    camera.initialize(Point3D{-2.4, -2.4, -2.4}, Vector3D {1, 1, 1}, 1.0f, 1.0f, 40, 40);
-    //camera.generate_rays(); funktioniert nicht wie gefordert
+    //camera.initialize(Point3D{-2.4, -2.4, -2.4}, Vector3D {1, 1, 1}, 1.0f, 1.0f, 40, 40);
+    camera.generate_rays();
 }
 
 Image Scene::transformHitpointsToImage(std::vector<std::vector<Hitpoint>> hitpoints){
