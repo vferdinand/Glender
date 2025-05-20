@@ -71,7 +71,7 @@ class Camera {
          */
         std::vector<Ray> generate_rays() const;
 
-        const std::vector<Ray>& get_rays() const;
+        std::vector<Ray>& get_rays();
         Point3D get_eye() const;
         Vector3D get_view() const;
         float get_width() const;
