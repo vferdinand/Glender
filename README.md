@@ -1,10 +1,11 @@
 # Glender
 
-Datenformat: obj
+compiler-Befehl falls Cmake nicht geht: 
+g++ implementation/*.cpp -Ihpp -std=c++17 -Wall -Wextra -o main
 
-bearbeitungsvorgang wie im swp, bearbeitung in externen branch und bei fertiger Implementierung merge into masterbranch
+Aufgabenabschnitte werden seperat in den private Branches bearbeitet. Sind einzelne Parteien mit ihrem Teil fertig, wird hinzugefügter Code nach Guidelines dokumeniert und in den Development Branch gemerged.
+Nachdem ein Aufgabenabschnitt vollständig bearbeitet wurde, wird die funktionierende Version in den main Branch gemerged.
 
-if you know you know
-
-
-compiler-Befehl falls Cmake nicht geht: g++ implementation/*.cpp -Ihpp -std=c++17 -Wall -Wextra -o main
+Documentation in Doxygen Javadoc-style:
+https://www.doxygen.nl/manual/docblocks.html#cppblock
+Eigen/Dense ist muss installiert sein,um zu compilen

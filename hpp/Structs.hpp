@@ -7,6 +7,8 @@ struct Point3D;
 struct Vector3D;
 
 
+#include <iostream>
+
 struct Vertex {
     float x, y, z;
 };
@@ -66,3 +68,31 @@ struct RGBA {
     double b = 0.0;
     double a = 1.0;
 };
+
+// Overload the stream operator
+inline std::ostream& operator<<(std::ostream& os, const RGBA& color) {
+    float r = color.r, g = color.g, b = color.b;
+
+    if (r == 1.0f && g == 0.0f && b == 0.0f)
+        os << "r";  // Red
+    else if (r == 0.0f && g == 1.0f && b == 0.0f)
+        os << "g";  // Green
+    else if (r == 0.0f && g == 0.0f && b == 1.0f)
+        os << "b";  // Blue
+    else if (r == 1.0f && g == 1.0f && b == 0.0f)
+        os << "y";  // Yellow
+    else if (r == 1.0f && g == 0.5f && b == 0.0f)
+        os << "o";  // Orange
+    else if (r == 0.5f && g == 0.0f && b == 0.5f)
+        os << "p";  // Purple
+    else if (r == 0.0f && g == 1.0f && b == 1.0f)
+        os << "c";  // Cyan
+    else if (r == 1.0f && g == 1.0f && b == 1.0f)
+        os << "w";  // White
+    else if (r == 0.0f && g == 0.0f && b == 0.0f)
+        os << " ";  // Black
+    else
+        os << ".";  // Unrecognized / other
+    return os;
+}
+

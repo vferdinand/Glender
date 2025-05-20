@@ -23,6 +23,7 @@ class Camera {
     public:
         /**
          * Konstruktor.
+         * 
          * @param eyePos Ausgangsposition der Kamera
          * @param viewDir Ausrichtung der Kamera
          * @param pixelWidth Breite eines Pixels
@@ -30,12 +31,12 @@ class Camera {
          * @param horizontalPixels Anzahl der Pixel in der Horizontale
          * @param verticalPixels Anzahl der Pixel in der Vertikale
          */
-        Camera(const Point3D& eyePos = Point3D(), 
-           const Vector3D& viewDir = Vector3D(0, 0, 1), 
-           float pixelWidth = 0.1f, 
-           float pixelHeight = 0.1f, 
-           int horizontalPixels = 1,
-           int verticalPixels = 5)
+        Camera(const Point3D& eyePos = Point3D(-2.4, -2.4, -2.4), 
+           const Vector3D& viewDir = Vector3D(1, 1, 1), 
+           float pixelWidth = 1.0f, 
+           float pixelHeight = 1.0f, 
+           int horizontalPixels = 40,
+           int verticalPixels = 40)
         : eye(eyePos), 
           view(viewDir), 
           width(pixelWidth),
