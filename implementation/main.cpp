@@ -7,9 +7,6 @@
 //#include "Triangle.hpp"
 
 int main() {
-    std::string file_path_obj = "house.obj";
-    std::string file_path_mtl = "cube.mtl";
-
     /*
     /////////////////////////////////////////////////////////////////////
     // Loader Beispiel 
@@ -60,12 +57,14 @@ int main() {
     /////////////////////////////////////////////////////////////////////
     // Scene Beispiel
     /////////////////////////////////////////////////////////////////////
-   // Szene einmalig laden
+    // Szene einmalig laden
+    std::string file_path_obj = "house.obj";
+    std::string file_path_mtl = "cube.mtl";
     Scene scene(file_path_obj, file_path_mtl);
 
     // Kreisbahn-Parameter
-    const double radius    = 8.0;    // Abstand von (0,0,0)
-    const double height    = 8.0;    // y-Höhe der Kamera
+    const double radius    = 10.0;    // Abstand von (0,0,0)
+    const double height    = 8.5;    // y-Höhe der Kamera
     const double stepAngle = 0.04;   // Drehgeschwindigkeit pro Frame
 
     double angle = 0.0;
@@ -82,7 +81,7 @@ int main() {
             camPos,
             Vector3D{ -camX, -6, -camZ }, //Vector3D{ -camX, -height, -camZ },  // Richtung: Ziel (0,0,0) minus Position
             0.7f, 0.7f,
-            30, 40
+            45, 45
         );
 
         // 3) Raytracing & Bild ausgeben
@@ -95,9 +94,5 @@ int main() {
             angle -= 2.0 * M_PI;
         }
     }
-
-    return 0;
-
-    
     //image.save("output.png");
 }

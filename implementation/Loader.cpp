@@ -54,9 +54,24 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ){
             iss >> v.x >> v.y >> v.z;
             vertices.push_back(v);
         } else if (prefix == "f") {
-            uint32_t a, b, c;
-            iss >> a >> b >> c;
-            triangles.push_back(Triangle({a - 1, b - 1, c - 1}, materialIndex));
+            std::array<uint32_t, 3> indices;
+            std::string vertexStr;
+
+            for (int i = 0; i < 3; ++i) {
+                iss >> vertexStr;
+
+                size_t slashPos = vertexStr.find('/');
+                std::string indexStr;
+                if (slashPos == std::string::npos) {
+                    indexStr = vertexStr;
+                } else {
+                    indexStr = vertexStr.substr(0, slashPos);
+                }
+
+                indices[i] = std::stoi(indexStr) - 1; // Convert OBJ's 1-based to 0-based index
+            }
+
+            triangles.push_back(Triangle({indices[0], indices[1], indices[2]}, materialIndex));
         } else if (prefix == "usemtl"){
             std::string newMaterial;
             iss >> newMaterial;

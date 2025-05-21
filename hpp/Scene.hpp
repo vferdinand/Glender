@@ -25,7 +25,7 @@ class Scene {
         public:
         Camera camera; //eigentlich private, aber für Debugging sichtbar
 
-        Scene(const std::string filePathObj, const std::string filePathMtl);
+        Scene(const std::string filePathObj, const std::string filePathMtl = "");
 
         //Bündelt calculateHitpoints und convertHitpointsToImage
         Image generateImage();
