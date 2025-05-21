@@ -9,3 +9,6 @@ Nachdem ein Aufgabenabschnitt vollständig bearbeitet wurde, wird die funktionie
 Documentation in Doxygen Javadoc-style:
 https://www.doxygen.nl/manual/docblocks.html#cppblock
 Eigen/Dense ist muss installiert sein,um zu compilen
+
+
+Befehl für das schnellste make: make -j$(nproc)
