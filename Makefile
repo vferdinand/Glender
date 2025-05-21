@@ -3,16 +3,29 @@ TARGET = main
 
 # Compiler und Flags
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Wextra -Ihpp -I/usr/include/eigen3
+CXXFLAGS = -std=c++17 -Wall -Wextra -MMD -MP -Ihpp -I/usr/include/eigen3
 
-# Quellcode-Dateien
+# Quellcode, Objektdateien und Abhängigkeiten
 SRCS = $(wildcard implementation/*.cpp)
+OBJS = $(SRCS:implementation/%.cpp=build/%.o)
+DEPS = $(OBJS:.o=.d)
 
-# Build-Regel
-$(TARGET): $(SRCS)
-	$(CXX) $(CXXFLAGS) $(SRCS) -o $(TARGET)
+# Ziel: Programm
+$(TARGET): $(OBJS)
+	$(CXX) $(CXXFLAGS) $(OBJS) -o $(TARGET)
+
+# Ziel: Objektdateien
+build/%.o: implementation/%.cpp | build
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+# Verzeichnis für Objektdateien
+build:
+	mkdir -p build
 
 # Aufräumen
 .PHONY: clean
 clean:
-	rm -f $(TARGET)
+	rm -rf build $(TARGET)
+
+# Automatisch erstellte Header-Abhängigkeiten einbinden
+-include $(DEPS)
