@@ -1,11 +1,24 @@
 #include "../hpp/Camera.hpp"
 #include <cmath>
 
+/**
+ * Normalisiert einen Vektor, sodass er die Länge 1 hat.
+ * Falls der Eingabevektor die Länge 0 hat, wird ein Standardvektor (0, 0, 1) zurückgegeben.
+ * 
+ * @param v Der zu normalisierende Vektor
+ * @return Der normalisierte Vektor oder (0, 0, 1) falls v die Länge 0 hat
+ */
 Vector3D Camera::normalize(const Vector3D& v) {
     float len = std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
     return (len > 0.0f) ? v/len : Vector3D(0, 0, 1);
 }
-
+/**
+ * Berechnet das Kreuzprodukt zweier Vektoren.
+ * 
+ * @param a Erster Vektor
+ * @param b Zweiter Vektor
+ * @return Das Kreuzprodukt a × b
+ */
 Vector3D Camera::cross(const Vector3D& a, const Vector3D& b) {
     return Vector3D(
         a.y * b.z - a.z * b.y,
@@ -14,7 +27,15 @@ Vector3D Camera::cross(const Vector3D& a, const Vector3D& b) {
     );
 }
 
-Ray Camera::calculate_ray ( int x , int y ) const {
+/**
+ * Berechnet den Strahl (Ray), der durch das Pixel an Position (x,y) geht.
+ * Der Strahl startet im Kamerapunkt (eye) und verläuft durch die Mitte des angegebenen Pixels.
+ * 
+ * @param x X-Koordinate des Pixels 
+ * @param y Y-Koordinate des Pixels 
+ * @return Der berechnete Strahl
+ */
+Ray Camera::calculate_ray ( u_int32_t x , u_int32_t y ) const {
     //calculate basevectors 
     Vector3D forward = normalize(view);
     Vector3D right = normalize(cross(Vector3D{0, 1, 0}, forward));
@@ -35,18 +56,32 @@ Ray Camera::calculate_ray ( int x , int y ) const {
     return Ray(eye, direction);
 }
 
+/**
+ * Generiert Strahlen für alle Pixel des Bildes.
+ * Die Strahlen werden zeilenweise von oben nach unten und von links nach rechts generiert.
+ */
 void Camera::generate_rays() {
     rays.clear();
     rays.reserve(get_width_pixels() * get_length_pixels());
 
-    for (int y = 0; y < get_length_pixels(); ++y) {
-        for (int x = 0; x < get_width_pixels(); ++x) {
+    for (u_int16_t y = 0; y < get_length_pixels(); ++y) {
+        for (u_int16_t x = 0; x < get_width_pixels(); ++x) {
             rays.push_back(calculate_ray(x, y));
         }
     }
 }
 
-void Camera::set_everything(const Point3D& eyePos, const Vector3D& viewDir, float pixelWidth, float pixelHeight, int horizontalPixels, int verticalPixels) {
+/**
+ * Settet Parameter neu.
+ * 
+ * @param eyePos Ausgangsposition der Kamera
+ * @param viewDir Ausrichtung der Kamera
+ * @param pixelWidth Breite eines Pixels
+ * @param pixelHeight Höhe eines Pixels
+ * @param horizontalPixels Anzahl der Pixel in der Horizontale
+ * @param verticalPixels Anzahl der Pixel in der Vertikale
+ */
+void Camera::set_everything(const Point3D& eyePos, const Vector3D& viewDir, float pixelWidth, float pixelHeight, u_int16_t horizontalPixels, u_int16_t verticalPixels) {
     eye = eyePos;
     view = viewDir;
     width = pixelWidth;
@@ -75,10 +110,10 @@ float Camera::get_height() const {
     return height;
 }
 
-int Camera::get_width_pixels() const {
+u_int8_t Camera::get_width_pixels() const {
     return widthPixels;
 }
 
-int Camera::get_length_pixels() const {
+u_int8_t Camera::get_length_pixels() const {
     return lengthPixels;
 }
