@@ -16,14 +16,16 @@ class Scene {
         std::vector<Vertex> vertices;
         std::vector<RGBA> colors;
 
-        Camera camera;
-        Image transformHitpointsToImage(std::vector<std::vector<Hitpoint>> hitpoints);
+        Camera camera; //eigentlich private, aber für Debugging sichtbar
+        
         Image transformHitpointsToImage(std::vector<Hitpoint> hitpoints);
         //Berechnung der Schnittpunkte von Rays und Triangles
         std::vector<Hitpoint> calculateHitpoints(std::vector<Ray>& rays);    
         
         public:
-        Scene(const std::string filePathObj, const std::string filePathMtl);
+        void setCamera(const Point3D& eyePos, const Vector3D& viewDir, float pixelWidth, float pixelHeight, int horizontalPixels, int verticalPixels);
+
+        Scene(const std::string filePathObj, const std::string filePathMtl = "");
 
         //Bündelt calculateHitpoints und convertHitpointsToImage
         Image generateImage();

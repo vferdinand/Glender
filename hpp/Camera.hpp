@@ -79,7 +79,7 @@ class Camera {
          * 
          * @return Vektor mit allen generierten Strahlen
          */
-        std::vector<Ray> generate_rays() const;
+        void generate_rays();
         const std::vector<Ray>& get_rays() const;
         Point3D get_eye() const;
         Vector3D get_view() const;
@@ -87,4 +87,5 @@ class Camera {
         float get_height() const;
         int get_width_pixels() const;
         int get_length_pixels() const;
+        void set_everything(const Point3D& eyePos, const Vector3D& viewDir, float pixelWidth, float pixelHeight, int horizontalPixels, int verticalPixels);
 };

@@ -35,8 +35,8 @@ Ray Camera::calculate_ray ( int x , int y ) const {
     return Ray(eye, direction);
 }
 
-std::vector<Ray> Camera::generate_rays() const {
-    std::vector<Ray> rays;
+void Camera::generate_rays() {
+    rays.clear();
     rays.reserve(get_width_pixels() * get_length_pixels());
 
     for (int y = 0; y < get_length_pixels(); ++y) {
@@ -44,7 +44,15 @@ std::vector<Ray> Camera::generate_rays() const {
             rays.push_back(calculate_ray(x, y));
         }
     }
-    return rays;
+}
+
+void Camera::set_everything(const Point3D& eyePos, const Vector3D& viewDir, float pixelWidth, float pixelHeight, int horizontalPixels, int verticalPixels) {
+    eye = eyePos;
+    view = viewDir;
+    width = pixelWidth;
+    height = pixelHeight;
+    widthPixels = horizontalPixels;
+    lengthPixels = verticalPixels;
 }
 
 const std::vector<Ray>& Camera::get_rays() const {

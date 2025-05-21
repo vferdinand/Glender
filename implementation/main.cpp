@@ -7,9 +7,6 @@
 //#include "Triangle.hpp"
 
 int main() {
-    std::string file_path_obj = "cube2.obj";
-    std::string file_path_mtl = "cube.mtl";
-
     /*
     /////////////////////////////////////////////////////////////////////
     // Loader Beispiel 
@@ -59,8 +56,37 @@ int main() {
     /////////////////////////////////////////////////////////////////////
     // Scene Beispiel
     /////////////////////////////////////////////////////////////////////
+    // Szene einmalig laden
+    std::string file_path_obj = "house.obj";
+    std::string file_path_mtl = "cube.mtl";
     Scene scene(file_path_obj, file_path_mtl);
-    Image image = scene.generateImage();
-    image.print();
+
+    // Kreisbahn-Parameter
+    const float radius    = 10.0;    // Abstand von (0,0,0)
+    const float height    = 8.5;    // y-Höhe der Kamera
+    const float stepAngle = 0.04;   // Drehgeschwindigkeit pro Frame
+
+    float angle = 0.0;
+
+    // unendliche Render-Schleife
+    while (true) {
+        // 1) Berechne neue Kameraposition in der XZ-Ebene
+        float camX = radius * std::cos(angle);
+        float camZ = radius * std::sin(angle);
+        Point3D camPos{ camX, height, camZ };
+
+        // 2) Initialisiere Kamera: Position = camPos, Blickrichtung = auf (0,0,0)
+        scene.setCamera(camPos,Vector3D{ -camX, -6, -camZ },1.0f, 1.0f, 40, 40);
+
+        // 3) Raytracing & Bild ausgeben
+        Image img = scene.generateImage();
+        img.print();
+
+        // 4) Winkel weiterschalten und bei 2π zurücksetzen
+        angle += stepAngle;
+        if (angle >= 2.0 * M_PI) {
+            angle -= 2.0 * M_PI;
+        }
+    }
     //image.save("output.png");
 }

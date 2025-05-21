@@ -9,27 +9,11 @@ Scene::Scene(const std::string filePathObj, const std::string filePathMtl){
     camera.generate_rays();
 }
 
-Image Scene::transformHitpointsToImage(std::vector<std::vector<Hitpoint>> hitpoints){
-
-    size_t height = hitpoints.size();
-    size_t width = hitpoints.at(0).size();
-
-    Image image(height, width);
-
-    for(size_t i = 0; i < height; i++){
-        for(size_t j = 0; j < width; j++){
-            RGBA col = {0.0, 0.0, 0.0, 0.0};
-            if(hitpoints.at(i).at(j).getDistance() != std::numeric_limits<float>::max()){
-                col = colors.at(hitpoints.at(i).at(j).getTriangle()->getColorIndex());
-            }
-            image.set(i, j, col);
-        }
-    }
-
-    return image;
-}
-
 Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints){
+    if(hitpoints.size() == 0){
+        std::cout << "Hitpoints size is 0" << std::endl;
+        return Image(0, 0);
+    }
     size_t width = camera.get_width_pixels();
     size_t height = camera.get_length_pixels();
 
@@ -40,8 +24,11 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints){
     for(size_t i = 0; i < height; i++){
         for(size_t j = 0; j < width; j++){
             RGBA col = {0.0, 0.0, 0.0, 0.0};
-            if(hitpoints.at(i*width + j).getDistance() != std::numeric_limits<float>::max()){
-                col = colors.at(hitpoints.at(i*width + j).getTriangle()->getColorIndex());
+            size_t index = i * width + j;
+            if (index < hitpoints.size() && 
+                hitpoints.at(index).getDistance() != std::numeric_limits<float>::max()) {
+                
+                col = colors.at(hitpoints.at(index).getTriangle()->getColorIndex());
             }
             image.set(i, j, col);
         }
@@ -113,4 +100,9 @@ std::vector<Hitpoint> Scene::calculateHitpoints(std::vector<Ray>& rays) {
         hitpoints.push_back(hp);
     }
     return hitpoints;
+}
+
+void Scene::setCamera(const Point3D& eyePos, const Vector3D& viewDir, float pixelWidth, float pixelHeight, int horizontalPixels, int verticalPixels) {
+    camera.set_everything(eyePos, viewDir, pixelWidth, pixelHeight, horizontalPixels, verticalPixels);
+    camera.generate_rays();
 }
