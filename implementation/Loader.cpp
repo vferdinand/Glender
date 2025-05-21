@@ -13,7 +13,6 @@ bool Loader::initializeColor(const std::string& filePathMTL){
     materialNames.push_back("");
 
     std::string line;
-    int count = 0;
     while (std::getline(fileMTL, line)) {
         std::istringstream iss(line);
         std::string prefix;
@@ -70,10 +69,10 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ){
     return true;
 }
 
-u_int16_t Loader::locateMaterial(const std::string& material) {
+int16_t Loader::locateMaterial(const std::string& material) {
     for (size_t i = 0; i < materialNames.size(); ++i) {
         if (materialNames[i] == material)
-            return static_cast<u_int16_t>(i);
+            return static_cast<int16_t>(i);
     }
     return -1;
 }

@@ -6,9 +6,7 @@ Scene::Scene(const std::string filePathObj, const std::string filePathMtl){
     vertices = loader.getVertices();
     triangles = loader.getTriangles();
     colors = loader.getColors();
-
-    camera.initialize(Point3D{-2.0, -2.0, -2.0}, Vector3D {1, 1, 1}, 1.0f, 1.0f, 40, 40);
-    //camera.generate_rays(); funktioniert nicht wie gefordert
+    camera.generate_rays();
 }
 
 Image Scene::transformHitpointsToImage(std::vector<std::vector<Hitpoint>> hitpoints){
@@ -53,7 +51,7 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints){
 }
 
 Image Scene::generateImage() {
-    std::vector<Ray> rays = camera.generate_rays();
+    std::vector<Ray> rays = camera.get_rays();
     return transformHitpointsToImage(calculateHitpoints(rays));
 }
 

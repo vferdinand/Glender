@@ -21,7 +21,7 @@ private:
 
     bool initializeColor(const std::string& filePathMTL);
     bool initializeVerticiesTriangles(const std::string& filePathOBJ);
-    u_int16_t locateMaterial(const std::string& material);
+    int16_t locateMaterial(const std::string& material);
 
 public:
     //Loader(const std::string& file_path);
