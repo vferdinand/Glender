@@ -7,52 +7,6 @@
 //#include "Triangle.hpp"
 
 int main() {
-    /*
-    /////////////////////////////////////////////////////////////////////
-    // Loader Beispiel 
-    /////////////////////////////////////////////////////////////////////
-    Loader loader;
-
-    loader.loadOBJ(file_path_obj, file_path_mtl);
-
-    const std::vector<Vertex>& vertices = loader.getVertices();
-    const std::vector<Triangle>& triangles = loader.getTriangles();
-    const std::vector<RGBA>& colors = loader.getColors();
-
-    std::cout << "Loaded " << vertices.size() << " vertices:\n";
-    for (const auto& v : vertices) {
-        std::cout << "v " << v.x << " " << v.y << " " << v.z << "\n";
-    }
-
-    std::cout << "\nLoaded " << triangles.size() << " triangles:\n";
-    for (const auto& t : triangles) {
-        const auto& idx = t.getIndices();
-        std::cout << "f " << idx[0] << " " << idx[1] << " " << idx[2] << " color: " << t.getColorIndex() << "\n";
-    }
-
-    std::cout << "\nLoaded " << colors.size() << " colors:\n";
-    for (const auto& c : colors) {
-        std::cout << "r " << c.r << " g " << c.g << " b " << c.b << " a " << c.a << "\n";
-    }
-    */
-   
-    /*
-    /////////////////////////////////////////////////////////////////////
-    // Camera Beispiel
-    /////////////////////////////////////////////////////////////////////
-
-    Camera camera;
-    std::vector<Ray> rays = camera.generate_rays();
-
-    for (size_t i = 1; i < rays.size() + 1; ++i) {
-        const auto& ray = rays[i];
-        std::cout << "Ray " << i << ": Directio = ("
-                  << ray.getDirection().x << ", "
-                  << ray.getDirection().y << ", "
-                  << ray.getDirection().z << ")\n";
-    }
-    */
-
     /////////////////////////////////////////////////////////////////////
     // Scene Beispiel
     /////////////////////////////////////////////////////////////////////
@@ -62,8 +16,8 @@ int main() {
     Scene scene(file_path_obj, file_path_mtl);
 
     // Kreisbahn-Parameter
-    const float radius    = 10.0;    // Abstand von (0,0,0)
-    const float height    = 8.5;    // y-Höhe der Kamera
+    const float radius    = 7.0;    // Abstand von (0,0,0)
+    const float height    = 5.6;    // y-Höhe der Kamera
     const float stepAngle = 0.04;   // Drehgeschwindigkeit pro Frame
 
     float angle = 0.0;
@@ -76,7 +30,7 @@ int main() {
         Point3D camPos{ camX, height, camZ };
 
         // 2) Initialisiere Kamera: Position = camPos, Blickrichtung = auf (0,0,0)
-        scene.setCamera(camPos,Vector3D{ -camX, -6, -camZ },1.0f, 1.0f, 40, 40);
+        scene.setCamera(camPos,Vector3D{ -camX, -3, -camZ },1.0f, 1.0f, 30, 30);
 
         // 3) Raytracing & Bild ausgeben
         Image img = scene.generateImage();
