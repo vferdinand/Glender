@@ -12,9 +12,8 @@ class Image {
     
         void set(size_t row, size_t col, RGBA value);
         RGBA get(size_t row, size_t col) const;
-    
-        size_t rowCount() const;
-        size_t colCount() const;
-    
+
+        // tmp for debugging
+        // ersetzt durch save() in future
         void print() const;
 };
