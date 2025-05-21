@@ -14,17 +14,17 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints){
         std::cout << "Hitpoints size is 0" << std::endl;
         return Image(0, 0);
     }
-    size_t width = camera.get_width_pixels();
-    size_t height = camera.get_length_pixels();
+    u_int16_t width = camera.get_width_pixels();
+    u_int16_t height = camera.get_length_pixels();
 
     std::cout << "Hitpoints size: " << hitpoints.size() << " width:" << width << " height: " << height << std::endl;
 
     Image image(height, width);
 
-    for(size_t i = 0; i < height; i++){
-        for(size_t j = 0; j < width; j++){
+    for(u_int16_t i = 0; i < height; i++){
+        for(u_int16_t j = 0; j < width; j++){
             RGBA col = {0.0, 0.0, 0.0, 0.0};
-            size_t index = i * width + j;
+            u_int16_t index = i * width + j;
             if (index < hitpoints.size() && 
                 hitpoints.at(index).getDistance() != std::numeric_limits<float>::max()) {
                 

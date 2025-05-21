@@ -1,7 +1,33 @@
 #include "../hpp/Loader.hpp"
 
+// Konstruktor der Loader-Klasse.
+// Dient zur Initialisierung eines Loader-Objekts.
+// Momentan wird keine spezielle Initialisierung vorgenommen.
 Loader::Loader(){}
 
+
+/* /////////////////////////////////////////////////////////
+ * Ist die Hauptfunktion zum Laden von .obj-Dateien.
+ * /////////////////////////////////////////////////////////
+ * 
+ * Lädt eine .obj-Datei und optional eine zugehörige .mtl-Datei.
+ * Wenn ein Materialpfad angegeben ist, werden zuerst die Farben geladen.
+ * Danach erfolgt das Parsen der Geometrie.
+ */
+bool Loader::loadOBJ(const std::string& filePathOBJ, const std::string& filePathMTL) {
+    if(filePathMTL != ""){
+        initializeColor(filePathMTL);
+    }
+    return initializeVerticiesTriangles(filePathOBJ);
+}
+
+/*
+ * Lädt Farbwerte und Materialnamen aus einer .mtl-Datei.
+ * Unterstützt nur die diffuse Farbe (Kd) und Materialnamen (newmtl).
+ * Fügt die Farben in die colors-Liste und die Namen in materialNames ein.
+ * Der erste Eintrag ist ein Standardmaterial (weiß, ohne Namen),
+ * um ein fallback-Material zu haben, falls kein "usemtl" angegeben ist.
+ */
 bool Loader::initializeColor(const std::string& filePathMTL){
     std::ifstream fileMTL(filePathMTL);
     if (!fileMTL.is_open()) {
@@ -31,6 +57,16 @@ bool Loader::initializeColor(const std::string& filePathMTL){
     return true;
 }
 
+/*
+ * Lädt Geometriedaten (Vertices, Normalen, Dreiecke) aus einer .obj-Datei.
+ * Unterstützt:
+ *  - Vertex-Positionen ("v")
+ *  - Vertex-Normalen ("vn")
+ *  - Flächen ("f") mit Dreiecksbeschränkung
+ *  - Materialzuweisung ("usemtl")
+ * Die Dreiecke werden in der Reihenfolge ihres Auftretens gespeichert,
+ * inklusive Materialindex zur späteren Farbanwendung.
+ */
 bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ){
     std::ifstream fileOBJ(filePathOBJ);
     if (!fileOBJ.is_open()) {
@@ -67,7 +103,7 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ){
                     indexStr = vertexStr.substr(0, slashPos);
                 }
 
-                indices[i] = std::stoi(indexStr) - 1; // Convert OBJ's 1-based to 0-based index
+                indices[i] = std::stoi(indexStr) - 1;
             }
 
             triangles.push_back(Triangle({indices[0], indices[1], indices[2]}, materialIndex));
@@ -84,6 +120,10 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ){
     return true;
 }
 
+/*
+ * Sucht einen Materialnamen in der Liste materialNames.
+ * Gibt den Index zurück, falls gefunden, sonst -1.
+ */
 int16_t Loader::locateMaterial(const std::string& material) {
     for (size_t i = 0; i < materialNames.size(); ++i) {
         if (materialNames[i] == material)
@@ -92,21 +132,17 @@ int16_t Loader::locateMaterial(const std::string& material) {
     return -1;
 }
 
-bool Loader::loadOBJ(const std::string& filePathOBJ, const std::string& filePathMTL) {
-    if(filePathMTL != ""){
-        initializeColor(filePathMTL);
-    }
-    return initializeVerticiesTriangles(filePathOBJ);
-}
-
+// Gibt eine Referenz auf die geladenen Vertices zurück.
 const std::vector<Vertex>& Loader::getVertices() const {
     return vertices;
 }
 
+// Gibt eine Referenz auf die geladenen Dreiecke zurück.
 const std::vector<Triangle>& Loader::getTriangles() const {
     return triangles;
 }
 
+// Gibt eine Referenz auf die geladenen Farben (aus .mtl) zurück.
 const std::vector<RGBA>& Loader::getColors() const {
     return colors;
 }
