@@ -11,12 +11,12 @@ int main() {
     // Scene Beispiel
     /////////////////////////////////////////////////////////////////////
     // Szene einmalig laden
-    std::string file_path_obj = "house.obj";
+    std::string file_path_obj = "911.obj";
     std::string file_path_mtl = "cube.mtl";
     Scene scene(file_path_obj, file_path_mtl);
 
     // Kreisbahn-Parameter
-    const float radius    = 7.0;    // Abstand von (0,0,0)
+    const float radius    = 30.0;    // Abstand von (0,0,0)
     const float height    = 5.6;    // y-Höhe der Kamera
     const float stepAngle = 0.04;   // Drehgeschwindigkeit pro Frame
 
