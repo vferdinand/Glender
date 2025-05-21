@@ -23,6 +23,7 @@ class Scene {
         std::vector<Hitpoint> calculateHitpoints(std::vector<Ray>& rays);    
         
         public:
+        //Kamera Konfiguration
         void setCamera(const Point3D& eyePos, const Vector3D& viewDir, float pixelWidth, float pixelHeight, int horizontalPixels, int verticalPixels);
 
         Scene(const std::string filePathObj, const std::string filePathMtl = "");

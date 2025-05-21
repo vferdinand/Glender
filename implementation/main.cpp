@@ -62,9 +62,9 @@ int main() {
     Scene scene(file_path_obj, file_path_mtl);
 
     // Kreisbahn-Parameter
-    const float radius    = 10.0;    // Abstand von (0,0,0)
-    const float height    = 8.5;    // y-Höhe der Kamera
-    const float stepAngle = 0.04;   // Drehgeschwindigkeit pro Frame
+    const float radius    = 7.0;    // Abstand von (0,0,0)
+    const float height    = 5.6;    // y-Höhe der Kamera
+    const float stepAngle = 0.05;   // Drehgeschwindigkeit pro Frame
 
     float angle = 0.0;
 
@@ -76,7 +76,7 @@ int main() {
         Point3D camPos{ camX, height, camZ };
 
         // 2) Initialisiere Kamera: Position = camPos, Blickrichtung = auf (0,0,0)
-        scene.setCamera(camPos,Vector3D{ -camX, -6, -camZ },1.0f, 1.0f, 40, 40);
+        scene.setCamera(camPos,Vector3D{ -camX, -3, -camZ },1.0f, 1.0f, 100, 100);
 
         // 3) Raytracing & Bild ausgeben
         Image img = scene.generateImage();
