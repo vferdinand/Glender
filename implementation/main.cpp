@@ -3,15 +3,13 @@
 #include "../hpp/Camera.hpp"
 #include "../hpp/Image.hpp"
 #include "../hpp/Scene.hpp"
-//#include "Vertex.hpp"
-//#include "Triangle.hpp"
 
 int main() {
     /////////////////////////////////////////////////////////////////////
     // Scene Beispiel
     /////////////////////////////////////////////////////////////////////
     // Szene einmalig laden
-    std::string file_path_obj = "911.obj";
+    std::string file_path_obj = "house.obj";
     std::string file_path_mtl = "cube.mtl";
     Scene scene(file_path_obj, file_path_mtl);
 

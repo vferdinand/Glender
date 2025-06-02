@@ -2,7 +2,7 @@
 #include <cmath>
 
 /**
- * Normalisiert einen Vektor, sodass er die Länge 1 hat.
+ * @brief Normalisiert einen Vektor, sodass er die Länge 1 hat.
  * Falls der Eingabevektor die Länge 0 hat, wird ein Standardvektor (0, 0, 1) zurückgegeben.
  * 
  * @param v Der zu normalisierende Vektor
@@ -13,7 +13,7 @@ Vector3D Camera::normalize(const Vector3D& v) {
     return (len > 0.0f) ? v/len : Vector3D(0, 0, 1);
 }
 /**
- * Berechnet das Kreuzprodukt zweier Vektoren.
+ * @brief das Kreuzprodukt zweier Vektoren.
  * 
  * @param a Erster Vektor
  * @param b Zweiter Vektor
@@ -28,7 +28,7 @@ Vector3D Camera::cross(const Vector3D& a, const Vector3D& b) {
 }
 
 /**
- * Berechnet den Strahl (Ray), der durch das Pixel an Position (x,y) geht.
+ * @brief den Strahl (Ray), der durch das Pixel an Position (x,y) geht.
  * Der Strahl startet im Kamerapunkt (eye) und verläuft durch die Mitte des angegebenen Pixels.
  * 
  * @param x X-Koordinate des Pixels 
@@ -57,7 +57,7 @@ Ray Camera::calculate_ray ( u_int32_t x , u_int32_t y ) const {
 }
 
 /**
- * Generiert Strahlen für alle Pixel des Bildes.
+ * @brief Strahlen für alle Pixel des Bildes.
  * Die Strahlen werden zeilenweise von oben nach unten und von links nach rechts generiert.
  */
 void Camera::generate_rays() {
@@ -72,7 +72,7 @@ void Camera::generate_rays() {
 }
 
 /**
- * Settet Parameter neu.
+ * @brief Settet Parameter neu.
  * 
  * @param eyePos Ausgangsposition der Kamera
  * @param viewDir Ausrichtung der Kamera
