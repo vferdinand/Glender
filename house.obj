@@ -1,5 +1,12 @@
 # house.obj
-mtllib house.mtl
+
+
+#
+
+#jooo
+# 
+
+mtllib cube.mtl
 
 # Vertices
 v -2 0 -2

@@ -26,7 +26,7 @@ class Scene {
         //Kamera Konfiguration
         void setCamera(const Point3D& eyePos, const Vector3D& viewDir, float pixelWidth, float pixelHeight, int horizontalPixels, int verticalPixels);
 
-        Scene(const std::string filePathObj, const std::string filePathMtl = "");
+        Scene(const std::string filePathObj);//, const std::string filePathMtl = "");
 
         //Bündelt calculateHitpoints und convertHitpointsToImage
         Image generateImage();

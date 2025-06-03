@@ -3,7 +3,9 @@
 // Konstruktor der Loader-Klasse.
 // Dient zur Initialisierung eines Loader-Objekts.
 // Momentan wird keine spezielle Initialisierung vorgenommen.
-Loader::Loader(){}
+Loader::Loader(const std::string& filePathOBJ){
+    loadOBJ(filePathOBJ);
+}
 
 
 /* /////////////////////////////////////////////////////////
@@ -14,11 +16,32 @@ Loader::Loader(){}
  * Wenn ein Materialpfad angegeben ist, werden zuerst die Farben geladen.
  * Danach erfolgt das Parsen der Geometrie.
  */
-bool Loader::loadOBJ(const std::string& filePathOBJ, const std::string& filePathMTL) {
-    if(filePathMTL != ""){
-        initializeColor(filePathMTL);
+void Loader::loadOBJ(const std::string& filePathOBJ){
+    std::ifstream fileOBJ(filePathOBJ);
+    if (!fileOBJ.is_open()) {
+        std::cerr << "Dummkopf Failed to open .obj file: " << filePathOBJ << std::endl;
+        return;
     }
-    return initializeVerticiesTriangles(filePathOBJ);
+    
+    std::string line;
+    while (std::getline(fileOBJ, line)) {
+        std::istringstream iss(line);
+        std::string prefix;
+        iss >> prefix;
+        if(prefix == "mtllib"){
+            std::string filePathMTL = "";
+            iss >> filePathMTL;
+            if(filePathMTL != ""){
+                if(!initializeColor(filePathMTL)){
+                    fileOBJ.close();
+                    return;
+                }
+                break;
+            }
+        }
+    }
+    fileOBJ.close();
+    initializeVerticiesTriangles(filePathOBJ);
 }
 
 /*
@@ -38,19 +61,27 @@ bool Loader::initializeColor(const std::string& filePathMTL){
     colors.push_back({1.0,1.0,1.0,1.0});
     materialNames.push_back("");
 
+    materials.push_back(Material("",{1.0,1.0,1.0,1.0}, {1.0,1.0,1.0,1.0}, {1.0,1.0,1.0,1.0}));
+
     std::string line;
     while (std::getline(fileMTL, line)) {
         std::istringstream iss(line);
         std::string prefix;
-        iss >> prefix;        
+        iss >> prefix;
+        
+        Material material("",{1.0,1.0,1.0,1.0}, {1.0,1.0,1.0,1.0}, {1.0,1.0,1.0,1.0});
+
         if (prefix == "newmtl") {
             std::string name;
             iss >> name;
             materialNames.push_back(name);
+
+            material.setName(name);
         }else if (prefix == "Kd"){
             RGBA color;
             iss >> color.r >> color.g >> color.b;
             colors.push_back(color);
+            material.setKd(color);
         }
     }
     fileMTL.close();
