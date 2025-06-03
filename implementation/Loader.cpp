@@ -128,30 +128,39 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ){
         if (prefix == "vn") {
             Vector3D v;
             iss >> v.x >> v.y >> v.z;
-            verticesNormals.push_back(v);
+            normals.push_back(v);
         }else if (prefix == "v") {
             Vertex v;
             iss >> v.x >> v.y >> v.z;
             vertices.push_back(v);
         } else if (prefix == "f") {
-            std::array<uint32_t, 3> indices;
-            std::string vertexStr;
+            std::array<uint32_t, 3> vertexIndices;
+            std::array<uint32_t, 3> normalIndices;
 
             for (int i = 0; i < 3; ++i) {
+                std::string vertexStr;
                 iss >> vertexStr;
 
-                size_t slashPos = vertexStr.find('/');
-                std::string indexStr;
-                if (slashPos == std::string::npos) {
-                    indexStr = vertexStr;
+                size_t firstSlash = vertexStr.find('/');
+                size_t secondSlash = vertexStr.find('/', firstSlash + 1);
+
+                // Vertex Index
+                std::string vStr = vertexStr.substr(0, firstSlash);
+                vertexIndices[i] = std::stoi(vStr) - 1;
+
+                // Normal Index
+                if (secondSlash != std::string::npos) {
+                    std::string vnStr = vertexStr.substr(secondSlash + 1);
+                    normalIndices[i] = std::stoi(vnStr) - 1;
                 } else {
-                    indexStr = vertexStr.substr(0, slashPos);
+                    normalIndices[i] = 0; // oder Fehlerbehandlung
                 }
-
-                indices[i] = std::stoi(indexStr) - 1;
             }
+            
+            uint32_t normalIndex = normalIndices[0];
 
-            triangles.push_back(Triangle({indices[0], indices[1], indices[2]}, materialIndex));
+            triangles.push_back(Triangle({vertexIndices[0], vertexIndices[1], vertexIndices[2]}, normalIndex, materialIndex));
+
         } else if (prefix == "usemtl"){
             std::string newMaterial;
             iss >> newMaterial;
