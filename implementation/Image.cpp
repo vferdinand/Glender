@@ -35,3 +35,12 @@ void Image::print() const {
         std::cout << '\n';
     }
 }
+
+void Image::save(){
+    for (const auto& row : data) {
+        for (RGBA val : row) {
+            std::cout << val << ' ';
+        }
+        std::cout << '\n';
+    }
+}

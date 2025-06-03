@@ -16,4 +16,7 @@ class Image {
         // tmp for debugging
         // ersetzt durch save() in future
         void print() const;
+
+        // 
+        void save();
 };

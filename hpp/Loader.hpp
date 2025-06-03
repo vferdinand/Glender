@@ -2,6 +2,7 @@
 
 #include "Structs.hpp"
 #include "Triangle.hpp"
+#include "Material.hpp"
 
 #include <string>
 #include <vector>
@@ -17,6 +18,7 @@ private:
     std::vector<Triangle> triangles;
     std::vector<RGBA> colors;
     std::vector<std::string> materialNames;
+    std::vector<Material> materials;
 
     // Lädt Farben und Materialnamen aus einer .mtl-Datei
     bool initializeColor(const std::string& filePathMTL);
@@ -27,12 +29,12 @@ private:
     // Gibt Index eines Materials zurück, -1 wenn nicht gefunden
     int16_t locateMaterial(const std::string& material);
 
+    // Lädt .obj-Datei
+    void loadOBJ(const std::string& filePathOBJ);
+    
 public:
     // Standardkonstruktor
-    Loader();
-
-    // Lädt .obj-Datei und optional zugehörige .mtl-Datei
-    bool loadOBJ(const std::string& filePathOBJ, const std::string& filePathMTL = "");
+    Loader(const std::string& filePathOBJ);
 
     // Gibt Referenz auf geladene Vertices zurück
     const std::vector<Vertex>& getVertices() const;

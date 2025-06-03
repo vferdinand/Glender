@@ -1,8 +1,7 @@
 #include "../hpp/Scene.hpp"
 
-Scene::Scene(const std::string filePathObj, const std::string filePathMtl){
-    Loader loader;
-    loader.loadOBJ(filePathObj, filePathMtl);
+Scene::Scene(const std::string filePathObj){//}, const std::string filePathMtl){
+    Loader loader(filePathObj);
     vertices = loader.getVertices();
     triangles = loader.getTriangles();
     colors = loader.getColors();
