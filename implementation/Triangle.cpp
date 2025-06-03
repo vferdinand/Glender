@@ -21,3 +21,7 @@ const std::vector<uint32_t>& Triangle::getIndices() const {
 u_int16_t Triangle::getColorIndex() const{
     return colorIndex;
 }
+
+const Vector3D& Triangle::getNormal() const{
+    return normal;
+}

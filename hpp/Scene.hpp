@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <cmath>
 #include <Eigen/Dense>
 #include "Triangle.hpp"
 #include "Hitpoint.hpp"
@@ -8,6 +9,7 @@
 #include "Ray.hpp"
 #include "Camera.hpp"
 #include "Loader.hpp"
+#include "Light.hpp"
 
 class Scene {
     private:
@@ -17,6 +19,8 @@ class Scene {
         std::vector<RGBA> colors;
 
         Camera camera; //eigentlich private, aber für Debugging sichtbar
+        Light light;
+        
         
         Image transformHitpointsToImage(std::vector<Hitpoint> hitpoints);
         //Berechnung der Schnittpunkte von Rays und Triangles

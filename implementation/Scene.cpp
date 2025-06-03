@@ -39,7 +39,21 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
                 hitpoints.at(index).getDistance() != std::numeric_limits<float>::max()) {
                 
                 // Farbe aus dem Farbarray anhand des Farbindex des getroffenen Dreiecks setzen
-                col = colors.at(hitpoints.at(index).getTriangle()->getColorIndex());
+                //col = colors.at(hitpoints.at(index).getTriangle()->getColorIndex());
+
+                //Parameter vordefinieren
+                const Triangle* tri = hitpoints.at(index).getTriangle();
+                Vector3D n = tri->getNormal();
+                Vector3D lightDirection = {1,1,1};
+                light.setGlobalLightVec(lightDirection);
+                
+                
+                // ### hier muss **col** neu definiert werden mit der Formel aus der Graphen gruppe
+                
+                col = max(0.0,dot(n,normalize(lightDirection))) * ;
+
+
+
             }
 
             // Farbe im Bild an der Position (i,j) setzen
