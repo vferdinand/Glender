@@ -72,30 +72,31 @@ bool Loader::initializeColor(const std::string& filePathMTL){
             std::string name;
             iss >> name;
             material.setName(name);
+            materials.push_back(material);
         }else if (prefix == "Kd"){
             RGBA color;
             iss >> color.r >> color.g >> color.b;
-            material.setDifuse(color);
+            materials.back().setDifuse(color);
         }else if (prefix == "Ka"){
             RGBA color;
             iss >> color.r >> color.g >> color.b;
-            material.setAmbient(color);
+            materials.back().setAmbient(color);
         }else if (prefix == "Ks"){
             RGBA color;
             iss >> color.r >> color.g >> color.b;
-            material.setSpecular(color);
+            materials.back().setSpecular(color);
         }else if (prefix == "Ns") {
             float shininess;
             iss >> shininess;
-            material.setShininess(shininess);
+            materials.back().setShininess(shininess);
         }else if (prefix == "d" || prefix == "Tr") {
             float dissolve;
             iss >> dissolve;
-            material.setDissolve(dissolve);
+            materials.back().setDissolve(dissolve);
         }else if (prefix == "illum") {
             int8_t illum;
             iss >> illum;
-            material.setIllum(illum);
+            materials.back().setIllum(illum);
         }
     }
     fileMTL.close();
@@ -148,19 +149,22 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ){
                 std::string vStr = vertexStr.substr(0, firstSlash);
                 vertexIndices[i] = std::stoi(vStr) - 1;
 
-                // Normal Index
-                if (secondSlash != std::string::npos) {
+                // Normal Index (robust gegen Fehler)
+                if (secondSlash != std::string::npos && secondSlash + 1 < vertexStr.length()) {
                     std::string vnStr = vertexStr.substr(secondSlash + 1);
-                    normalIndices[i] = std::stoi(vnStr) - 1;
+                    try {
+                        normalIndices[i] = std::stoi(vnStr) - 1;
+                    } catch (const std::invalid_argument& e) {
+                        std::cerr << "Warnung: Ungültiger Normalenindex in Zeile: " << line << std::endl;
+                        normalIndices[i] = 0;
+                    }
                 } else {
-                    normalIndices[i] = 0; // oder Fehlerbehandlung
+                    normalIndices[i] = 0; // Standardwert, falls Normale fehlt
                 }
             }
-            
-            uint32_t normalIndex = normalIndices[0];
 
+            uint32_t normalIndex = normalIndices[0]; // Du willst nur den ersten
             triangles.push_back(Triangle({vertexIndices[0], vertexIndices[1], vertexIndices[2]}, normalIndex, materialIndex));
-
         } else if (prefix == "usemtl"){
             std::string newMaterial;
             iss >> newMaterial;
@@ -169,7 +173,6 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ){
             }
         }
     }
-
     fileOBJ.close();
     return true;
 }
@@ -195,6 +198,11 @@ const std::vector<Vertex>& Loader::getVertices() const {
 // Gibt eine Referenz auf die geladenen Dreiecke zurück.
 const std::vector<Triangle>& Loader::getTriangles() const {
     return triangles;
+}
+
+// Gibt eine Referenz auf die geladenen Normalen zurück.
+const std::vector<Vector3D>& Loader::getNormals() const {
+    return normals;
 }
 
 // Gibt eine Referenz auf die geladenen Materialien zurück.

@@ -15,7 +15,7 @@ class Scene {
         //alle generierten Dreieck-Objekte
         std::vector<Triangle> triangles;
         std::vector<Vertex> vertices;
-        std::vector<RGBA> colors;
+        std::vector<Vector3D> normals;
         std::vector<Material> materials;
 
         Camera camera; //eigentlich private, aber für Debugging sichtbar

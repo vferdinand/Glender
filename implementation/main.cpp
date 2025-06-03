@@ -79,7 +79,7 @@ int main() {
     float angle = 0.0;
 
     // unendliche Render-Schleife
-    while (true) {
+    while (angle == 0.0) {
         // 1) Berechne neue Kameraposition in der XZ-Ebene
         float camX = radius * std::cos(angle);
         float camZ = radius * std::sin(angle);
@@ -90,7 +90,8 @@ int main() {
 
         // 3) Raytracing & Bild ausgeben
         Image img = scene.generateImage();
-        img.print();
+        //img.print();
+        img.save("output.ppm");
 
         // 4) Winkel weiterschalten und bei 2π zurücksetzen
         angle += stepAngle;

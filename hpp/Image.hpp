@@ -18,5 +18,5 @@ class Image {
         void print() const;
 
         // 
-        void save();
+        void save(const std::string& filename = "output.ppm");
 };

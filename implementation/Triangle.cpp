@@ -11,7 +11,7 @@ Triangle::Triangle(const std::vector<uint32_t>& vertexIndices, uint32_t normalIn
         throw std::invalid_argument("Triangle requires exactly 3 vertex indices.");
     }
     this->vertexIndices = vertexIndices;
-    this->materiaIndex = materiaIndex;
+    this->materialIndex = materialIndex;
     this->normalIndex = normalIndex;
 }
 
@@ -20,7 +20,7 @@ const std::vector<uint32_t>& Triangle::getIndices() const {
 }
 
 u_int16_t Triangle::getMaterialIndex() const{
-    return materiaIndex;
+    return materialIndex;
 }
 
 uint32_t Triangle::getNormalIndex() const {

@@ -4,7 +4,7 @@ Scene::Scene(const std::string filePathObj){//}, const std::string filePathMtl){
     Loader loader(filePathObj);
     vertices = loader.getVertices();
     triangles = loader.getTriangles();
-    colors = loader.getColors();
+    normals = loader.getNormals();
     materials = loader.getMaterials();
     camera.generate_rays();
 }
@@ -13,7 +13,6 @@ Scene::Scene(const std::string filePathObj){//}, const std::string filePathMtl){
 Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
     // Wenn keine Hitpoints vorhanden sind, gebe ein leeres Bild zurück
     if(hitpoints.size() == 0){
-        std::cout << "Hitpoints size is 0" << std::endl;
         return Image(0, 0);
     }
 
@@ -38,7 +37,7 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
                 hitpoints.at(index).getDistance() != std::numeric_limits<float>::max()) {
                 
                 // Farbe aus dem Farbarray anhand des Farbindex des getroffenen Dreiecks setzen
-                col = colors.at(hitpoints.at(index).getTriangle()->getColorIndex());
+                col = materials.at(hitpoints.at(index).getTriangle()->getMaterialIndex()).getDifuse();
             }
 
             // Farbe im Bild an der Position (i,j) setzen
@@ -59,8 +58,6 @@ Image Scene::generateImage() {
 
 // Berechnung der Schnittpunkte zwischen Strahlen und Dreiecken der Szene
 std::vector<Hitpoint> Scene::calculateHitpoints(std::vector<Ray>& rays) {
-    std::cout << "Rays size: " << rays.size() << std::endl;
-
     std::vector<Hitpoint> hitpoints;
     const float EPS = 1e-6f;  // Epsilon für numerische Stabilität
 
