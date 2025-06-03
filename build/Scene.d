@@ -188,11 +188,7 @@ build/Scene.o: implementation/Scene.cpp implementation/../hpp/Scene.hpp \
  implementation/../hpp/Triangle.hpp implementation/../hpp/Structs.hpp \
  implementation/../hpp/Hitpoint.hpp implementation/../hpp/Image.hpp \
  implementation/../hpp/Ray.hpp implementation/../hpp/Camera.hpp \
-<<<<<<< HEAD
- implementation/../hpp/Loader.hpp
-=======
  implementation/../hpp/Loader.hpp implementation/../hpp/Material.hpp
->>>>>>> main
 implementation/../hpp/Scene.hpp:
 /usr/include/eigen3/Eigen/Dense:
 /usr/include/eigen3/Eigen/Core:
@@ -391,7 +387,4 @@ implementation/../hpp/Image.hpp:
 implementation/../hpp/Ray.hpp:
 implementation/../hpp/Camera.hpp:
 implementation/../hpp/Loader.hpp:
-<<<<<<< HEAD
-=======
 implementation/../hpp/Material.hpp:
->>>>>>> main

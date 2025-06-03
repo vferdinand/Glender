@@ -58,9 +58,6 @@ bool Loader::initializeColor(const std::string& filePathMTL){
         return false;
     }
 
-    colors.push_back({1.0,1.0,1.0,1.0});
-    materialNames.push_back("");
-
     materials.push_back(Material("",{1.0,1.0,1.0,1.0}, {1.0,1.0,1.0,1.0}, {1.0,1.0,1.0,1.0}));
 
     std::string line;
@@ -74,14 +71,31 @@ bool Loader::initializeColor(const std::string& filePathMTL){
         if (prefix == "newmtl") {
             std::string name;
             iss >> name;
-            materialNames.push_back(name);
-
             material.setName(name);
         }else if (prefix == "Kd"){
             RGBA color;
             iss >> color.r >> color.g >> color.b;
-            colors.push_back(color);
-            material.setKd(color);
+            material.setDifuse(color);
+        }else if (prefix == "Ka"){
+            RGBA color;
+            iss >> color.r >> color.g >> color.b;
+            material.setAmbient(color);
+        }else if (prefix == "Ks"){
+            RGBA color;
+            iss >> color.r >> color.g >> color.b;
+            material.setSpecular(color);
+        }else if (prefix == "Ns") {
+            float shininess;
+            iss >> shininess;
+            material.setShininess(shininess);
+        }else if (prefix == "d" || prefix == "Tr") {
+            float dissolve;
+            iss >> dissolve;
+            material.setDissolve(dissolve);
+        }else if (prefix == "illum") {
+            int8_t illum;
+            iss >> illum;
+            material.setIllum(illum);
         }
     }
     fileMTL.close();
@@ -156,9 +170,10 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ){
  * Gibt den Index zurück, falls gefunden, sonst -1.
  */
 int16_t Loader::locateMaterial(const std::string& material) {
-    for (size_t i = 0; i < materialNames.size(); ++i) {
-        if (materialNames[i] == material)
+    for (size_t i = 0; i < materials.size(); ++i) {
+        if (materials[i].getName() == material) {
             return static_cast<int16_t>(i);
+        }
     }
     return -1;
 }
@@ -173,7 +188,7 @@ const std::vector<Triangle>& Loader::getTriangles() const {
     return triangles;
 }
 
-// Gibt eine Referenz auf die geladenen Farben (aus .mtl) zurück.
-const std::vector<RGBA>& Loader::getColors() const {
-    return colors;
+// Gibt eine Referenz auf die geladenen Materialien zurück.
+const std::vector<Material>& Loader::getMaterials() const {
+    return materials;
 }

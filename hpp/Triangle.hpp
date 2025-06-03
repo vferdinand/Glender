@@ -7,11 +7,11 @@
 class Triangle {
     private: 
         std::vector<uint32_t> vertexIndices;
-        u_int16_t colorIndex;
+        u_int16_t materiaIndex;
 
     public:
-        Triangle(const std::vector<uint32_t>& vertexIndices, u_int16_t colorIndex = 0);
+        Triangle(const std::vector<uint32_t>& vertexIndices, u_int16_t materialIndex = 0);
 
         const std::vector<uint32_t>& getIndices() const;
-        u_int16_t getColorIndex() const;
+        u_int16_t getMaterialIndex() const;
 };

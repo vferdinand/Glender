@@ -5,6 +5,7 @@ Scene::Scene(const std::string filePathObj){//}, const std::string filePathMtl){
     vertices = loader.getVertices();
     triangles = loader.getTriangles();
     colors = loader.getColors();
+    materials = loader.getMaterials();
     camera.generate_rays();
 }
 
@@ -19,8 +20,6 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
     // Breite und Höhe des Bildes basieren auf den Kameraeigenschaften
     uint16_t width = camera.get_width_pixels();
     uint16_t height = camera.get_length_pixels();
-
-    std::cout << "Hitpoints size: " << hitpoints.size() << " width:" << width << " height: " << height << std::endl;
 
     // Neues Bild mit den Maßen Höhe x Breite erstellen
     Image image(height, width);
