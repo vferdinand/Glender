@@ -1,12 +1,5 @@
 # house.obj
-
-
-#
-
-#jooo
-# 
-
-mtllib cube.mtl
+mtllib house.mtl
 
 # Vertices
 v -2 0 -2
@@ -53,45 +46,43 @@ v  1.0 2.0 2.01
 v -1.0 2.0 2.01
 
 # Front wall (Red)
-usemtl Red
+usemtl Wall1
 f 1 2 6
 f 1 6 5
 
 # Left wall (Green)
-usemtl Green
+usemtl Wall2
 f 1 4 8
 f 1 8 5
 
 # Right wall (Blue)
-usemtl Blue
+usemtl Wall2
 f 2 3 7
 f 2 7 6
 
 # Back wall (Yellow)
-usemtl Yellow
+usemtl Wall1
 f 4 3 7
 f 4 7 8
 
 # Ceiling (Magenta)
-usemtl Magenta
+usemtl Roof
 f 5 6 7
 f 5 7 8
 
 # Roof fully filled (Magenta)
-usemtl Cyan
+usemtl Wall2
 f 5 6 9    # front triangle "^"
 f 7 8 10   # back triangle inverted "^"
 
-usemtl Magenta
+usemtl Roof
 f 6 7 10   # right slope "=" half
-
-usemtl Magenta
 f 5 9 8    # left slope "=" half
 f 8 9 10   # left slope "=" half
 f 6 10 9   # right slope "=" half
 
 # Chimney sides (Yellow)
-usemtl Yellow
+usemtl Chimney
 f 11 12 16
 f 11 16 15
 f 12 13 17
@@ -100,19 +91,23 @@ f 13 14 18
 f 13 18 17
 f 14 11 15
 f 14 15 18
+
+usemtl Black
 # Chimney top
 f 15 16 17
 f 15 17 18
+
+usemtl Chimney
 # Chimney base
 f 11 12 13
 f 11 13 14
 
 # Door (Cyan)
-usemtl Cyan
+usemtl Door
 f 19 20 21
 f 19 21 22
 
-usemtl Magenta
+usemtl Window
 # Front windows (Cyan)
 f 23 24 25
 f 23 25 26
