@@ -14,10 +14,8 @@
 class Loader {
 private:
     std::vector<Vertex> vertices;
-    std::vector<Vector3D> verticesNormals;
+    std::vector<Vector3D> normals;
     std::vector<Triangle> triangles;
-    std::vector<RGBA> colors;
-    std::vector<std::string> materialNames;
     std::vector<Material> materials;
 
     // Lädt Farben und Materialnamen aus einer .mtl-Datei
@@ -42,6 +40,9 @@ public:
     // Gibt Referenz auf geladene Dreiecke zurück
     const std::vector<Triangle>& getTriangles() const;
 
-    // Gibt Referenz auf geladene Farben zurück
-    const std::vector<RGBA>& getColors() const;
+    // Gibt Referenz auf geladene Normalen zurück
+    const std::vector<Vector3D>& getNormals() const;
+
+    // Gibt Referenz auf geladene Materialien zurück
+    const std::vector<Material>& getMaterials() const;
 };

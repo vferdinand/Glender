@@ -7,10 +7,11 @@ class Light {
     private: 
         
         Vector3D globalLightVec;
+        RGBA color;
 
     public: 
 
-       RGBA initLight();
        void setGlobalLightVec(Vector3D v);
+       RGBA getLightColor();
 
 };

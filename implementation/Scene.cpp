@@ -4,7 +4,7 @@ Scene::Scene(const std::string filePathObj){//}, const std::string filePathMtl){
     Loader loader(filePathObj);
     vertices = loader.getVertices();
     triangles = loader.getTriangles();
-    colors = loader.getColors();
+    materials = loader.getMaterials();
     camera.generate_rays();
 }
 
@@ -19,8 +19,6 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
     // Breite und Höhe des Bildes basieren auf den Kameraeigenschaften
     uint16_t width = camera.get_width_pixels();
     uint16_t height = camera.get_length_pixels();
-
-    std::cout << "Hitpoints size: " << hitpoints.size() << " width:" << width << " height: " << height << std::endl;
 
     // Neues Bild mit den Maßen Höhe x Breite erstellen
     Image image(height, width);
@@ -41,18 +39,48 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
                 // Farbe aus dem Farbarray anhand des Farbindex des getroffenen Dreiecks setzen
                 //col = colors.at(hitpoints.at(index).getTriangle()->getColorIndex());
 
+                
+                
+                
                 //Parameter vordefinieren
                 const Triangle* tri = hitpoints.at(index).getTriangle();
-                Vector3D n = tri->getNormal();
+                Vector3D n = tri->getNormalIndex();
                 Vector3D lightDirection = {1,1,1};
+                //Material holen
+                Material m = materials.at(tri->getMaterialIndex());
+                //Globaler Lichtvektor
                 light.setGlobalLightVec(lightDirection);
-                
-                
-                // ### hier muss **col** neu definiert werden mit der Formel aus der Graphen gruppe
-                
-                col = max(0.0,dot(n,normalize(lightDirection))) * ;
+                //Difuse Beleuchtung
+                RGBA c = m.getDifuse();
+                //Glanzfaktor
+                float shininess = m.getShininess();
+                //Abiente-Beleuchtung -> vom Material abhängig
+                RGBA ka = m.getAmbient();
+                //Grundbeleuchtung
+                RGBA ca = light.getLightColor();
+                //Lichtfarbe
+                RGBA c_light = {1.0,1.0,1.0};
+                //Spekular-Koeffizienten
+                RGBA ks = m.getSpecular();
+                /// Normalisieren der Vektoren nur einmal
+                Vector3D N = n.normalized();
+                Vector3D L = lightDirection.normalized();
+                Vector3D E = camera.get_view().normalized();
+                Vector3D R = (-L).reflected(N);
 
+                // Diffuser Faktor (Lambert)
+                float diffuseFactor = std::max(0.0f, N.dot(L));
 
+                // Spekularer Faktor (Phong)
+                float specFactor = std::pow(std::max(0.0f, R.dot(E)), shininess);
+
+                // Farben berechnen
+                RGBA diffuse = c * diffuseFactor;
+                RGBA ambient = ka * ca;
+                RGBA specular = ks * specFactor * c_light;
+
+                // Endfarbe zusammensetzen
+                col = diffuse + ambient + specular;
 
             }
 

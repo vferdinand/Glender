@@ -58,9 +58,6 @@ bool Loader::initializeColor(const std::string& filePathMTL){
         return false;
     }
 
-    colors.push_back({1.0,1.0,1.0,1.0});
-    materialNames.push_back("");
-
     materials.push_back(Material("",{1.0,1.0,1.0,1.0}, {1.0,1.0,1.0,1.0}, {1.0,1.0,1.0,1.0}));
 
     std::string line;
@@ -74,14 +71,31 @@ bool Loader::initializeColor(const std::string& filePathMTL){
         if (prefix == "newmtl") {
             std::string name;
             iss >> name;
-            materialNames.push_back(name);
-
             material.setName(name);
         }else if (prefix == "Kd"){
             RGBA color;
             iss >> color.r >> color.g >> color.b;
-            colors.push_back(color);
-            material.setKd(color);
+            material.setDifuse(color);
+        }else if (prefix == "Ka"){
+            RGBA color;
+            iss >> color.r >> color.g >> color.b;
+            material.setAmbient(color);
+        }else if (prefix == "Ks"){
+            RGBA color;
+            iss >> color.r >> color.g >> color.b;
+            material.setSpecular(color);
+        }else if (prefix == "Ns") {
+            float shininess;
+            iss >> shininess;
+            material.setShininess(shininess);
+        }else if (prefix == "d" || prefix == "Tr") {
+            float dissolve;
+            iss >> dissolve;
+            material.setDissolve(dissolve);
+        }else if (prefix == "illum") {
+            int8_t illum;
+            iss >> illum;
+            material.setIllum(illum);
         }
     }
     fileMTL.close();
@@ -114,30 +128,39 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ){
         if (prefix == "vn") {
             Vector3D v;
             iss >> v.x >> v.y >> v.z;
-            verticesNormals.push_back(v);
+            normals.push_back(v);
         }else if (prefix == "v") {
             Vertex v;
             iss >> v.x >> v.y >> v.z;
             vertices.push_back(v);
         } else if (prefix == "f") {
-            std::array<uint32_t, 3> indices;
-            std::string vertexStr;
+            std::array<uint32_t, 3> vertexIndices;
+            std::array<uint32_t, 3> normalIndices;
 
             for (int i = 0; i < 3; ++i) {
+                std::string vertexStr;
                 iss >> vertexStr;
 
-                size_t slashPos = vertexStr.find('/');
-                std::string indexStr;
-                if (slashPos == std::string::npos) {
-                    indexStr = vertexStr;
+                size_t firstSlash = vertexStr.find('/');
+                size_t secondSlash = vertexStr.find('/', firstSlash + 1);
+
+                // Vertex Index
+                std::string vStr = vertexStr.substr(0, firstSlash);
+                vertexIndices[i] = std::stoi(vStr) - 1;
+
+                // Normal Index
+                if (secondSlash != std::string::npos) {
+                    std::string vnStr = vertexStr.substr(secondSlash + 1);
+                    normalIndices[i] = std::stoi(vnStr) - 1;
                 } else {
-                    indexStr = vertexStr.substr(0, slashPos);
+                    normalIndices[i] = 0; // oder Fehlerbehandlung
                 }
-
-                indices[i] = std::stoi(indexStr) - 1;
             }
+            
+            uint32_t normalIndex = normalIndices[0];
 
-            triangles.push_back(Triangle({indices[0], indices[1], indices[2]}, materialIndex));
+            triangles.push_back(Triangle({vertexIndices[0], vertexIndices[1], vertexIndices[2]}, normalIndex, materialIndex));
+
         } else if (prefix == "usemtl"){
             std::string newMaterial;
             iss >> newMaterial;
@@ -156,9 +179,10 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ){
  * Gibt den Index zurück, falls gefunden, sonst -1.
  */
 int16_t Loader::locateMaterial(const std::string& material) {
-    for (size_t i = 0; i < materialNames.size(); ++i) {
-        if (materialNames[i] == material)
+    for (size_t i = 0; i < materials.size(); ++i) {
+        if (materials[i].getName() == material) {
             return static_cast<int16_t>(i);
+        }
     }
     return -1;
 }
@@ -173,7 +197,7 @@ const std::vector<Triangle>& Loader::getTriangles() const {
     return triangles;
 }
 
-// Gibt eine Referenz auf die geladenen Farben (aus .mtl) zurück.
-const std::vector<RGBA>& Loader::getColors() const {
-    return colors;
+// Gibt eine Referenz auf die geladenen Materialien zurück.
+const std::vector<Material>& Loader::getMaterials() const {
+    return materials;
 }

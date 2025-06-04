@@ -56,6 +56,11 @@ struct Vector3D {
     Vector3D operator+(const Vector3D& other) const {
         return {x + other.x, y + other.y, z + other.z};
     }
+
+    Vector3D operator-() const {
+    return {-x, -y, -z};
+}   
+
     
     /**
      * @brief Vektorsubtraktion.
@@ -83,6 +88,19 @@ struct Vector3D {
     Vector3D operator/(float scalar) const {
         return {x / scalar, y / scalar, z / scalar};
     }    
+    
+    float dot(const Vector3D& other) const {
+        return x * other.x + y * other.y + z * other.z;
+    }
+
+    Vector3D normalized() const {
+        float len = std::sqrt(dot(*this));
+        return len > 0.0f ? (*this) / len : Vector3D(0, 0, 0);
+    }
+
+    Vector3D reflected(const Vector3D& normal) const {
+        return (*this) - normal * (2.0f * this->dot(normal));
+    }
 };
 
 /// @see Point3D operator+
@@ -114,6 +132,19 @@ struct RGBA {
     double g = 0.0;
     double b = 0.0;
     double a = 1.0;
+
+    RGBA operator*(float value) const {
+        return {r * value, g * value, b * value, a};
+    }
+
+    RGBA operator+(RGBA col) const {
+        return {r + col.r, g + col.g, b + col.b,a + col.a};
+    }
+
+    RGBA operator*(const RGBA& other) const {
+    return {r * other.r, g * other.g, b * other.b, a * other.a};
+    
+    }
 };
 
 /**

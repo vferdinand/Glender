@@ -1,15 +1,9 @@
 build/main.o: implementation/main.cpp implementation/../hpp/Loader.hpp \
  implementation/../hpp/Structs.hpp implementation/../hpp/Triangle.hpp \
-<<<<<<< HEAD
- implementation/../hpp/Camera.hpp implementation/../hpp/Ray.hpp \
- implementation/../hpp/Image.hpp implementation/../hpp/Scene.hpp \
- /usr/include/eigen3/Eigen/Dense /usr/include/eigen3/Eigen/Core \
-=======
  implementation/../hpp/Material.hpp implementation/../hpp/Camera.hpp \
  implementation/../hpp/Ray.hpp implementation/../hpp/Image.hpp \
  implementation/../hpp/Scene.hpp /usr/include/eigen3/Eigen/Dense \
  /usr/include/eigen3/Eigen/Core \
->>>>>>> main
  /usr/include/eigen3/Eigen/src/Core/util/DisableStupidWarnings.h \
  /usr/include/eigen3/Eigen/src/Core/util/Macros.h \
  /usr/include/eigen3/Eigen/src/Core/util/ConfigureVectorization.h \
@@ -195,14 +189,11 @@ build/main.o: implementation/main.cpp implementation/../hpp/Loader.hpp \
  /usr/include/eigen3/Eigen/src/Eigenvalues/GeneralizedEigenSolver.h \
  /usr/include/eigen3/Eigen/src/Eigenvalues/./RealQZ.h \
  /usr/include/eigen3/Eigen/src/Eigenvalues/MatrixBaseEigenvalues.h \
- implementation/../hpp/Hitpoint.hpp
+ implementation/../hpp/Hitpoint.hpp implementation/../hpp/Light.hpp
 implementation/../hpp/Loader.hpp:
 implementation/../hpp/Structs.hpp:
 implementation/../hpp/Triangle.hpp:
-<<<<<<< HEAD
-=======
 implementation/../hpp/Material.hpp:
->>>>>>> main
 implementation/../hpp/Camera.hpp:
 implementation/../hpp/Ray.hpp:
 implementation/../hpp/Image.hpp:
@@ -398,3 +389,4 @@ implementation/../hpp/Scene.hpp:
 /usr/include/eigen3/Eigen/src/Eigenvalues/./RealQZ.h:
 /usr/include/eigen3/Eigen/src/Eigenvalues/MatrixBaseEigenvalues.h:
 implementation/../hpp/Hitpoint.hpp:
+implementation/../hpp/Light.hpp:

@@ -70,8 +70,7 @@ int main() {
     /////////////////////////////////////////////////////////////////////
     // Szene einmalig laden
     std::string file_path_obj = "house.obj";
-    std::string file_path_mtl = "cube.mtl";
-    Scene scene(file_path_obj);//, file_path_mtl);
+    Scene scene(file_path_obj);
 
     // Kreisbahn-Parameter
     const float radius    = 8.0;    // Abstand von (0,0,0)

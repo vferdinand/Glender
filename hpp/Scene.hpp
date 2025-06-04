@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <algorithm>
 #include <cmath>
 #include <Eigen/Dense>
 #include "Triangle.hpp"
@@ -10,6 +11,7 @@
 #include "Camera.hpp"
 #include "Loader.hpp"
 #include "Light.hpp"
+#include "Material.hpp"
 
 class Scene {
     private:
@@ -17,6 +19,7 @@ class Scene {
         std::vector<Triangle> triangles;
         std::vector<Vertex> vertices;
         std::vector<RGBA> colors;
+        std::vector<Material> materials;
 
         Camera camera; //eigentlich private, aber für Debugging sichtbar
         Light light;
