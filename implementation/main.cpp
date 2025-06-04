@@ -57,8 +57,6 @@ int carspinner() {
         if (counter >= images.size())
             counter = 0;
     }
-    
-    //image.save("output.png");
 }
 
 
@@ -69,17 +67,17 @@ int main() {
     // Scene Beispiel
     /////////////////////////////////////////////////////////////////////
     // Szene einmalig laden
-    std::string file_path_obj = "car.obj";
+    std::string file_path_obj = "mutter.obj";
     Scene scene(file_path_obj);
 
     // Kreisbahn-Parameter
-    const float radius    = 5.3;    // Abstand von (0,0,0)
-    const float height    = 1.4;    // y-Höhe der Kamera
+    const float radius    = 15.0;//5.3;    // Abstand von (0,0,0)
+    const float height    = 0.0;//1.4;    // y-Höhe der Kamera
     const float stepAngle = 0.1;   // Drehgeschwindigkeit pro Frame
-    float angle = 0.98f;//5.4f;
+    float angle = 5.4f;//0.98f;//5.4f;
 
     // unendliche Render-Schleife
-    while (angle == 0.98f) {
+    while (angle == 5.4f) {
         // 1) Berechne neue Kameraposition in der XZ-Ebene
         float camX = radius * std::cos(angle);
         float camZ = radius * std::sin(angle);
@@ -91,7 +89,7 @@ int main() {
         // 3) Raytracing & Bild ausgeben
         Image img = scene.generateImage();
         //img.print();
-        img.save("output.ppm");
+        img.save("mutter.ppm");
 
         // 4) Winkel weiterschalten und bei 2π zurücksetzen
         angle += stepAngle;

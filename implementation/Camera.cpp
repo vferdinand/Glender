@@ -63,7 +63,6 @@ Ray Camera::calculate_ray ( u_int32_t x , u_int32_t y ) const {
 void Camera::generate_rays() {
     rays.clear();
     rays.reserve(get_width_pixels() * get_length_pixels());
-
     for (u_int16_t y = 0; y < get_length_pixels(); ++y) {
         for (u_int16_t x = 0; x < get_width_pixels(); ++x) {
             rays.push_back(calculate_ray(x, y));
@@ -110,10 +109,10 @@ float Camera::get_height() const {
     return height;
 }
 
-u_int8_t Camera::get_width_pixels() const {
+u_int16_t Camera::get_width_pixels() const {
     return widthPixels;
 }
 
-u_int8_t Camera::get_length_pixels() const {
+u_int16_t Camera::get_length_pixels() const {
     return lengthPixels;
 }

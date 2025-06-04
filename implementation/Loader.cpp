@@ -24,6 +24,7 @@ void Loader::loadOBJ(const std::string& filePathOBJ){
     }
     
     std::string line;
+    materials.push_back(Material("",{1.0,1.0,1.0,1.0}, {1.0,1.0,1.0,1.0}, {1.0,1.0,1.0,1.0}));
     while (std::getline(fileOBJ, line)) {
         std::istringstream iss(line);
         std::string prefix;
@@ -57,8 +58,6 @@ bool Loader::initializeColor(const std::string& filePathMTL){
         std::cerr << "Dummkopf Failed to open .mtl file: " << filePathMTL << std::endl;
         return false;
     }
-
-    materials.push_back(Material("",{1.0,1.0,1.0,1.0}, {1.0,1.0,1.0,1.0}, {1.0,1.0,1.0,1.0}));
 
     std::string line;
     while (std::getline(fileMTL, line)) {
@@ -113,7 +112,7 @@ bool Loader::initializeColor(const std::string& filePathMTL){
  * Die Dreiecke werden in der Reihenfolge ihres Auftretens gespeichert,
  * inklusive Materialindex zur späteren Farbanwendung.
  */
-bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ){
+bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ) {
     std::ifstream fileOBJ(filePathOBJ);
     if (!fileOBJ.is_open()) {
         std::cerr << "Dummkopf Failed to open .obj file: " << filePathOBJ << std::endl;
@@ -121,61 +120,106 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ){
     }
     
     std::string line;
-    u_int16_t materialIndex = 0;
+    uint16_t materialIndex = 0;
+
     while (std::getline(fileOBJ, line)) {
         std::istringstream iss(line);
         std::string prefix;
         iss >> prefix;
+
         if (prefix == "vn") {
             Vector3D v;
             iss >> v.x >> v.y >> v.z;
             normals.push_back(v);
-        }else if (prefix == "v") {
+
+        } else if (prefix == "v") {
             Vertex v;
             iss >> v.x >> v.y >> v.z;
             vertices.push_back(v);
-        } else if (prefix == "f") {
-            std::array<uint32_t, 3> vertexIndices;
-            std::array<uint32_t, 3> normalIndices;
 
-            for (int i = 0; i < 3; ++i) {
-                std::string vertexStr;
-                iss >> vertexStr;
-
-                size_t firstSlash = vertexStr.find('/');
-                size_t secondSlash = vertexStr.find('/', firstSlash + 1);
-
-                // Vertex Index
-                std::string vStr = vertexStr.substr(0, firstSlash);
-                vertexIndices[i] = std::stoi(vStr) - 1;
-
-                // Normal Index (robust gegen Fehler)
-                if (secondSlash != std::string::npos && secondSlash + 1 < vertexStr.length()) {
-                    std::string vnStr = vertexStr.substr(secondSlash + 1);
-                    try {
-                        normalIndices[i] = std::stoi(vnStr) - 1;
-                    } catch (const std::invalid_argument& e) {
-                        std::cerr << "Warnung: Ungültiger Normalenindex in Zeile: " << line << std::endl;
-                        normalIndices[i] = 0;
-                    }
-                } else {
-                    normalIndices[i] = 0; // Standardwert, falls Normale fehlt
-                }
-            }
-
-            uint32_t normalIndex = normalIndices[0]; // Du willst nur den ersten
-            triangles.push_back(Triangle({vertexIndices[0], vertexIndices[1], vertexIndices[2]}, normalIndex, materialIndex));
-        } else if (prefix == "usemtl"){
+        } else if (prefix == "usemtl") {
             std::string newMaterial;
             iss >> newMaterial;
-            if (locateMaterial(newMaterial) != -1){
-                materialIndex = locateMaterial(newMaterial);
+            int idx = locateMaterial(newMaterial);
+            if (idx != -1) {
+                materialIndex = static_cast<uint16_t>(idx);
+            }
+
+        } else if (prefix == "f") {
+            // Collect all vertex‐indices (+ possible normal‐indices) on this line.
+            std::vector<uint32_t> faceVertexIdx;
+            std::vector<uint32_t> faceNormalIdx;
+
+            std::string vertexToken;
+            while (iss >> vertexToken) {
+                size_t firstSlash  = vertexToken.find('/');
+                size_t secondSlash = std::string::npos;
+
+                uint32_t vIndex = 0;
+                uint32_t nIndex = 0;
+
+                if (firstSlash == std::string::npos) {
+                    // format: "v"
+                    vIndex = static_cast<uint32_t>(std::stoi(vertexToken)) - 1;
+                    nIndex = 0;
+                } else {
+                    secondSlash = vertexToken.find('/', firstSlash + 1);
+                    {
+                        std::string vStr = vertexToken.substr(0, firstSlash);
+                        vIndex = static_cast<uint32_t>(std::stoi(vStr)) - 1;
+                    }
+                    if (secondSlash == std::string::npos) {
+                        // format: "v/vt"
+                        nIndex = 0;
+                    } else {
+                        // format: "v//vn" or "v/vt/vn"
+                        std::string vnStr = vertexToken.substr(secondSlash + 1);
+                        if (!vnStr.empty()) {
+                            try {
+                                nIndex = static_cast<uint32_t>(std::stoi(vnStr)) - 1;
+                            } catch (const std::invalid_argument&) {
+                                std::cerr << "Warnung: Ungültiger Normalenindex in Zeile: " << line << std::endl;
+                                nIndex = 0;
+                            }
+                        } else {
+                            nIndex = 0;
+                        }
+                    }
+                }
+
+                faceVertexIdx.push_back(vIndex);
+                faceNormalIdx.push_back(nIndex);
+            }
+
+            if (faceVertexIdx.size() < 3) {
+                continue;
+            }
+
+            uint32_t normalIndexForAllTri = faceNormalIdx[0];
+
+            // Fan‐triangulate: for N vertices, create (N−2) triangles:
+            //   (0,1,2), (0,2,3), (0,3,4), ...
+            for (size_t i = 1; i + 1 < faceVertexIdx.size(); ++i) {
+                // Build a small vector of exactly 3 indices:
+                std::vector<uint32_t> triVerts = {
+                    faceVertexIdx[0],
+                    faceVertexIdx[i],
+                    faceVertexIdx[i + 1]
+                };
+                triangles.emplace_back(triVerts, normalIndexForAllTri, materialIndex);
             }
         }
+        // ignore any other prefixes
     }
+    std::cout << "Dummkopf Loaded " << vertices.size() << " vertices, "
+              << normals.size() << " normals, "
+              << triangles.size() << " triangles, "
+              << materials.size() << " materials." << std::endl;
     fileOBJ.close();
     return true;
 }
+
+
 
 /*
  * Sucht einen Materialnamen in der Liste materialNames.
