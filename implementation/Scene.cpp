@@ -48,22 +48,31 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
                 const Triangle* tri = hitpoints.at(index).getTriangle();
                 Vector3D n = tri->getNormalIndex();
                 Vector3D lightDirection = {1,1,1};
+
                 //Material holen
                 Material m = materials.at(tri->getMaterialIndex());
+
                 //Globaler Lichtvektor
                 light.setGlobalLightVec(lightDirection);
+
                 //Difuse Beleuchtung
                 RGBA c = m.getDifuse();
+
                 //Glanzfaktor
                 float shininess = m.getShininess();
+
                 //Abiente-Beleuchtung -> vom Material abhängig
                 RGBA ka = m.getAmbient();
+
                 //Grundbeleuchtung
                 RGBA ca = light.getLightColor();
+                
                 //Lichtfarbe
                 RGBA c_light = {1.0,1.0,1.0};
+
                 //Spekular-Koeffizienten
                 RGBA ks = m.getSpecular();
+                
                 /// Normalisieren der Vektoren nur einmal
                 Vector3D N = n.normalized();
                 Vector3D L = lightDirection.normalized();
