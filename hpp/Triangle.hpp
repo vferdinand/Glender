@@ -14,6 +14,8 @@ class Triangle {
         Triangle(const std::vector<uint32_t>& vertexIndices, u_int32_t normalIndex, u_int16_t materialIndex = 0);
 
         const std::vector<uint32_t>& getIndices() const;
+
         u_int16_t getMaterialIndex() const;
         uint32_t getNormalIndex() const;
+
 };
