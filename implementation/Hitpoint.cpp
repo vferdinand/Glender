@@ -11,6 +11,15 @@ float Hitpoint::getDistance() {
 const Triangle* Hitpoint::getTriangle() {
     return triangle;
 }
+
+float Hitpoint::getT() const {
+    return t;
+}
+
+void Hitpoint::setT(float newT) {
+    t = newT;
+}
+
 void Hitpoint::setPosition(const Point3D& pos) {
     position = pos;
 }

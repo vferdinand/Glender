@@ -6,4 +6,5 @@ add_library(lib STATIC
     implementation/Ray.cpp
     implementation/Triangle.cpp
     implementation/Hitpoint.cpp
+    implementation/KDTree.cpp
 )

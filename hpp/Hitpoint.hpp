@@ -6,6 +6,7 @@
 
 class Hitpoint {
     private:
+    float t = std::numeric_limits<float>::max();
     Point3D position;
     float distance = std::numeric_limits<float>::max();
     const Triangle* triangle = nullptr;
@@ -15,7 +16,9 @@ class Hitpoint {
     const Point3D getPosition();
     float getDistance();
     const Triangle* getTriangle();
+    float getT() const;
 
+    void setT(float newT);
     void setPosition(const Point3D& pos);
     void setDistance(float d);
     void setTriangle(const Triangle* tri);

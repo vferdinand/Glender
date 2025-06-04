@@ -1,4 +1,5 @@
 #include "../hpp/Loader.hpp"
+#include "../hpp/KDTree.hpp"
 
 // Konstruktor der Loader-Klasse.
 // Dient zur Initialisierung eines Loader-Objekts.
@@ -118,6 +119,20 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ){
 
     fileOBJ.close();
     return true;
+}
+
+void Loader::buildKDTreeAndIntersect(const Ray& ray) {
+    KDTree* kdtree = new KDTree(triangles, vertices);  // greift auf Membervariablen zu
+
+    Hitpoint hit;
+    if (kdtree->intersect(ray, hit)) {
+        // Treffer behandeln
+        std::cout << "Treffer bei t=" << hit.getT() << std::endl;
+    } else {
+        std::cout << "Kein Treffer." << std::endl;
+    }
+
+    delete kdtree;
 }
 
 /*

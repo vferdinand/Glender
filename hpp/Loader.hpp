@@ -2,6 +2,7 @@
 
 #include "Structs.hpp"
 #include "Triangle.hpp"
+#include "Ray.hpp"
 
 #include <string>
 #include <vector>
@@ -42,4 +43,6 @@ public:
 
     // Gibt Referenz auf geladene Farben zurück
     const std::vector<RGBA>& getColors() const;
+
+     void buildKDTreeAndIntersect(const Ray& ray);
 };
