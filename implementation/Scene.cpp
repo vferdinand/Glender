@@ -47,7 +47,7 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
                 //Parameter vordefinieren
                 const Triangle* tri = hitpoints.at(index).getTriangle();
                 Vector3D n = tri->getNormalIndex();
-                Vector3D lightDirection = {1,1,1};
+                Vector3D lightDirection = {1.0,1.0,1.0};
                 //Material holen
                 Material m = materials.at(tri->getMaterialIndex());
                 //Globaler Lichtvektor
