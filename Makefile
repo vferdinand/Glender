@@ -3,7 +3,7 @@ TARGET = main
 
 # Compiler und Flags
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Wextra -MMD -MP -Ihpp -I/usr/include/eigen3
+CXXFLAGS = -std=c++17 -g -Wall -Wextra -MMD -MP -Ihpp -I/usr/include/eigen3
 
 # Quellcode, Objektdateien und Abhängigkeiten
 SRCS = $(wildcard implementation/*.cpp)

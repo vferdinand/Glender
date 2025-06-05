@@ -2,6 +2,7 @@
 
 #include "Structs.hpp"
 #include "Triangle.hpp"
+#include "Ray.hpp"
 #include "Material.hpp"
 
 #include <string>
@@ -39,6 +40,11 @@ public:
 
     // Gibt Referenz auf geladene Dreiecke zurück
     const std::vector<Triangle>& getTriangles() const;
+
+    // Gibt Referenz auf geladene Farben zurück
+    const std::vector<RGBA>& getColors() const;
+
+    void buildKDTreeAndIntersect(const Ray& ray);
 
     // Gibt Referenz auf geladene Normalen zurück
     const std::vector<Vector3D>& getNormals() const;

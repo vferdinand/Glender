@@ -1,4 +1,5 @@
 #include "../hpp/Loader.hpp"
+#include "../hpp/KDTree.hpp"
 
 // Konstruktor der Loader-Klasse.
 // Dient zur Initialisierung eines Loader-Objekts.
@@ -17,7 +18,7 @@ Loader::Loader(const std::string& filePathOBJ){
  * Danach erfolgt das Parsen der Geometrie.
  */
 void Loader::loadOBJ(const std::string& filePathOBJ){
-    std::ifstream fileOBJ(filePathOBJ);
+    std::ifstream fileOBJ("obj/" + filePathOBJ);
     if (!fileOBJ.is_open()) {
         std::cerr << "Dummkopf Failed to open .obj file: " << filePathOBJ << std::endl;
         return;
@@ -53,7 +54,7 @@ void Loader::loadOBJ(const std::string& filePathOBJ){
  * um ein fallback-Material zu haben, falls kein "usemtl" angegeben ist.
  */
 bool Loader::initializeColor(const std::string& filePathMTL){
-    std::ifstream fileMTL(filePathMTL);
+    std::ifstream fileMTL("obj/" + filePathMTL);
     if (!fileMTL.is_open()) {
         std::cerr << "Dummkopf Failed to open .mtl file: " << filePathMTL << std::endl;
         return false;
@@ -113,7 +114,7 @@ bool Loader::initializeColor(const std::string& filePathMTL){
  * inklusive Materialindex zur späteren Farbanwendung.
  */
 bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ) {
-    std::ifstream fileOBJ(filePathOBJ);
+    std::ifstream fileOBJ("obj/" + filePathOBJ);
     if (!fileOBJ.is_open()) {
         std::cerr << "Dummkopf Failed to open .obj file: " << filePathOBJ << std::endl;
         return false;
@@ -219,7 +220,19 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ) {
     return true;
 }
 
+void Loader::buildKDTreeAndIntersect(const Ray& ray) {
+    KDTree* kdtree = new KDTree(triangles, vertices);  // greift auf Membervariablen zu
 
+    Hitpoint hit;
+    if (kdtree->intersect(ray, hit)) {
+        // Treffer behandeln
+        std::cout << "Treffer bei t=" << hit.getT() << std::endl;
+    } else {
+        std::cout << "Kein Treffer." << std::endl;
+    }
+
+    delete kdtree;
+}
 
 /*
  * Sucht einen Materialnamen in der Liste materialNames.

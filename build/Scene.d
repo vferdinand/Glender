@@ -189,6 +189,8 @@ build/Scene.o: implementation/Scene.cpp implementation/../hpp/Scene.hpp \
  implementation/../hpp/Hitpoint.hpp implementation/../hpp/Image.hpp \
  implementation/../hpp/Ray.hpp implementation/../hpp/Camera.hpp \
  implementation/../hpp/Loader.hpp implementation/../hpp/Material.hpp \
+ implementation/../hpp/KDTree.hpp implementation/../hpp/KDPrim.hpp \
+ implementation/../hpp/KDNode.hpp implementation/../hpp/AABB.hpp \
  implementation/../hpp/Light.hpp
 implementation/../hpp/Scene.hpp:
 /usr/include/eigen3/Eigen/Dense:
@@ -389,4 +391,8 @@ implementation/../hpp/Ray.hpp:
 implementation/../hpp/Camera.hpp:
 implementation/../hpp/Loader.hpp:
 implementation/../hpp/Material.hpp:
+implementation/../hpp/KDTree.hpp:
+implementation/../hpp/KDPrim.hpp:
+implementation/../hpp/KDNode.hpp:
+implementation/../hpp/AABB.hpp:
 implementation/../hpp/Light.hpp:

@@ -12,6 +12,24 @@ struct Vector3D;
  */
 struct Vertex {
     float x, y, z;
+
+    float operator[](int i) const {
+        switch (i) {
+            case 0: return x;
+            case 1: return y;
+            case 2: return z;
+            default: throw std::out_of_range("Vertex index out of range");
+        }
+    }
+
+    float& operator[](int i) {
+        switch (i) {
+            case 0: return x;
+            case 1: return y;
+            case 2: return z;
+            default: throw std::out_of_range("Vertex index out of range");
+        }
+    }
 };
 
 /**
@@ -47,8 +65,9 @@ struct Vector3D {
 
     Vector3D(float x = 0.0f, float y = 0.0f, float z = 0.0f)
         : x(x), y(y), z(z) {} 
-    
+
     /**
+     * 
      * @brief Vektoraddition.
      * @param other Der andere Vektor
      * @return Ergebnis der Addition

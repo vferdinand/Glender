@@ -8,6 +8,7 @@ Scene::Scene(const std::string filePathObj){//}, const std::string filePathMtl){
     normals = loader.getNormals();
     materials = loader.getMaterials();
     camera.generate_rays();
+    kdtree = new KDTree(triangles, vertices);
 }
 
 // Wandelt eine Liste von Hitpoints in ein Bild (Image) um
@@ -16,6 +17,7 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
     if(hitpoints.size() == 0){
         return Image(0, 0);
     }
+    std::cout << "Hitpoints: " << hitpoints.size() << std::endl;
 
     // Breite und Höhe des Bildes basieren auf den Kameraeigenschaften
     uint16_t width = camera.get_width_pixels();
@@ -23,10 +25,12 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
 
     // Neues Bild mit den Maßen Höhe x Breite erstellen
     Image image(height, width);
-
+    std::cout << "Image size: " << height << "x" << width << std::endl;
+    std::cout << "Hitpoints size: " << hitpoints.size() << std::endl;
     // Schleife über alle Pixel des Bildes
     for(uint16_t i = 0; i < height; i++){
         for(uint16_t j = 0; j < width; j++){
+
             // Standardfarbe: transparent schwarz
             RGBA col = {0.0, 0.0, 0.0, 0.0};
 
@@ -37,33 +41,35 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
             if (index < hitpoints.size() && 
                 hitpoints.at(index).getDistance() != std::numeric_limits<float>::max()) {
                 
-                // Farbe aus dem Farbarray anhand des Farbindex des getroffenen Dreiecks setzen
-
-                //col = colors.at(hitpoints.at(index).getTriangle()->getColorIndex());
-
-                
-                
-                
                 //Parameter vordefinieren
                 const Triangle* tri = hitpoints.at(index).getTriangle();
                 Vector3D n = tri->getNormalIndex();
                 Vector3D lightDirection = {1.0,1.0,1.0};
+
                 //Material holen
                 Material m = materials.at(tri->getMaterialIndex());
+
                 //Globaler Lichtvektor
                 light.setGlobalLightVec(lightDirection);
+
                 //Difuse Beleuchtung
                 RGBA c = m.getDifuse();
+                std::cout << "Diffuse color: " << c.r << ", " << c.g << ", " << c.b << std::endl;
                 //Glanzfaktor
                 float shininess = m.getShininess();
+
                 //Abiente-Beleuchtung -> vom Material abhängig
                 RGBA ka = m.getAmbient();
+
                 //Grundbeleuchtung
                 RGBA ca = light.getLightColor();
+                
                 //Lichtfarbe
                 RGBA c_light = {1.0,1.0,1.0};
+
                 //Spekular-Koeffizienten
                 RGBA ks = m.getSpecular();
+                
                 /// Normalisieren der Vektoren nur einmal
                 Vector3D N = n.normalized();
                 Vector3D L = lightDirection.normalized();
@@ -97,6 +103,7 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
 
 // kombiniert Scenen-Funktionalität
 Image Scene::generateImage() {
+    std::cout << "rays: " << camera.get_rays().size() << std::endl;
     std::vector<Ray> rays = camera.get_rays();
     return transformHitpointsToImage(calculateHitpoints(rays));
 }
@@ -107,6 +114,35 @@ std::vector<Hitpoint> Scene::calculateHitpoints(std::vector<Ray>& rays) {
     std::vector<Hitpoint> hitpoints;
     const float EPS = 1e-6f;  // Epsilon für numerische Stabilität
 
+    //return calculatevergleich
+    return  calculateHitpointsKDTree(rays);
+  // benchmarkIntersection();
+}
+// Ändern der Kameraparameter
+void Scene::setCamera(const Point3D& eyePos, const Vector3D& viewDir, float pixelWidth, float pixelHeight, int horizontalPixels, int verticalPixels) {
+    camera.set_everything(eyePos, viewDir, pixelWidth, pixelHeight, horizontalPixels, verticalPixels);
+    camera.generate_rays();
+}
+
+std::vector<Hitpoint> Scene::calculateHitpointsKDTree(std::vector<Ray>& rays) {
+    std::vector<Hitpoint> hitpoints;
+
+    for (auto& ray : rays) {
+        Hitpoint hp;
+        if (kdtree->intersect(ray, hp)) {
+            hitpoints.push_back(hp);
+        } else {
+            hitpoints.push_back(Hitpoint());
+        }
+    }
+
+    return hitpoints;
+}
+
+std::vector<Hitpoint> Scene::calculateHitpointsBruteForce(std::vector<Ray>& rays) {
+    std::vector<Hitpoint> hitpoints;
+    const float EPS = 1e-6f;
+    
     for (auto& ray : rays) {
         // Ursprungspunkt des Strahls
         Point3D orig_p = ray.getOrigin();
@@ -184,10 +220,8 @@ std::vector<Hitpoint> Scene::calculateHitpoints(std::vector<Ray>& rays) {
         }
         hitpoints.push_back(hp);
     }
+
     return hitpoints;
 }
-// Ändern der Kameraparameter
-void Scene::setCamera(const Point3D& eyePos, const Vector3D& viewDir, float pixelWidth, float pixelHeight, int horizontalPixels, int verticalPixels) {
-    camera.set_everything(eyePos, viewDir, pixelWidth, pixelHeight, horizontalPixels, verticalPixels);
-    camera.generate_rays();
-}
+
+
