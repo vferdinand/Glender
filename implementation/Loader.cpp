@@ -4,7 +4,9 @@
 // Konstruktor der Loader-Klasse.
 // Dient zur Initialisierung eines Loader-Objekts.
 // Momentan wird keine spezielle Initialisierung vorgenommen.
-Loader::Loader(){}
+Loader::Loader(const std::string& filePathOBJ){
+    loadOBJ(filePathOBJ);
+}
 
 
 /* /////////////////////////////////////////////////////////
@@ -15,11 +17,33 @@ Loader::Loader(){}
  * Wenn ein Materialpfad angegeben ist, werden zuerst die Farben geladen.
  * Danach erfolgt das Parsen der Geometrie.
  */
-bool Loader::loadOBJ(const std::string& filePathOBJ, const std::string& filePathMTL) {
-    if(filePathMTL != ""){
-        initializeColor(filePathMTL);
+void Loader::loadOBJ(const std::string& filePathOBJ){
+    std::ifstream fileOBJ(filePathOBJ);
+    if (!fileOBJ.is_open()) {
+        std::cerr << "Dummkopf Failed to open .obj file: " << filePathOBJ << std::endl;
+        return;
     }
-    return initializeVerticiesTriangles(filePathOBJ);
+    
+    std::string line;
+    materials.push_back(Material("",{1.0,1.0,1.0,1.0}, {1.0,1.0,1.0,1.0}, {1.0,1.0,1.0,1.0}));
+    while (std::getline(fileOBJ, line)) {
+        std::istringstream iss(line);
+        std::string prefix;
+        iss >> prefix;
+        if(prefix == "mtllib"){
+            std::string filePathMTL = "";
+            iss >> filePathMTL;
+            if(filePathMTL != ""){
+                if(!initializeColor(filePathMTL)){
+                    fileOBJ.close();
+                    return;
+                }
+                break;
+            }
+        }
+    }
+    fileOBJ.close();
+    initializeVerticiesTriangles(filePathOBJ);
 }
 
 /*
@@ -36,22 +60,43 @@ bool Loader::initializeColor(const std::string& filePathMTL){
         return false;
     }
 
-    colors.push_back({1.0,1.0,1.0,1.0});
-    materialNames.push_back("");
-
     std::string line;
     while (std::getline(fileMTL, line)) {
         std::istringstream iss(line);
         std::string prefix;
-        iss >> prefix;        
+        iss >> prefix;
+        
+        Material material("",{1.0,1.0,1.0,1.0}, {1.0,1.0,1.0,1.0}, {1.0,1.0,1.0,1.0});
+
         if (prefix == "newmtl") {
             std::string name;
             iss >> name;
-            materialNames.push_back(name);
+            material.setName(name);
+            materials.push_back(material);
         }else if (prefix == "Kd"){
             RGBA color;
             iss >> color.r >> color.g >> color.b;
-            colors.push_back(color);
+            materials.back().setDifuse(color);
+        }else if (prefix == "Ka"){
+            RGBA color;
+            iss >> color.r >> color.g >> color.b;
+            materials.back().setAmbient(color);
+        }else if (prefix == "Ks"){
+            RGBA color;
+            iss >> color.r >> color.g >> color.b;
+            materials.back().setSpecular(color);
+        }else if (prefix == "Ns") {
+            float shininess;
+            iss >> shininess;
+            materials.back().setShininess(shininess);
+        }else if (prefix == "d" || prefix == "Tr") {
+            float dissolve;
+            iss >> dissolve;
+            materials.back().setDissolve(dissolve);
+        }else if (prefix == "illum") {
+            int8_t illum;
+            iss >> illum;
+            materials.back().setIllum(illum);
         }
     }
     fileMTL.close();
@@ -68,7 +113,7 @@ bool Loader::initializeColor(const std::string& filePathMTL){
  * Die Dreiecke werden in der Reihenfolge ihres Auftretens gespeichert,
  * inklusive Materialindex zur späteren Farbanwendung.
  */
-bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ){
+bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ) {
     std::ifstream fileOBJ(filePathOBJ);
     if (!fileOBJ.is_open()) {
         std::cerr << "Dummkopf Failed to open .obj file: " << filePathOBJ << std::endl;
@@ -76,47 +121,101 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ){
     }
     
     std::string line;
-    u_int16_t materialIndex = 0;
+    uint16_t materialIndex = 0;
+
     while (std::getline(fileOBJ, line)) {
         std::istringstream iss(line);
         std::string prefix;
         iss >> prefix;
+
         if (prefix == "vn") {
             Vector3D v;
             iss >> v.x >> v.y >> v.z;
-            verticesNormals.push_back(v);
-        }else if (prefix == "v") {
+            normals.push_back(v);
+
+        } else if (prefix == "v") {
             Vertex v;
             iss >> v.x >> v.y >> v.z;
             vertices.push_back(v);
-        } else if (prefix == "f") {
-            std::array<uint32_t, 3> indices;
-            std::string vertexStr;
 
-            for (int i = 0; i < 3; ++i) {
-                iss >> vertexStr;
-
-                size_t slashPos = vertexStr.find('/');
-                std::string indexStr;
-                if (slashPos == std::string::npos) {
-                    indexStr = vertexStr;
-                } else {
-                    indexStr = vertexStr.substr(0, slashPos);
-                }
-
-                indices[i] = std::stoi(indexStr) - 1;
-            }
-
-            triangles.push_back(Triangle({indices[0], indices[1], indices[2]}, materialIndex));
-        } else if (prefix == "usemtl"){
+        } else if (prefix == "usemtl") {
             std::string newMaterial;
             iss >> newMaterial;
-            if (locateMaterial(newMaterial) != -1){
-                materialIndex = locateMaterial(newMaterial);
+            int idx = locateMaterial(newMaterial);
+            if (idx != -1) {
+                materialIndex = static_cast<uint16_t>(idx);
+            }
+
+        } else if (prefix == "f") {
+            // Collect all vertex‐indices (+ possible normal‐indices) on this line.
+            std::vector<uint32_t> faceVertexIdx;
+            std::vector<uint32_t> faceNormalIdx;
+
+            std::string vertexToken;
+            while (iss >> vertexToken) {
+                size_t firstSlash  = vertexToken.find('/');
+                size_t secondSlash = std::string::npos;
+
+                uint32_t vIndex = 0;
+                uint32_t nIndex = 0;
+
+                if (firstSlash == std::string::npos) {
+                    // format: "v"
+                    vIndex = static_cast<uint32_t>(std::stoi(vertexToken)) - 1;
+                    nIndex = 0;
+                } else {
+                    secondSlash = vertexToken.find('/', firstSlash + 1);
+                    {
+                        std::string vStr = vertexToken.substr(0, firstSlash);
+                        vIndex = static_cast<uint32_t>(std::stoi(vStr)) - 1;
+                    }
+                    if (secondSlash == std::string::npos) {
+                        // format: "v/vt"
+                        nIndex = 0;
+                    } else {
+                        // format: "v//vn" or "v/vt/vn"
+                        std::string vnStr = vertexToken.substr(secondSlash + 1);
+                        if (!vnStr.empty()) {
+                            try {
+                                nIndex = static_cast<uint32_t>(std::stoi(vnStr)) - 1;
+                            } catch (const std::invalid_argument&) {
+                                std::cerr << "Warnung: Ungültiger Normalenindex in Zeile: " << line << std::endl;
+                                nIndex = 0;
+                            }
+                        } else {
+                            nIndex = 0;
+                        }
+                    }
+                }
+
+                faceVertexIdx.push_back(vIndex);
+                faceNormalIdx.push_back(nIndex);
+            }
+
+            if (faceVertexIdx.size() < 3) {
+                continue;
+            }
+
+            uint32_t normalIndexForAllTri = faceNormalIdx[0];
+
+            // Fan‐triangulate: for N vertices, create (N−2) triangles:
+            //   (0,1,2), (0,2,3), (0,3,4), ...
+            for (size_t i = 1; i + 1 < faceVertexIdx.size(); ++i) {
+                // Build a small vector of exactly 3 indices:
+                std::vector<uint32_t> triVerts = {
+                    faceVertexIdx[0],
+                    faceVertexIdx[i],
+                    faceVertexIdx[i + 1]
+                };
+                triangles.emplace_back(triVerts, normalIndexForAllTri, materialIndex);
             }
         }
+        // ignore any other prefixes
     }
-
+    std::cout << "Dummkopf Loaded " << vertices.size() << " vertices, "
+              << normals.size() << " normals, "
+              << triangles.size() << " triangles, "
+              << materials.size() << " materials." << std::endl;
     fileOBJ.close();
     return true;
 }
@@ -140,9 +239,10 @@ void Loader::buildKDTreeAndIntersect(const Ray& ray) {
  * Gibt den Index zurück, falls gefunden, sonst -1.
  */
 int16_t Loader::locateMaterial(const std::string& material) {
-    for (size_t i = 0; i < materialNames.size(); ++i) {
-        if (materialNames[i] == material)
+    for (size_t i = 0; i < materials.size(); ++i) {
+        if (materials[i].getName() == material) {
             return static_cast<int16_t>(i);
+        }
     }
     return -1;
 }
@@ -157,7 +257,12 @@ const std::vector<Triangle>& Loader::getTriangles() const {
     return triangles;
 }
 
-// Gibt eine Referenz auf die geladenen Farben (aus .mtl) zurück.
-const std::vector<RGBA>& Loader::getColors() const {
-    return colors;
+// Gibt eine Referenz auf die geladenen Normalen zurück.
+const std::vector<Vector3D>& Loader::getNormals() const {
+    return normals;
+}
+
+// Gibt eine Referenz auf die geladenen Materialien zurück.
+const std::vector<Material>& Loader::getMaterials() const {
+    return materials;
 }

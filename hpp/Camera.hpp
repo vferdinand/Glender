@@ -42,7 +42,7 @@ class Camera {
         Vector3D get_view() const;
         float get_width() const;
         float get_height() const;
-        u_int8_t get_width_pixels() const;
-        u_int8_t get_length_pixels() const;
+        u_int16_t get_width_pixels() const;
+        u_int16_t get_length_pixels() const;
         
 };

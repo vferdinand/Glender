@@ -1,5 +1,7 @@
 #pragma once
 #include <vector>
+#include <algorithm>
+#include <cmath>
 #include <Eigen/Dense>
 #include "Triangle.hpp"
 #include "Hitpoint.hpp"
@@ -10,15 +12,20 @@
 #include "Loader.hpp"
 #include "KDTree.hpp"
 #include <chrono>
+#include "Light.hpp"
+#include "Material.hpp"
 
 class Scene {
     private:
         //alle generierten Dreieck-Objekte
         std::vector<Triangle> triangles;
         std::vector<Vertex> vertices;
-        std::vector<RGBA> colors;
+        std::vector<Vector3D> normals;
+        std::vector<Material> materials;
 
         Camera camera; //eigentlich private, aber für Debugging sichtbar
+        Light light;
+        
         
         Image transformHitpointsToImage(std::vector<Hitpoint> hitpoints);
         //Berechnung der Schnittpunkte von Rays und Triangles
@@ -29,14 +36,15 @@ class Scene {
         //Kamera Konfiguration
         void setCamera(const Point3D& eyePos, const Vector3D& viewDir, float pixelWidth, float pixelHeight, int horizontalPixels, int verticalPixels);
 
-        Scene(const std::string filePathObj, const std::string filePathMtl = "");
+        Scene(const std::string filePathObj);//, const std::string filePathMtl = "");
 
         //Bündelt calculateHitpoints und convertHitpointsToImage
         Image generateImage();
 
         std::vector<Hitpoint> calculateHitpointsBruteForce(std::vector<Ray>& rays);
         std::vector<Hitpoint> calculateHitpointsKDTree(std::vector<Ray>& rays);
-        void benchmarkIntersection(); // Optional: Zeitvergleich ausgeben
-
+        
+        // Optional: Zeitvergleich ausgeben
+        void benchmarkIntersection();
         
 };
