@@ -1,15 +1,20 @@
 #include "../hpp/KDTree.hpp"
 
 KDTree::KDTree(const std::vector<Triangle>& triangles, const std::vector<Vertex>& verts)
-    : vertices(&verts) {
+    : vertices(&verts), triangleStorage(triangles) {
     std::vector<KDPrim> prims;
-    for (const Triangle& t : triangles)
+    for (const Triangle& t : triangleStorage)
         prims.push_back({ &t, &verts });
     root = build(prims, 0);
 }
 
 KDTree::~KDTree() {
     delete root;
+}
+
+KDNode::~KDNode() {
+    delete left;
+    delete right;
 }
 
 KDNode* KDTree::build(std::vector<KDPrim>& prims, int depth) {

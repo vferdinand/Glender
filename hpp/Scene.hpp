@@ -8,6 +8,8 @@
 #include "Ray.hpp"
 #include "Camera.hpp"
 #include "Loader.hpp"
+#include "KDTree.hpp"
+#include <chrono>
 
 class Scene {
     private:
@@ -22,7 +24,8 @@ class Scene {
         //Berechnung der Schnittpunkte von Rays und Triangles
         std::vector<Hitpoint> calculateHitpoints(std::vector<Ray>& rays);    
         
-        public:
+        KDTree* kdtree = nullptr; // Zeiger auf KDTree
+    public:
         //Kamera Konfiguration
         void setCamera(const Point3D& eyePos, const Vector3D& viewDir, float pixelWidth, float pixelHeight, int horizontalPixels, int verticalPixels);
 
@@ -30,5 +33,10 @@ class Scene {
 
         //Bündelt calculateHitpoints und convertHitpointsToImage
         Image generateImage();
+
+        std::vector<Hitpoint> calculateHitpointsBruteForce(std::vector<Ray>& rays);
+        std::vector<Hitpoint> calculateHitpointsKDTree(std::vector<Ray>& rays);
+        void benchmarkIntersection(); // Optional: Zeitvergleich ausgeben
+
         
 };

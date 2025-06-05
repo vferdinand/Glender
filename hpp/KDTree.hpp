@@ -12,6 +12,7 @@ class KDTree {
 private:
     KDNode* root;
     const std::vector<Vertex>* vertices;
+    std::vector<Triangle> triangleStorage;
 
     KDNode* build(std::vector<KDPrim>& prims, int depth);
     bool intersectNode(const KDNode* node, const Ray& ray, Hitpoint& hit) const;

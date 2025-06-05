@@ -13,8 +13,5 @@ struct KDNode {
 
     bool isLeaf() const { return left == nullptr && right == nullptr; }
 
-    ~KDNode() {
-        delete left;
-        delete right;
-    }
+    ~KDNode();
 };
