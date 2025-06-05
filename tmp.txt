@@ -1,4 +1,0 @@
-=== 3.2 Prototypen
-Im Rahmen der Phase 6 des Design-Thinking-Prozesses wurden zwei Prototypen entwickelt. Nach der Vorstellung und Bewertung durch die Projektsponsoren wurde der Prototyp „design-thinking-prototyp-gruppe1“ als Favorit ausgewählt.
-Dieser favorisierte Prototyp ist unter folgendem Link einsehbar:
-https://gitlab.dit.htwk-leipzig.de/projekt2025-l-lila-it-therapie-software/dokumentation/-/blob/main/design-thinking/prototypen/design-thinking-prototyp-gruppe1.pdf?ref_type=heads

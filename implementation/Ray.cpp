@@ -19,12 +19,7 @@ Ray::Ray(const Point3D& o, const Vector3D& d) : origin(o), direction(d) {}
     }
 
 // Ray-Triangle Intersection (Möller-Trumbore)
-bool Ray::rayTriangleIntersect(const Ray& ray,
-                          const Vertex& v0,
-                          const Vertex& v1,
-                          const Vertex& v2,
-                          Hitpoint& hit) const {
-                            
+bool Ray::rayTriangleIntersect(const Ray& ray, const Vertex& v0, const Vertex& v1, const Vertex& v2, Hitpoint& hit) const {
     static const float EPSILON = 1e-6f;
 
     Vector3D edge1 = {
@@ -58,7 +53,7 @@ bool Ray::rayTriangleIntersect(const Ray& ray,
 
     float t = f * dot(edge2, q);
     if (t > EPSILON) {
-        hit.setT(t);
+        hit.setDistance(t);
         hit.setPosition(ray.getOrigin() + ray.getDirection() * t);
         return true;
     }

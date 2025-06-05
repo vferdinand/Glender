@@ -108,7 +108,7 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
 // kombiniert Scenen-Funktionalität
 Image Scene::generateImage() {
     std::vector<Ray> rays = camera.get_rays();
-    return transformHitpointsToImage(calculateHitpointsBruteForce(rays));
+    return transformHitpointsToImage(calculateHitpointsKDTree(rays));
 }
 
 // Ändern der Kameraparameter
@@ -118,9 +118,8 @@ void Scene::setCamera(const Point3D& eyePos, const Vector3D& viewDir, float pixe
 }
 
 std::vector<Hitpoint> Scene::calculateHitpointsKDTree(std::vector<Ray>& rays) {
-    std::cout << "Rays size: " << rays.size() << std::endl;
+    //std::cout << "Rays size: " << rays.size() << std::endl;
     std::vector<Hitpoint> hitpoints;
-    const float EPS = 1e-6f;
 
     for (auto& ray : rays) {
         Hitpoint hp;
@@ -135,7 +134,7 @@ std::vector<Hitpoint> Scene::calculateHitpointsKDTree(std::vector<Ray>& rays) {
 }
 
 std::vector<Hitpoint> Scene::calculateHitpointsBruteForce(std::vector<Ray>& rays) {
-    std::cout << "Rays size: " << rays.size() << std::endl;
+    //std::cout << "Rays size: " << rays.size() << std::endl;
     std::vector<Hitpoint> hitpoints;
     const float EPS = 1e-6f;
     

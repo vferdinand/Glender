@@ -1,4 +1,5 @@
 add_library(lib STATIC
+    implementation/AABB.cpp
     implementation/Camera.cpp 
     implementation/Loader.cpp
     implementation/main.cpp

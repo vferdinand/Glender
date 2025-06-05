@@ -67,7 +67,7 @@ int main() {
     // Scene Beispiel
     /////////////////////////////////////////////////////////////////////
     // Szene einmalig laden
-    std::string file_path_obj = "car.obj";
+    std::string file_path_obj = "Car.obj";
     Scene scene(file_path_obj);
 
     // Kreisbahn-Parameter
@@ -89,7 +89,7 @@ int main() {
         // 3) Raytracing & Bild ausgeben
         Image img = scene.generateImage();
         //img.print();
-        img.save("car.ppm");
+        img.save("Car.ppm");
 
         // 4) Winkel weiterschalten und bei 2π zurücksetzen
         angle += stepAngle;

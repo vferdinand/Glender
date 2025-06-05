@@ -24,6 +24,7 @@ KDNode* KDTree::build(std::vector<KDPrim>& prims, int depth) {
         node->bbox.expand(p.tri->getIndices(), *vertices);
 
     if (prims.size() <= 2 || depth > 20) {
+       // std::cout << "Leaf erzeugt mit " << prims.size() << " Dreiecken auf Tiefe " << depth << std::endl; funktioniert
         for (const auto& p : prims)
             node->tris.push_back(p.tri);
         return node;
@@ -51,19 +52,26 @@ bool KDTree::intersect(const Ray& ray, Hitpoint& hit) const {
 }
 
 bool KDTree::intersectNode(const KDNode* node, const Ray& ray, Hitpoint& hit) const {
-    if (!node->bbox.intersect(ray)) return false;
+    if (!node->bbox.intersect(ray)) {
+        return false;
+    }
+    
     bool found = false;
 
     if (node->isLeaf()) {
         for (const Triangle* tri : node->tris) {
-            const auto& idx = tri->getIndices();
+            const auto& idx = tri->getIndices();    
             const Vertex& a = (*vertices)[idx[0]];
             const Vertex& b = (*vertices)[idx[1]];
             const Vertex& c = (*vertices)[idx[2]];
-
-            if (ray.rayTriangleIntersect(ray, a, b, c, hit)) {
-                hit.setTriangle(tri);
-                found = true;
+            
+            Hitpoint tempHit;
+            if (ray.rayTriangleIntersect(ray, a, b, c, tempHit)) {
+                if (tempHit.getDistance() < hit.getDistance()) {
+                    hit = tempHit;
+                    hit.setTriangle(tri);
+                    found = true;
+                }
             }
         }
         return found;
