@@ -28,8 +28,9 @@ class Scene {
         
         
         Image transformHitpointsToImage(std::vector<Hitpoint> hitpoints);
-        //Berechnung der Schnittpunkte von Rays und Triangles
-        std::vector<Hitpoint> calculateHitpoints(std::vector<Ray>& rays);    
+        //Berechnung der Schnittpunkte von Rays und Triangles  
+        std::vector<Hitpoint> calculateHitpointsBruteForce(std::vector<Ray>& rays);
+        std::vector<Hitpoint> calculateHitpointsKDTree(std::vector<Ray>& rays); 
         
         KDTree* kdtree = nullptr; // Zeiger auf KDTree
     public:
@@ -40,11 +41,4 @@ class Scene {
 
         //Bündelt calculateHitpoints und convertHitpointsToImage
         Image generateImage();
-
-        std::vector<Hitpoint> calculateHitpointsBruteForce(std::vector<Ray>& rays);
-        std::vector<Hitpoint> calculateHitpointsKDTree(std::vector<Ray>& rays);
-        
-        // Optional: Zeitvergleich ausgeben
-        void benchmarkIntersection();
-        
 };
