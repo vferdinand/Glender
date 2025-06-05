@@ -118,31 +118,13 @@ std::vector<Hitpoint> Scene::calculateHitpoints(std::vector<Ray>& rays) {
     const float EPS = 1e-6f;  // Epsilon für numerische Stabilität
 
     //return calculatevergleich    
-    return  calculateHitpointsBruteForce(rays); 
+    return  calculateHitpointsKDTree(rays);
   // benchmarkIntersection();
 }
 // Ändern der Kameraparameter
 void Scene::setCamera(const Point3D& eyePos, const Vector3D& viewDir, float pixelWidth, float pixelHeight, int horizontalPixels, int verticalPixels) {
     camera.set_everything(eyePos, viewDir, pixelWidth, pixelHeight, horizontalPixels, verticalPixels);
     camera.generate_rays();
-}
-
-void Scene::benchmarkIntersection() {
-    std::vector<Ray> rays = camera.get_rays();
-
-    auto start1 = std::chrono::high_resolution_clock::now();
-    auto hitsBrute = calculateHitpointsBruteForce(rays);
-    auto end1 = std::chrono::high_resolution_clock::now();
-
-    auto start2 = std::chrono::high_resolution_clock::now();
-    auto hitsKD = calculateHitpointsKDTree(rays);
-    auto end2 = std::chrono::high_resolution_clock::now();
-
-    auto dur1 = std::chrono::duration_cast<std::chrono::milliseconds>(end1 - start1).count();
-    auto dur2 = std::chrono::duration_cast<std::chrono::milliseconds>(end2 - start2).count();
-
-    std::cout << "[Benchmark] Brute-Force Intersection: " << dur1 << " ms" << std::endl;
-    std::cout << "[Benchmark] KD-Tree Intersection:     " << dur2 << " ms" << std::endl;
 }
 
 std::vector<Hitpoint> Scene::calculateHitpointsKDTree(std::vector<Ray>& rays) {

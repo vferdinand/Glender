@@ -14,7 +14,7 @@ int carspinner() {
     // Scene Beispiel
     /////////////////////////////////////////////////////////////////////
     // Szene einmalig laden
-    std::string file_path_obj = "eyeball.obj";
+    std::string file_path_obj = "cube.obj";
     std::string file_path_mtl = "cube.mtl";
     Scene scene(file_path_obj);//, file_path_mtl);
 
@@ -67,7 +67,7 @@ int main() {
     // Scene Beispiel
     /////////////////////////////////////////////////////////////////////
     // Szene einmalig laden
-    std::string file_path_obj = "mutter.obj";
+    std::string file_path_obj = "car.obj";
     Scene scene(file_path_obj);
 
     // Kreisbahn-Parameter
@@ -89,7 +89,7 @@ int main() {
         // 3) Raytracing & Bild ausgeben
         Image img = scene.generateImage();
         //img.print();
-        img.save("mutter.ppm");
+        img.save("car.ppm");
 
         // 4) Winkel weiterschalten und bei 2π zurücksetzen
         angle += stepAngle;
