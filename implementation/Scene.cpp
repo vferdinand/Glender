@@ -17,7 +17,6 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
     if(hitpoints.size() == 0){
         return Image(0, 0);
     }
-    std::cout << "Hitpoints: " << hitpoints.size() << std::endl;
 
     // Breite und Höhe des Bildes basieren auf den Kameraeigenschaften
     uint16_t width = camera.get_width_pixels();
@@ -25,8 +24,6 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
 
     // Neues Bild mit den Maßen Höhe x Breite erstellen
     Image image(height, width);
-    std::cout << "Image size: " << height << "x" << width << std::endl;
-    std::cout << "Hitpoints size: " << hitpoints.size() << std::endl;
     // Schleife über alle Pixel des Bildes
     for(uint16_t i = 0; i < height; i++){
         for(uint16_t j = 0; j < width; j++){
@@ -103,7 +100,6 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
 
 // kombiniert Scenen-Funktionalität
 Image Scene::generateImage() {
-    std::cout << "rays: " << camera.get_rays().size() << std::endl;
     std::vector<Ray> rays = camera.get_rays();
     return transformHitpointsToImage(calculateHitpointsKDTree(rays));
 }

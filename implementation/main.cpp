@@ -19,9 +19,9 @@ int carspinner() {
     Scene scene(file_path_obj);
 
     // Kreisbahn-Parameter
-    const float radius    = 5.3;    // Abstand von (0,0,0)
+    const float radius    = 7.3;    // Abstand von (0,0,0)
     const float height    = 1.4;    // y-Höhe der Kamera
-    const float stepAngle = 0.1;   // Drehgeschwindigkeit pro Frame
+    const float stepAngle = 0.05;   // Drehgeschwindigkeit pro Frame
     float angle = 0.98f;//5.4f;
 
     // unendliche Render-Schleife
@@ -32,7 +32,7 @@ int carspinner() {
         Point3D camPos{ camX, height, camZ };
 
         // 2) Initialisiere Kamera: Position = camPos, Blickrichtung = auf (0,0,0)
-        scene.setCamera(camPos,Vector3D{ -camX, -0.4, -camZ },1.0f, 1.0f, 255, 255);
+        scene.setCamera(camPos,Vector3D{ -camX, -0.4, -camZ },1.0f, 0.5f, 1920, 980);
 
         // 3) Raytracing & Bild ausgeben
         Image img = scene.generateImage();
@@ -49,7 +49,7 @@ int carspinner() {
 
 
 int main() {
-    //carspinner();
+    carspinner();
     Scene scene("Car.obj");
 
     Point3D camPos{ 4.0, 2.0, 4.0 };
