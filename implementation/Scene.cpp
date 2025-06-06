@@ -17,6 +17,7 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
     if(hitpoints.size() == 0){
         return Image(0, 0);
     }
+    std::cout << "Hitpoints: " << hitpoints.size() << std::endl;
 
     // Breite und Höhe des Bildes basieren auf den Kameraeigenschaften
     uint16_t width = camera.get_width_pixels();
@@ -24,10 +25,12 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
 
     // Neues Bild mit den Maßen Höhe x Breite erstellen
     Image image(height, width);
-
+    std::cout << "Image size: " << height << "x" << width << std::endl;
+    std::cout << "Hitpoints size: " << hitpoints.size() << std::endl;
     // Schleife über alle Pixel des Bildes
     for(uint16_t i = 0; i < height; i++){
         for(uint16_t j = 0; j < width; j++){
+
             // Standardfarbe: transparent schwarz
             RGBA col = {0.0, 0.0, 0.0, 0.0};
 
@@ -38,17 +41,10 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
             if (index < hitpoints.size() && 
                 hitpoints.at(index).getDistance() != std::numeric_limits<float>::max()) {
                 
-                // Farbe aus dem Farbarray anhand des Farbindex des getroffenen Dreiecks setzen
-
-                //col = colors.at(hitpoints.at(index).getTriangle()->getColorIndex());
-
-                
-                
-                
                 //Parameter vordefinieren
                 const Triangle* tri = hitpoints.at(index).getTriangle();
                 Vector3D n = tri->getNormalIndex();
-                Vector3D lightDirection = {1,1,1};
+                Vector3D lightDirection = {1.0,1.0,1.0};
 
                 //Material holen
                 Material m = materials.at(tri->getMaterialIndex());
@@ -58,7 +54,7 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
 
                 //Difuse Beleuchtung
                 RGBA c = m.getDifuse();
-
+                std::cout << "Diffuse color: " << c.r << ", " << c.g << ", " << c.b << std::endl;
                 //Glanzfaktor
                 float shininess = m.getShininess();
 
@@ -107,6 +103,7 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
 
 // kombiniert Scenen-Funktionalität
 Image Scene::generateImage() {
+    std::cout << "rays: " << camera.get_rays().size() << std::endl;
     std::vector<Ray> rays = camera.get_rays();
     return transformHitpointsToImage(calculateHitpointsKDTree(rays));
 }
