@@ -52,12 +52,12 @@ int main() {
     //carspinner();
     Scene scene("Car.obj");
 
-    Point3D camPos{ 1.0, 2.0, 1.0 };
+    Point3D camPos{ 4.0, 2.0, 4.0 };
     Vector3D camDir{ -1.0, -0.4, -1.0};
 
-    scene.setCamera(camPos ,camDir ,1.0f, 1.0f, 255, 255);
+    scene.setCamera(camPos ,camDir ,1.0f, 0.5f, 1820, 1080);
 
     Image img = scene.generateImage();
 
-    img.save("Car.ppm");
+    img.save("Car1.ppm");
 }

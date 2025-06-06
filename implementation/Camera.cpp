@@ -1,5 +1,7 @@
 #include "../hpp/Camera.hpp"
 
+//setCameraRatio 16:9 mit einem wert angabe implementieren
+
 /**
  * @brief Normalisiert einen Vektor, sodass er die Länge 1 hat.
  * Falls der Eingabevektor die Länge 0 hat, wird ein Standardvektor (0, 0, 1) zurückgegeben.
