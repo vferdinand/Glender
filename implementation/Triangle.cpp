@@ -1,5 +1,4 @@
 #include "../hpp/Triangle.hpp"
-#include <stdexcept>
 
 /*
  * Ein Dreieck wird durch drei Indizes in der vertexIndices-Liste

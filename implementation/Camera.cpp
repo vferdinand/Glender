@@ -1,5 +1,4 @@
 #include "../hpp/Camera.hpp"
-#include <cmath>
 
 /**
  * @brief Normalisiert einen Vektor, sodass er die Länge 1 hat.

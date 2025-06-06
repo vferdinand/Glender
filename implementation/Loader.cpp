@@ -1,5 +1,4 @@
 #include "../hpp/Loader.hpp"
-#include "../hpp/KDTree.hpp"
 
 // Konstruktor der Loader-Klasse.
 // Dient zur Initialisierung eines Loader-Objekts.

@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
-#include <iostream>  // nur temporär zum Debugge
 
 struct AABB {
     Point3D min;

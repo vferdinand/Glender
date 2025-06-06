@@ -4,6 +4,7 @@
 #include "Triangle.hpp"
 #include "Ray.hpp"
 #include "Material.hpp"
+#include "../hpp/KDTree.hpp"
 
 #include <string>
 #include <vector>

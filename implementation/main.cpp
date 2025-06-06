@@ -59,5 +59,5 @@ int main() {
 
     Image img = scene.generateImage();
 
-    img.save("car.ppm");
+    img.save("Car.ppm");
 }

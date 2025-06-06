@@ -1,7 +1,5 @@
 #include "../hpp/Image.hpp"
-#include <iostream>
-#include <fstream>
-#include <cstdint>
+
 /*
 * Image class implementation
 * 

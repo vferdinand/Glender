@@ -54,7 +54,7 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
 
                 //Difuse Beleuchtung
                 RGBA c = m.getDifuse();
-                std::cout << "Diffuse color: " << c.r << ", " << c.g << ", " << c.b << std::endl;
+                //std::cout << "Diffuse color: " << c.r << ", " << c.g << ", " << c.b << std::endl;
                 //Glanzfaktor
                 float shininess = m.getShininess();
 

@@ -2,6 +2,9 @@
 
 #include "Structs.hpp"
 
+#include <iostream>
+#include <fstream>
+#include <cstdint>
 #include <vector>
 
 class Image {

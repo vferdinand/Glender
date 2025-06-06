@@ -2,7 +2,9 @@
 
 #include "Ray.hpp"
 #include "Structs.hpp"
+
 #include <vector>
+#include <cmath>
 
 class Camera {
     
