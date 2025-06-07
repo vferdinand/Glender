@@ -15,7 +15,7 @@ Scene::Scene(const std::string filePathObj){//}, const std::string filePathMtl){
 
     normals = loader.getNormals();
     materials = loader.getMaterials();
-    camera.generate_rays();
+    //camera.generate_rays();
     kdtree = new KDTree(triangles, vertices);
 }
 
@@ -124,9 +124,43 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
  * @return Das erzeugte Bild mit berechneter Beleuchtung.
  */
 Image Scene::generateImage() {
-    std::cout << "Rays: " << camera.get_rays().size() << std::endl;
-    std::vector<Ray> rays = camera.get_rays();
-    return transformHitpointsToImage(calculateHitpoints(rays));
+    uint16_t width = camera.get_width_pixels();
+    uint16_t height = camera.get_length_pixels();
+    Image image(height, width);
+
+    for (uint16_t y = 0; y < height; ++y) {
+        for (uint16_t x = 0; x < width; ++x) {
+            Ray ray = camera.get_ray(x, y);  // Ray wird on-demand berechnet
+            Hitpoint hp;
+            if (kdtree->intersect(ray, hp)) {
+                // Beleuchtung berechnen (wie in transformHitpointsToImage)
+                RGBA col = computeShading(hp);  // Extrahiere die Beleuchtungslogik
+                image.set(y, x, col);
+            } else {
+                image.set(y, x, {0.0, 0.0, 0.0, 0.0});  // Hintergrundfarbe
+            }
+        }
+    }
+    return image;
+}
+
+// Hilfsfunktion für Beleuchtung (aus transformHitpointsToImage extrahiert)
+RGBA Scene::computeShading(const Hitpoint& hp) {
+    const Triangle* tri = hp.getTriangle();
+    Material m = materials.at(tri->getMaterialIndex());
+    Vector3D N = normals[tri->getNormalIndex()].normalized();
+    Vector3D L = Vector3D{1.0, 1.0, 1.0}.normalized();  // Lichtrichtung
+    Vector3D E = camera.get_view().normalized();
+    Vector3D R = (-L).reflected(N);
+
+    float diffuseFactor = std::max(0.0f, N.dot(L));
+    float specFactor = std::pow(std::max(0.0f, R.dot(E)), m.getShininess());
+
+    RGBA diffuse = m.getDifuse() * diffuseFactor;
+    RGBA ambient = m.getAmbient() * light.getLightColor();
+    RGBA specular = m.getSpecular() * specFactor * RGBA{1.0, 1.0, 1.0};
+
+    return diffuse + ambient + specular;
 }
 
 /**
@@ -166,7 +200,7 @@ std::vector<Hitpoint> Scene::calculateHitpoints(std::vector<Ray>& rays) {
  */
 void Scene::setCamera(const Point3D& eyePos, const Vector3D& viewDir, float pixelWidth, float pixelHeight, int horizontalPixels, int verticalPixels) {
     camera.set_everything(eyePos, viewDir, pixelWidth, pixelHeight, horizontalPixels, verticalPixels);
-    camera.generate_rays();
+    //camera.generate_rays();
 }
 
 /**

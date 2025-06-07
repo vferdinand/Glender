@@ -42,7 +42,8 @@ class Camera {
         void set_everything(const Point3D& eyePos, const Vector3D& viewDir, float pixelWidth, float pixelHeight, u_int16_t horizontalPixels, u_int16_t verticalPixels);
         void setScaling(const Point3D& eyePos, const Vector3D& viewDir, float scalingFactor, int resolutionFactor);
         void setWithScaling(const Point3D& eyePos, const Vector3D& viewDir, int scaleFactor);
-        void generate_rays();
+        //void generate_rays();
+        Ray get_ray(uint32_t x, uint32_t y) const;
         const std::vector<Ray>& get_rays() const;
         Point3D get_eye() const;
         Vector3D get_view() const;

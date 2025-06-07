@@ -8,7 +8,7 @@ const Point3D Hitpoint::getPosition() {
 float Hitpoint::getDistance() {
     return distance;
 }
-const Triangle* Hitpoint::getTriangle() {
+const Triangle* Hitpoint::getTriangle() const {
     return triangle;
 }
 

@@ -15,7 +15,7 @@ class Hitpoint {
     Hitpoint();
     const Point3D getPosition();
     float getDistance();
-    const Triangle* getTriangle();
+    const Triangle* getTriangle() const;
     float getT() const;
 
     void setT(float newT);

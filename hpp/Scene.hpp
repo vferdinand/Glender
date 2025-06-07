@@ -25,7 +25,7 @@ class Scene {
 
         Camera camera; //eigentlich private, aber für Debugging sichtbar
         Light light;
-        
+        RGBA computeShading(const Hitpoint& hp);
         
         Image transformHitpointsToImage(std::vector<Hitpoint> hitpoints);
         //Berechnung der Schnittpunkte von Rays und Triangles  

@@ -62,7 +62,7 @@ int main() {
      * 4.0f - fast schon zu klein   | * 16  - 2560x1440  (QHD)
      * 8.0f - klein af              | * 240 - 3840x2160 (4K)
      */
-    scene.setCamera(camPos, camDir, 0.7f, 12);
+    scene.setCamera(camPos, camDir, 0.7f, 16);
 
     Image img = scene.generateImage();
 

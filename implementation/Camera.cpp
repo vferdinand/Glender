@@ -59,7 +59,7 @@ Ray Camera::calculate_ray ( u_int32_t x , u_int32_t y ) const {
  * @brief Strahlen für alle Pixel des Bildes.
  * Die Strahlen werden zeilenweise von oben nach unten und von links nach rechts generiert.
  */
-void Camera::generate_rays() {
+/*void Camera::generate_rays() {
     rays.clear();
     rays.reserve(get_width_pixels() * get_length_pixels());
     for (u_int16_t y = 0; y < get_length_pixels(); ++y) {
@@ -67,7 +67,7 @@ void Camera::generate_rays() {
             rays.push_back(calculate_ray(x, y));
         }
     }
-}
+}*/
 
 /**
  * @brief Settet Parameter neu.
@@ -99,9 +99,12 @@ void Camera::setScaling(const Point3D& eyePos, const Vector3D& viewDir, float sc
     float pixelHeight = scalingFactor* 1.0f;
 
     set_everything(eyePos, viewDir, pixelWidth, pixelHeight, horizontalPixels, verticalPixels);
-    generate_rays();
+    //generate_rays();
 }
 
+Ray Camera::get_ray(uint32_t x, uint32_t y) const {
+    return calculate_ray(x, y);
+}
 const std::vector<Ray>& Camera::get_rays() const {
     return rays;
 }
