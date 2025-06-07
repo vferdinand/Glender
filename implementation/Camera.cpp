@@ -1,7 +1,5 @@
 #include "../hpp/Camera.hpp"
 
-//setCameraRatio 16:9 mit einem wert angabe implementieren
-
 /**
  * @brief Normalisiert einen Vektor, sodass er die Länge 1 hat.
  * Falls der Eingabevektor die Länge 0 hat, wird ein Standardvektor (0, 0, 1) zurückgegeben.
@@ -88,6 +86,20 @@ void Camera::set_everything(const Point3D& eyePos, const Vector3D& viewDir, floa
     height = pixelHeight;
     widthPixels = horizontalPixels;
     lengthPixels = verticalPixels;
+}
+
+void Camera::setScaling(const Point3D& eyePos, const Vector3D& viewDir, float scalingFactor, int resolutionFactor) {
+    const u_int8_t baseWidth = 160;
+    const u_int8_t baseHeight = 90;
+
+    uint16_t horizontalPixels = baseWidth * resolutionFactor;
+    uint16_t verticalPixels = baseHeight * resolutionFactor;
+
+    float pixelWidth = scalingFactor * 0.5625f;
+    float pixelHeight = scalingFactor* 1.0f;
+
+    set_everything(eyePos, viewDir, pixelWidth, pixelHeight, horizontalPixels, verticalPixels);
+    generate_rays();
 }
 
 const std::vector<Ray>& Camera::get_rays() const {

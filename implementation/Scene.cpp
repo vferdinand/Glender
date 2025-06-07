@@ -1,5 +1,13 @@
 #include "../hpp/Scene.hpp"
 
+/**
+ * @brief Konstruktor der Szene.
+ * 
+ * Lädt das OBJ-Modell, extrahiert die Vertices, Dreiecke, Normalen und Materialien
+ * und erstellt daraus einen KD-Tree zur Beschleunigung der Strahlverfolgung.
+ * 
+ * @param filePathObj Pfad zur OBJ-Datei.
+ */
 Scene::Scene(const std::string filePathObj){//}, const std::string filePathMtl){
     Loader loader(filePathObj);
     vertices = loader.getVertices();
@@ -11,13 +19,20 @@ Scene::Scene(const std::string filePathObj){//}, const std::string filePathMtl){
     kdtree = new KDTree(triangles, vertices);
 }
 
-// Wandelt eine Liste von Hitpoints in ein Bild (Image) um
+/**
+ * @brief Wandelt berechnete Hitpoints in ein Bild um.
+ * 
+ * Führt pro Pixel eine einfache Beleuchtung durch (ambient, diffus, spekular) 
+ * auf Basis des getroffenen Materials und berechnet die resultierende Farbe.
+ * 
+ * @param hitpoints Vektor mit Treffpunkten für jeden Strahl.
+ * @return Ein generiertes Bild mit entsprechender Ausleuchtung.
+ */
 Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
     // Wenn keine Hitpoints vorhanden sind, gebe ein leeres Bild zurück
     if(hitpoints.size() == 0){
         return Image(0, 0);
     }
-    std::cout << "Hitpoints: " << hitpoints.size() << std::endl;
 
     // Breite und Höhe des Bildes basieren auf den Kameraeigenschaften
     uint16_t width = camera.get_width_pixels();
@@ -25,7 +40,7 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
 
     // Neues Bild mit den Maßen Höhe x Breite erstellen
     Image image(height, width);
-    std::cout << "Image size: " << height << "x" << width << std::endl;
+    std::cout << "Image size: " << width << "x" << height << std::endl;
     std::cout << "Hitpoints size: " << hitpoints.size() << std::endl;
     // Schleife über alle Pixel des Bildes
     for(uint16_t i = 0; i < height; i++){
@@ -101,21 +116,28 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
     return image;
 }
 
-// kombiniert Scenen-Funktionalität
+/**
+ * @brief Kombinierte Funktion zur Bildgenerierung.
+ * 
+ * Berechnet alle Strahlen, testet deren Schnittpunkte und erzeugt aus den Treffpunkten ein Bild.
+ * 
+ * @return Das erzeugte Bild mit berechneter Beleuchtung.
+ */
 Image Scene::generateImage() {
-    std::cout << "rays: " << camera.get_rays().size() << std::endl;
+    std::cout << "Rays: " << camera.get_rays().size() << std::endl;
     std::vector<Ray> rays = camera.get_rays();
-    return transformHitpointsToImage(calculateHitpointsKDTree(rays));
+    return transformHitpointsToImage(calculateHitpoints(rays));
 }
 
-// Ändern der Kameraparameter
-void Scene::setCamera(const Point3D& eyePos, const Vector3D& viewDir, float pixelWidth, float pixelHeight, int horizontalPixels, int verticalPixels) {
-    camera.set_everything(eyePos, viewDir, pixelWidth, pixelHeight, horizontalPixels, verticalPixels);
-    camera.generate_rays();
-}
-
-std::vector<Hitpoint> Scene::calculateHitpointsKDTree(std::vector<Ray>& rays) {
-    //std::cout << "Rays size: " << rays.size() << std::endl;
+/**
+ * @brief Berechnet die Hitpoints für alle gegebenen Strahlen.
+ * 
+ * Verwendet den KD-Tree zur effizienten Schnittpunktsberechnung.
+ * 
+ * @param rays Liste von Strahlen, für die Treffpunkte berechnet werden sollen.
+ * @return Vektor von Hitpoints (Treffdaten), leer oder mit max-Distanz wenn kein Treffer.
+ */
+std::vector<Hitpoint> Scene::calculateHitpoints(std::vector<Ray>& rays) {
     std::vector<Hitpoint> hitpoints;
 
     for (auto& ray : rays) {
@@ -130,90 +152,33 @@ std::vector<Hitpoint> Scene::calculateHitpointsKDTree(std::vector<Ray>& rays) {
     return hitpoints;
 }
 
-std::vector<Hitpoint> Scene::calculateHitpointsBruteForce(std::vector<Ray>& rays) {
-    //std::cout << "Rays size: " << rays.size() << std::endl;
-    std::vector<Hitpoint> hitpoints;
-    const float EPS = 1e-6f;
-    
-    for (auto& ray : rays) {
-        // Ursprungspunkt des Strahls
-        Point3D orig_p = ray.getOrigin();
-        // Richtungsvektor des Strahls
-        Vector3D dir_v = ray.getDirection();
-
-        // Umwandlung in Eigen Vektoren zur Berechnung
-        Eigen::Vector3f orig(orig_p.x, orig_p.y, orig_p.z);
-        Eigen::Vector3f dir(dir_v.x, dir_v.y, dir_v.z);
-
-        Hitpoint hp;  // Zwischenspeicher für den nächsten Hitpoint
-
-        for (const auto& tri : triangles) {
-            // Indizes der Dreiecksecken
-            const auto& idx = tri.getIndices();
-
-            // Positionen der Dreiecksecken als Eigen-Vektoren
-            Eigen::Vector3f b(vertices[idx[1]].x, vertices[idx[1]].y, vertices[idx[1]].z);
-            Eigen::Vector3f a(vertices[idx[0]].x, vertices[idx[0]].y, vertices[idx[0]].z);
-            Eigen::Vector3f c(vertices[idx[2]].x, vertices[idx[2]].y, vertices[idx[2]].z);
-
-            // Kanten des Dreiecks berechnen
-            Eigen::Vector3f edge1 = b - a;
-            Eigen::Vector3f edge2 = c - a;
-
-            // Kreuzprodukt aus Strahlrichtung und zweiter Dreieckskante
-            Eigen::Vector3f pvec = dir.cross(edge2);
-
-            // Determinante des Gleichungssystems (zeigt Parallelität an)
-            float det = edge1.dot(pvec);
-
-            // Wenn Determinante nahe null ist, sind Strahl und Dreieck parallel → kein Schnitt
-            if (std::abs(det) < EPS)
-                continue;
-
-            // Inverse der Determinante
-            float invDet = 1.0f / det;
-
-            // Vektor vom Dreieckseck a zum Strahlursprung
-            Eigen::Vector3f tvec = orig - a;
-
-            // Berechnung des baryzentrischen Koordinaten u
-            float u = tvec.dot(pvec) * invDet;
-            if (u < 0.0f || u > 1.0f)
-                continue; // Schnittpunkt liegt außerhalb des Dreiecks
-
-            // Kreuzprodukt von tvec und edge1
-            Eigen::Vector3f qvec = tvec.cross(edge1);
-
-            // Berechnung des baryzentrischen Koordinaten v
-            float v = dir.dot(qvec) * invDet;
-            if (v < 0.0f || (u + v) > 1.0f)
-                continue; // Schnittpunkt liegt außerhalb des Dreiecks
-
-            // Berechnung des Parameters t auf dem Strahl (Entfernung vom Ursprung)
-            float t = edge2.dot(qvec) * invDet;
-            if (t <= EPS)
-                continue; // Schnittpunkt liegt hinter dem Strahlursprung oder zu nah
-
-            // Berechnung des exakten Schnittpunkts im 3D-Raum
-            Eigen::Vector3f hitPos = orig + dir * t;
-
-            Hitpoint hp_tmp;
-            Point3D p = { hitPos.x(), hitPos.y(), hitPos.z() };
-
-            // Setzen der Hitpoint-Parameter
-            hp_tmp.setPosition(p);
-            hp_tmp.setDistance(t);
-            hp_tmp.setTriangle(&tri);
-
-            // Speichere nur den nächstgelegenen Hitpoint
-            if (hp_tmp.getDistance() < hp.getDistance()) {
-                hp = hp_tmp;
-            }
-        }
-        hitpoints.push_back(hp);
-    }
-
-    return hitpoints;
+/**
+ * @brief Setzt die Kamera mit exakten Parametern.
+ * 
+ * Erlaubt vollständige Kontrolle über Position, Blickrichtung und Auflösung.
+ * 
+ * @param eyePos Kameraursprung (Position des Auges).
+ * @param viewDir Blickrichtung der Kamera.
+ * @param pixelWidth Breite eines Pixels in Weltkoordinaten.
+ * @param pixelHeight Höhe eines Pixels in Weltkoordinaten.
+ * @param horizontalPixels Anzahl horizontaler Pixel.
+ * @param verticalPixels Anzahl vertikaler Pixel.
+ */
+void Scene::setCamera(const Point3D& eyePos, const Vector3D& viewDir, float pixelWidth, float pixelHeight, int horizontalPixels, int verticalPixels) {
+    camera.set_everything(eyePos, viewDir, pixelWidth, pixelHeight, horizontalPixels, verticalPixels);
+    camera.generate_rays();
 }
 
-
+/**
+ * @brief Überladene Methode zur Kamerakonfiguration per Skalierungs- und Auflösungsfaktor.
+ * 
+ * Vereinfachte Kamerakonfiguration z. B. für automatisches Setup.
+ * 
+ * @param eyePos Kameraursprung.
+ * @param viewDir Blickrichtung.
+ * @param scalingFactor Skalierung des Sichtbereichs.
+ * @param resolutionFactor Pixelanzahl pro Sichtwinkel.
+ */
+void Scene::setCamera(const Point3D& eyePos, const Vector3D& viewDir, float scalingFactor, int resolutionFactor) {
+    camera.setScaling(eyePos, viewDir, scalingFactor, resolutionFactor);
+}

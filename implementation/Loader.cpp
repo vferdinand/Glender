@@ -1,20 +1,24 @@
 #include "../hpp/Loader.hpp"
 
-// Konstruktor der Loader-Klasse.
-// Dient zur Initialisierung eines Loader-Objekts.
-// Momentan wird keine spezielle Initialisierung vorgenommen.
+/**
+ * @brief Konstruktor der Loader-Klasse.
+ * 
+ * Lädt beim Erstellen automatisch die übergebene .obj-Datei.
+ * 
+ * @param filePathOBJ Pfad zur zu ladenden .obj-Datei (relativ zu "obj/").
+ */
 Loader::Loader(const std::string& filePathOBJ){
     loadOBJ(filePathOBJ);
 }
 
 
-/* /////////////////////////////////////////////////////////
- * Ist die Hauptfunktion zum Laden von .obj-Dateien.
- * /////////////////////////////////////////////////////////
+/**
+ * @brief Hauptfunktion zum Laden einer .obj-Datei.
  * 
- * Lädt eine .obj-Datei und optional eine zugehörige .mtl-Datei.
- * Wenn ein Materialpfad angegeben ist, werden zuerst die Farben geladen.
+ * Diese Methode lädt eine .obj-Datei sowie ggf. eine verlinkte .mtl-Datei für Materialien.
  * Danach erfolgt das Parsen der Geometrie.
+ * 
+ * @param filePathOBJ Pfad zur .obj-Datei.
  */
 void Loader::loadOBJ(const std::string& filePathOBJ){
     std::ifstream fileOBJ("obj/" + filePathOBJ);
@@ -45,12 +49,13 @@ void Loader::loadOBJ(const std::string& filePathOBJ){
     initializeVerticiesTriangles(filePathOBJ);
 }
 
-/*
- * Lädt Farbwerte und Materialnamen aus einer .mtl-Datei.
- * Unterstützt nur die diffuse Farbe (Kd) und Materialnamen (newmtl).
- * Fügt die Farben in die colors-Liste und die Namen in materialNames ein.
- * Der erste Eintrag ist ein Standardmaterial (weiß, ohne Namen),
- * um ein fallback-Material zu haben, falls kein "usemtl" angegeben ist.
+/**
+ * @brief Lädt Farben und Materialeigenschaften aus einer .mtl-Datei.
+ * 
+ * Unterstützt Kd (diffuse Farbe), Ka (ambient), Ks (specular), Ns (Glanz), d/Tr (Transparenz), illum.
+ * 
+ * @param filePathMTL Pfad zur Material-Datei (.mtl).
+ * @return true, wenn erfolgreich geladen; andernfalls false.
  */
 bool Loader::initializeColor(const std::string& filePathMTL){
     std::ifstream fileMTL("obj/" + filePathMTL);
@@ -102,8 +107,9 @@ bool Loader::initializeColor(const std::string& filePathMTL){
     return true;
 }
 
-/*
- * Lädt Geometriedaten (Vertices, Normalen, Dreiecke) aus einer .obj-Datei.
+/**
+ * @brief Init Geometriedaten (Vertices, Normalen, Dreiecke) aus einer .obj-Datei.
+ * 
  * Unterstützt:
  *  - Vertex-Positionen ("v")
  *  - Vertex-Normalen ("vn")
@@ -111,6 +117,9 @@ bool Loader::initializeColor(const std::string& filePathMTL){
  *  - Materialzuweisung ("usemtl")
  * Die Dreiecke werden in der Reihenfolge ihres Auftretens gespeichert,
  * inklusive Materialindex zur späteren Farbanwendung.
+ * 
+ * @param filePathOBJ Pfad zur .obj-Datei.
+ * @return true, wenn erfolgreich geladen; andernfalls false.
  */
 bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ) {
     std::ifstream fileOBJ("obj/" + filePathOBJ);
@@ -219,9 +228,13 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ) {
     return true;
 }
 
+/**
+ * @brief Erstellt einen KD-Baum aus den geladenen Dreiecken und testet Ray-Intersection.
+ * 
+ * @param ray Der zu testende Strahl.
+ */
 void Loader::buildKDTreeAndIntersect(const Ray& ray) {
-    KDTree* kdtree = new KDTree(triangles, vertices);  // greift auf Membervariablen zu
-
+    KDTree* kdtree = new KDTree(triangles, vertices);
     Hitpoint hit;
     if (kdtree->intersect(ray, hit)) {
         // Treffer behandeln
@@ -233,9 +246,11 @@ void Loader::buildKDTreeAndIntersect(const Ray& ray) {
     delete kdtree;
 }
 
-/*
- * Sucht einen Materialnamen in der Liste materialNames.
- * Gibt den Index zurück, falls gefunden, sonst -1.
+/**
+ * @brief Sucht nach einem Materialnamen in der geladenen Liste.
+ * 
+ * @param material Name des gesuchten Materials.
+ * @return Index des Materials oder -1, falls nicht gefunden.
  */
 int16_t Loader::locateMaterial(const std::string& material) {
     for (size_t i = 0; i < materials.size(); ++i) {

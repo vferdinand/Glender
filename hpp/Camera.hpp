@@ -11,7 +11,7 @@ class Camera {
     private: 
         Point3D eye;
         Vector3D view;
-        
+  
         float width;
         float height;
 
@@ -19,6 +19,8 @@ class Camera {
         u_int16_t lengthPixels;
 
         std::vector<Ray> rays;
+
+        void setScaling(float width, float height);
 
         static Vector3D normalize(const Vector3D& v);
         static Vector3D cross(const Vector3D& a, const Vector3D& b);
@@ -38,6 +40,8 @@ class Camera {
           lengthPixels(verticalPixels)  
           {}
         void set_everything(const Point3D& eyePos, const Vector3D& viewDir, float pixelWidth, float pixelHeight, u_int16_t horizontalPixels, u_int16_t verticalPixels);
+        void setScaling(const Point3D& eyePos, const Vector3D& viewDir, float scalingFactor, int resolutionFactor);
+        void setWithScaling(const Point3D& eyePos, const Vector3D& viewDir, int scaleFactor);
         void generate_rays();
         const std::vector<Ray>& get_rays() const;
         Point3D get_eye() const;
