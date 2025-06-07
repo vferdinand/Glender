@@ -56,11 +56,11 @@ int main() {
     Vector3D camDir{ -1.0, -0.4, -1.0};
     /**
      * @brief Kurzübersicht zur Referenz der Werte & ihr scaling im 16:9 Format
-     * 0.7f - groß                  | * 1   - 160x90
-     * 1.4f - medium                | * 8   - 1280x720   (HD)
-     * 2.1f - klein                 | * 12  - 1920x1080  (Full HD)
-     * 4.0f - fast schon zu klein   | * 16  - 2560x1440  (QHD)
-     * 8.0f - klein af              | * 240 - 3840x2160 (4K)
+     * 1   - 160x90
+     * 8   - 1280x720   (HD)
+     * 12  - 1920x1080  (Full HD)
+     * 16  - 2560x1440  (QHD)
+     * 240 - 3840x2160 (4K)
      */
     scene.setCamera(camPos, camDir, 0.7f, 16);
 
