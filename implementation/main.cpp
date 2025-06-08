@@ -52,8 +52,10 @@ int main() {
     //carspinner();
     Scene scene("Car.obj");
 
-    Point3D camPos{ 9.0, 5.0, 9.0 };
+    Point3D camPos{ 4.0, 2.0, 4.0 };
     Vector3D camDir{ -1.0, -0.4, -1.0};
+
+    scene.setCamera(camPos ,camDir ,1.0f, 0.5f, 7680, 4320);
     /**
      * @brief Kurzübersicht zur Referenz der Werte & ihr scaling im 16:9 Format
      * 1   - 160x90
@@ -62,7 +64,7 @@ int main() {
      * 16  - 2560x1440  (QHD)
      * 240 - 3840x2160 (4K)
      */
-    scene.setCamera(camPos, camDir, 0.7f, 16);
+    //scene.setCamera(camPos, camDir, 0.7f, 16);
 
     Image img = scene.generateImage();
 
