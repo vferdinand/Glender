@@ -17,6 +17,7 @@ Scene::Scene(const std::string filePathObj){//}, const std::string filePathMtl){
     materials = loader.getMaterials();
     //camera.generate_rays();
     kdtree = new KDTree(triangles, vertices);
+    light = Light(Vector3D(1.0f, 1.0f, 1.0f), RGBA{1.0, 1.0, 1.0, 1.0});
 }
 
 /**
@@ -43,6 +44,7 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
     std::cout << "Image size: " << width << "x" << height << std::endl;
     std::cout << "Hitpoints size: " << hitpoints.size() << std::endl;
     // Schleife über alle Pixel des Bildes
+    Vector3D lightDirection = light.getGlobalLightVec();//{1.0,1.0,1.0};
     for(uint16_t i = 0; i < height; i++){
         for(uint16_t j = 0; j < width; j++){
 
@@ -59,17 +61,16 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
                 //Parameter vordefinieren
                 const Triangle* tri = hitpoints.at(index).getTriangle();
                 Vector3D n = tri->getNormalIndex();
-                Vector3D lightDirection = {1.0,1.0,1.0};
 
                 //Material holen
                 Material m = materials.at(tri->getMaterialIndex());
 
                 //Globaler Lichtvektor
-                light.setGlobalLightVec(lightDirection);
+                //light.setGlobalLightVec(lightDirection);
 
                 //Difuse Beleuchtung
                 RGBA c = m.getDifuse();
-                //std::cout << "Diffuse color: " << c.r << ", " << c.g << ", " << c.b << std::endl;
+                
                 //Glanzfaktor
                 float shininess = m.getShininess();
 
@@ -103,8 +104,8 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
                 RGBA specular = ks * specFactor * c_light;
 
                 // Endfarbe zusammensetzen
-                col = diffuse + ambient + specular;
-
+                col = specular; //diffuse + ambient;
+                std::cout << "jo" << std::endl;
             }
 
             // Farbe im Bild an der Position (i,j) setzen
@@ -134,10 +135,10 @@ Image Scene::generateImage() {
             Hitpoint hp;
             if (kdtree->intersect(ray, hp)) {
                 // Beleuchtung berechnen (wie in transformHitpointsToImage)
-                RGBA col = computeShading(hp);  // Extrahiere die Beleuchtungslogik
+                RGBA col = computeShading(hp).clamp();  // Extrahiere die Beleuchtungslogik
                 image.set(y, x, col);
             } else {
-                image.set(y, x, {0.0, 0.0, 0.0, 0.0});  // Hintergrundfarbe
+                image.set(y, x, {0.1, 0.1, 0.2, 0.1});  // Hintergrundfarbe
             }
         }
     }
@@ -145,19 +146,20 @@ Image Scene::generateImage() {
 }
 
 // Hilfsfunktion für Beleuchtung (aus transformHitpointsToImage extrahiert)
-RGBA Scene::computeShading(const Hitpoint& hp) {
+RGBA Scene::computeShading(Hitpoint& hp) {
     const Triangle* tri = hp.getTriangle();
     Material m = materials.at(tri->getMaterialIndex());
     Vector3D N = normals[tri->getNormalIndex()].normalized();
-    Vector3D L = Vector3D{1.0, 1.0, 1.0}.normalized();  // Lichtrichtung
-    Vector3D E = camera.get_view().normalized();
+    Vector3D L = light.getGlobalLightVec().normalized();  // Lichtrichtung
+    //Vector3D E = camera.get_view().normalized();
+    Vector3D E = (camera.get_eye() - hp.getPosition()).normalized();
     Vector3D R = (-L).reflected(N);
 
     float diffuseFactor = std::max(0.0f, N.dot(L));
     float specFactor = std::pow(std::max(0.0f, R.dot(E)), m.getShininess());
 
     RGBA diffuse = m.getDifuse() * diffuseFactor;
-    RGBA ambient = m.getAmbient() * light.getLightColor();
+    RGBA ambient = (m.getAmbient() * light.getLightColor()) * 0.05; // Ambient-Beleuchtung, hier mit einem festen Faktor
     RGBA specular = m.getSpecular() * specFactor * RGBA{1.0, 1.0, 1.0};
 
     return diffuse + ambient + specular;

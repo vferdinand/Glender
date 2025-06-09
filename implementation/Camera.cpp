@@ -96,8 +96,9 @@ void Camera::setScaling(const Point3D& eyePos, const Vector3D& viewDir, float sc
     uint16_t verticalPixels = baseHeight * resolutionFactor;
 
     
-    float pixelWidth = scalingFactor * 1.0f; // 0.5625f
-    float pixelHeight = scalingFactor* 1.0f; // 1.0f wäre 16:9 verhätlins
+    float pixelWidth  = scalingFactor * 1.0;
+    float pixelHeight = pixelWidth * 9.0f / 16.0f;
+    
 
     set_everything(eyePos, viewDir, pixelWidth, pixelHeight, horizontalPixels, verticalPixels);
     //generate_rays();

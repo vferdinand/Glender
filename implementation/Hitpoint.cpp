@@ -2,7 +2,7 @@
 
 Hitpoint::Hitpoint(){}
 
-const Point3D Hitpoint::getPosition() {
+Point3D Hitpoint::getPosition() {
     return position;
 }
 float Hitpoint::getDistance() {
