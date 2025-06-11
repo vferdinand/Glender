@@ -13,5 +13,10 @@ struct KDNode {
 
     bool isLeaf() const { return left == nullptr && right == nullptr; }
 
+    /**
+     * @brief Destruktor für einen KDNode.
+     *
+     * Löscht rekursiv alle Kindknoten.
+     */
     ~KDNode();
 };
