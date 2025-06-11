@@ -162,7 +162,16 @@ RGBA Scene::computeShading(Hitpoint& hp) {
     RGBA ambient = (m.getAmbient() * light.getLightColor()) * 0.05; // Ambient-Beleuchtung, hier mit einem festen Faktor
     RGBA specular = m.getSpecular() * specFactor * RGBA{1.0, 1.0, 1.0};
 
-    return diffuse + ambient + specular;
+    switch (m.getIllum()) {
+        case 0:
+            return diffuse;
+        case 1:
+            return diffuse + ambient;
+        case 2:
+            return diffuse + ambient + specular;
+        default:
+            return diffuse + ambient + specular;
+    }
 }
 
 /**

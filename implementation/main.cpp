@@ -5,8 +5,8 @@
 #include "../hpp/Scene.hpp"
 
 
-#include <chrono>
-#include <thread>
+//#include <chrono>
+//#include <thread>
 
 
 int carspinner() {
@@ -172,15 +172,17 @@ void combinedSpinnerFrames()
 
 int main() {
     //carspinner();
-    //lightspinner();
+    lightspinner();
     //lightspinnerFrames();
     //carspinnerFrames();
-    combinedSpinnerFrames();
+    //combinedSpinnerFrames();
     return 0;
     Scene scene("Car.obj");
 
     Point3D camPos{ 4.0, 2.0, 4.0 };
     Vector3D camDir{ -1.0, -0.4, -1.0};
+
+    scene.light.setGlobalLightVec(Vector3D{ 1.0, 1.0, 1.0 }.normalized());
 
     //scene.setCamera(camPos ,camDir ,1.0f, 0.5f, 500, 250);//7680, 4320);
     /**
@@ -189,9 +191,9 @@ int main() {
      * 8   - 1280x720   (HD)
      * 12  - 1920x1080  (Full HD)
      * 16  - 2560x1440  (QHD)
-     * 240 - 3840x2160 (4K)
+     * 24  - 3840x2160 (4K)
      */
-    scene.setCamera(camPos, camDir, 0.7f, 4);
+    scene.setCamera(camPos, camDir, 1.0f, 24);
 
     Image img = scene.generateImage();
 
