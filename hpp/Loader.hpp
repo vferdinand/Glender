@@ -4,14 +4,10 @@
 #include "Triangle.hpp"
 #include "Ray.hpp"
 #include "Material.hpp"
-#include "../hpp/KDTree.hpp"
-
+#include "KDTree.hpp"
 #include <string>
-#include <vector>
-
 #include <fstream>
 #include <sstream>
-#include <iostream>
 
 class Loader {
 private:

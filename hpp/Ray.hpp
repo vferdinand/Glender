@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Structs.hpp"
-#include <optional>
 #include "Hitpoint.hpp"
+#include <optional>
 
 
 class Ray {

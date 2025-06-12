@@ -1,19 +1,14 @@
 #pragma once
-#include <vector>
-#include <algorithm>
-#include <cmath>
 #include <Eigen/Dense>
+#include "Structs.hpp"
 #include "Triangle.hpp"
 #include "Hitpoint.hpp"
-#include "Image.hpp"
-#include "Structs.hpp"
 #include "Ray.hpp"
-#include "Camera.hpp"
-#include "Loader.hpp"
-#include "KDTree.hpp"
-#include <chrono>
+#include "Image.hpp"
 #include "Light.hpp"
 #include "Material.hpp"
+#include "Camera.hpp"
+#include "Loader.hpp"
 
 /**
  * @brief Repräsentiert eine 3D-Szene mit Geometrie, Kamera, Beleuchtung und Render-Logik.

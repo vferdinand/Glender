@@ -2,7 +2,6 @@
 #include "Structs.hpp"
 #include "Ray.hpp"
 #include <algorithm>
-#include <cmath>
 #include <limits>
 
 /**
