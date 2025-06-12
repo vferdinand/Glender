@@ -1,46 +1,14 @@
 #include "../hpp/Image.hpp"
 
-/*
-* Image class implementation
-* 
-* Diese Klasse repräsentiert ein 2D-Bild mit RGBA-Werten.
-* Sie bietet Methoden zum Setzen und Abrufen von Pixelwerten sowie zum Drucken des Bildes.
-* Das Bild wird mit einer bestimmten Anzahl von Zeilen und Spalten initialisiert und kann mit einem Standard-RGBA-Wert gefüllt werden.
-*/
-
-/**
- * @brief Konstruktor der Image-Klasse.
- * 
- * Initialisiert ein 2D-Bild mit gegebener Anzahl an Zeilen und Spalten.
- * Jeder Pixel wird mit einem Standard-RGBA-Wert gefüllt.
- * 
- * @param rows Anzahl der Zeilen (Höhe des Bildes)
- * @param cols Anzahl der Spalten (Breite des Bildes)
- * @param defaultValue RGBA-Wert, mit dem das Bild initialisiert wird
- */
 Image::Image(size_t rows, size_t cols, RGBA defaultValue)
     : data(rows, std::vector<RGBA>(cols, defaultValue)) {}
 
-/**
- * @brief Setzt den RGBA-Wert eines bestimmten Pixels.
- * 
- * @param row Zeilenindex
- * @param col Spaltenindex
- * @param value Neuer RGBA-Wert
- */
 void Image::set(size_t row, size_t col, RGBA value) {
     if (row < data.size() && col < data[row].size()) {
         data[row][col] = value;
     }
 }
 
-/**
- * @brief Gibt den RGBA-Wert eines bestimmten Pixels zurück.
- * 
- * @param row Zeilenindex
- * @param col Spaltenindex
- * @return RGBA Wert an der angegebenen Position, oder {0,0,0,0}, wenn ungültig
- */
 RGBA Image::get(size_t row, size_t col) const {
     if (row < data.size() && col < data[row].size()) {
         return data[row][col];
@@ -48,11 +16,6 @@ RGBA Image::get(size_t row, size_t col) const {
     return {0.0, 0.0, 0.0, 0.0};
 }
 
-/**
- * @brief Gibt das Bild als Text aus (nur zu Debug-Zwecken).
- * 
- * Gibt jeden Pixel als RGBA-Wert auf der Konsole aus.
- */
 void Image::print() const {
     for (const auto& row : data) {
         for (RGBA val : row) {
@@ -62,14 +25,6 @@ void Image::print() const {
     }
 }
 
-/**
- * @brief Speichert das Bild im PPM-Format.
- * 
- * Die Datei wird als "P6" (binäres RGB) gespeichert.
- * Der Alpha-Kanal wird ignoriert. Die RGB-Werte werden jeweils von [0.0, 1.0] in [0, 255] konvertiert.
- * 
- * @param filename Name der Ausgabedatei. Wenn leer, wird "output.ppm" verwendet.
- */
 void Image::save(const std::string& filename) {
     std::string outName = filename.empty() ? "output.ppm" : filename;
 

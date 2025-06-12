@@ -30,7 +30,7 @@ struct AABB {
      * @param vertices Die vollständige Liste aller Vertices im Raum.
      */
     void expand(const std::vector<unsigned int>& indices, const std::vector<Vertex>& vertices);
-
+    
     /**
      * @brief Prüft, ob ein Strahl (Ray) die Bounding Box schneidet.
      *
