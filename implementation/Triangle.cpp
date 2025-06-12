@@ -1,10 +1,5 @@
 #include "../hpp/Triangle.hpp"
 
-/*
- * Ein Dreieck wird durch drei Indizes in der vertexIndices-Liste
- * und einen Farbindex in der colors-Liste dargestellt.
- * Der Farbindex ist optional und wird standardmäßig auf 0 gesetzt.
- */
 Triangle::Triangle(const std::vector<uint32_t>& vertexIndices, uint32_t normalIndex, u_int16_t materialIndex) {
     if (vertexIndices.size() != 3) {
         throw std::invalid_argument("Triangle requires exactly 3 vertex indices.");
