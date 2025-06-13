@@ -227,3 +227,7 @@ void Scene::setCamera(const Point3D& eyePos, const Vector3D& viewDir, float pixe
 void Scene::setCamera(const Point3D& eyePos, const Vector3D& viewDir, float scalingFactor, int resolutionFactor) {
     camera.setScaling(eyePos, viewDir, scalingFactor, resolutionFactor);
 }
+
+void Scene::setLight(const Vector3D& lightDir) {
+    light.setGlobalLightVec(lightDir.normalized());
+}

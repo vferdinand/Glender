@@ -25,6 +25,8 @@ class Scene {
 
         Camera camera; //eigentlich private, aber für Debugging sichtbar
         
+        Light light; // Lichtquelle für die Szene
+
         RGBA computeShading(Hitpoint& hp);
         
         Image transformHitpointsToImage(std::vector<Hitpoint> hitpoints);
@@ -33,8 +35,6 @@ class Scene {
         
         KDTree* kdtree = nullptr; // Zeiger auf KDTree
     public:
-        Light light;
-
         //Kamera Konfiguration
         void setCamera(const Point3D& eyePos, const Vector3D& viewDir, float pixelWidth, float pixelHeight, int horizontalPixels, int verticalPixels);
         void setCamera(const Point3D& eyePos, const Vector3D& viewDir, int scalingFactor);  // Neue Überladung
@@ -45,4 +45,12 @@ class Scene {
 
         //Bündelt calculateHitpoints und convertHitpointsToImage
         Image generateImage();
+
+        /**
+         * @brief setzt den Lichtvektor für die globale Beleuchtung.
+         * Dies beeinflusst die Lichtquelle für die gesamte Szene.
+         * 
+         * @param lightDir Vektor, der die Richtung des Lichts angibt.
+         */
+        void setLight(const Vector3D& lightDir);
 };
