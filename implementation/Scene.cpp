@@ -1,13 +1,6 @@
 #include "../hpp/Scene.hpp"
 
-/**
- * @brief Konstruktor der Szene.
- * 
- * Lädt das OBJ-Modell, extrahiert die Vertices, Dreiecke, Normalen und Materialien
- * und erstellt daraus einen KD-Tree zur Beschleunigung der Strahlverfolgung.
- * 
- * @param filePathObj Pfad zur OBJ-Datei.
- */
+
 Scene::Scene(const std::string filePathObj){//}, const std::string filePathMtl){
     Loader loader(filePathObj);
     vertices = loader.getVertices();
@@ -20,15 +13,6 @@ Scene::Scene(const std::string filePathObj){//}, const std::string filePathMtl){
     light = Light(Vector3D(1.0f, 1.0f, 1.0f), RGBA{1.0, 1.0, 1.0, 1.0});
 }
 
-/**
- * @brief Wandelt berechnete Hitpoints in ein Bild um.
- * 
- * Führt pro Pixel eine einfache Beleuchtung durch (ambient, diffus, spekular) 
- * auf Basis des getroffenen Materials und berechnet die resultierende Farbe.
- * 
- * @param hitpoints Vektor mit Treffpunkten für jeden Strahl.
- * @return Ein generiertes Bild mit entsprechender Ausleuchtung.
- */
 Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
     // Wenn keine Hitpoints vorhanden sind, gebe ein leeres Bild zurück
     if(hitpoints.size() == 0){
@@ -117,13 +101,6 @@ Image Scene::transformHitpointsToImage(std::vector<Hitpoint> hitpoints) {
     return image;
 }
 
-/**
- * @brief Kombinierte Funktion zur Bildgenerierung.
- * 
- * Berechnet alle Strahlen, testet deren Schnittpunkte und erzeugt aus den Treffpunkten ein Bild.
- * 
- * @return Das erzeugte Bild mit berechneter Beleuchtung.
- */
 Image Scene::generateImage() {
     uint16_t width = camera.get_width_pixels();
     uint16_t height = camera.get_length_pixels();
@@ -174,14 +151,7 @@ RGBA Scene::computeShading(Hitpoint& hp) {
     }
 }
 
-/**
- * @brief Berechnet die Hitpoints für alle gegebenen Strahlen.
- * 
- * Verwendet den KD-Tree zur effizienten Schnittpunktsberechnung.
- * 
- * @param rays Liste von Strahlen, für die Treffpunkte berechnet werden sollen.
- * @return Vektor von Hitpoints (Treffdaten), leer oder mit max-Distanz wenn kein Treffer.
- */
+
 std::vector<Hitpoint> Scene::calculateHitpoints(std::vector<Ray>& rays) {
     std::vector<Hitpoint> hitpoints;
 
@@ -197,33 +167,12 @@ std::vector<Hitpoint> Scene::calculateHitpoints(std::vector<Ray>& rays) {
     return hitpoints;
 }
 
-/**
- * @brief Setzt die Kamera mit exakten Parametern.
- * 
- * Erlaubt vollständige Kontrolle über Position, Blickrichtung und Auflösung.
- * 
- * @param eyePos Kameraursprung (Position des Auges).
- * @param viewDir Blickrichtung der Kamera.
- * @param pixelWidth Breite eines Pixels in Weltkoordinaten.
- * @param pixelHeight Höhe eines Pixels in Weltkoordinaten.
- * @param horizontalPixels Anzahl horizontaler Pixel.
- * @param verticalPixels Anzahl vertikaler Pixel.
- */
+
 void Scene::setCamera(const Point3D& eyePos, const Vector3D& viewDir, float pixelWidth, float pixelHeight, int horizontalPixels, int verticalPixels) {
     camera.set_everything(eyePos, viewDir, pixelWidth, pixelHeight, horizontalPixels, verticalPixels);
     //camera.generate_rays();
 }
 
-/**
- * @brief Überladene Methode zur Kamerakonfiguration per Skalierungs- und Auflösungsfaktor.
- * 
- * Vereinfachte Kamerakonfiguration z. B. für automatisches Setup.
- * 
- * @param eyePos Kameraursprung.
- * @param viewDir Blickrichtung.
- * @param scalingFactor Skalierung des Sichtbereichs.
- * @param resolutionFactor Pixelanzahl pro Sichtwinkel.
- */
 void Scene::setCamera(const Point3D& eyePos, const Vector3D& viewDir, float scalingFactor, int resolutionFactor) {
     camera.setScaling(eyePos, viewDir, scalingFactor, resolutionFactor);
 }
