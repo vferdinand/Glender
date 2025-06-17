@@ -26,6 +26,7 @@ private:
 
     Camera camera;                    ///< Kameraobjekt (für Ray-Generierung)
     KDTree* kdtree = nullptr;         ///< KD-Tree zur Beschleunigung der Strahlschnittberechnung
+    Light light;                      ///< Globale Lichtquelle für die Szene
 
     /**
      * @brief Berechnet die Farbe eines Hitpoints basierend auf Material, Licht, etc.
@@ -56,8 +57,6 @@ private:
     std::vector<Hitpoint> calculateHitpoints(std::vector<Ray>& rays);
 
 public:
-    Light light;  ///< Globale Lichtquelle
-
     /**
      * @brief Konstruktor der Szene.
      * 
@@ -101,4 +100,12 @@ public:
      * @param resolutionFactor Pixelanzahl pro Sichtwinkel.
      */
     void setCamera(const Point3D& eyePos, const Vector3D& viewDir, float scalingFactor, int resolutionFactor);
+
+    /**
+     * @brief setzt den Lichtvektor für die globale Beleuchtung.
+     * Dies beeinflusst die Lichtquelle für die gesamte Szene.
+     * 
+     * @param lightDir Vektor, der die Richtung des Lichts angibt.
+     */
+    void setLight(const Vector3D& lightDir);
 };
