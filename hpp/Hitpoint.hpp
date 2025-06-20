@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Structs.hpp"
+#include "structs/Point3D.hpp"
 #include "Triangle.hpp"
-#include <limits>
 
 class Hitpoint {
     private:

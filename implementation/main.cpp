@@ -144,7 +144,15 @@ void classic() {
 
     scene.setLight(Vector3D{ 1.0, 1.0, 1.0 }.normalized());
     
-    scene.setCamera(camPos, camDir, 1.0f, 24);
+    /**
+     * @brief Kurzübersicht zur Referenz der Werte & ihr scaling im 16:9 Format
+     * 1   - 160x90
+     * 8   - 1280x720   (HD)
+     * 12  - 1920x1080  (Full HD)
+     * 16  - 2560x1440  (QHD)
+     * 24  - 3840x2160 (4K)
+     */
+    scene.setCamera(camPos, camDir, 1.0f, 8);
 
     Image img = scene.generateImage();
 

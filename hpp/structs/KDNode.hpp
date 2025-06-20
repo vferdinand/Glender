@@ -1,5 +1,5 @@
 #pragma once
-#include "Triangle.hpp"
+#include "../Triangle.hpp"
 #include "AABB.hpp"
 #include <vector>
 

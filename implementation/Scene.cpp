@@ -8,7 +8,6 @@ Scene::Scene(const std::string filePathObj){//}, const std::string filePathMtl){
 
     normals = loader.getNormals();
     materials = loader.getMaterials();
-    //camera.generate_rays();
     kdtree = new KDTree(triangles, vertices);
     light = Light(Vector3D(1.0f, 1.0f, 1.0f), RGBA{1.0, 1.0, 1.0, 1.0});
 }
@@ -170,7 +169,6 @@ std::vector<Hitpoint> Scene::calculateHitpoints(std::vector<Ray>& rays) {
 
 void Scene::setCamera(const Point3D& eyePos, const Vector3D& viewDir, float pixelWidth, float pixelHeight, int horizontalPixels, int verticalPixels) {
     camera.set_everything(eyePos, viewDir, pixelWidth, pixelHeight, horizontalPixels, verticalPixels);
-    //camera.generate_rays();
 }
 
 void Scene::setCamera(const Point3D& eyePos, const Vector3D& viewDir, float scalingFactor, int resolutionFactor) {

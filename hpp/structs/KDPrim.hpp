@@ -1,6 +1,6 @@
 #pragma once
-#include "Triangle.hpp"
-#include "Structs.hpp"
+#include "Vertex.hpp"
+#include "../Triangle.hpp"
 #include <vector>
 
 struct KDPrim {

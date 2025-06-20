@@ -1,10 +1,9 @@
 #pragma once
 #include "Triangle.hpp"
-#include "Structs.hpp"
 #include "Ray.hpp"
 #include "Hitpoint.hpp"
-#include "KDPrim.hpp"
-#include "KDNode.hpp"
+#include "structs/KDPrim.hpp"
+#include "structs/KDNode.hpp"
 #include <vector>
 #include <algorithm>
 

@@ -56,7 +56,6 @@ void Camera::setScaling(const Point3D& eyePos, const Vector3D& viewDir, float sc
     
 
     set_everything(eyePos, viewDir, pixelWidth, pixelHeight, horizontalPixels, verticalPixels);
-    //generate_rays();
 }
 
 Ray Camera::get_ray(uint32_t x, uint32_t y) const {

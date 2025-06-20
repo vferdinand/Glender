@@ -1,9 +1,7 @@
 #pragma once
 
-#include "Structs.hpp"
+#include "structs/Vector3D.hpp"
 #include "Hitpoint.hpp"
-#include <optional>
-
 
 class Ray {
     private:

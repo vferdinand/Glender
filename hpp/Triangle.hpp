@@ -1,9 +1,7 @@
 #pragma once
-#include "Structs.hpp"
-#include <array>
+#include "structs/Vertex.hpp"
 #include <vector>
 #include <cstdint>
-#include <stdexcept>
 
 class Triangle {
     private: 

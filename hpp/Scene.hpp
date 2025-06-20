@@ -1,9 +1,5 @@
 #pragma once
 #include <Eigen/Dense>
-#include "Structs.hpp"
-#include "Triangle.hpp"
-#include "Hitpoint.hpp"
-#include "Ray.hpp"
 #include "Image.hpp"
 #include "Light.hpp"
 #include "Material.hpp"

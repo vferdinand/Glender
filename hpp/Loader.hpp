@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Structs.hpp"
-#include "Triangle.hpp"
+#include "structs/RGBA.hpp"
+#include <vector>
+#include <cstdint>
 #include "Ray.hpp"
 #include "Material.hpp"
 #include "KDTree.hpp"

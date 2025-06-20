@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Structs.hpp"
+#include "structs/RGBA.hpp"
 
 class Material {
     private:

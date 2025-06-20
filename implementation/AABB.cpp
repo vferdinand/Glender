@@ -1,4 +1,4 @@
-#include "../hpp/AABB.hpp"
+#include "../hpp/structs/AABB.hpp"
 
 AABB::AABB() {
     float inf = std::numeric_limits<float>::infinity();
