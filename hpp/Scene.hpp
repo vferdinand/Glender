@@ -32,16 +32,6 @@ private:
     RGBA computeShading(Hitpoint& hp);
 
     /**
-     * @brief Wandelt eine Liste von Hitpoints in ein Bild um.
-     * 
-     * Führt Beleuchtungsberechnung durch und setzt pro Pixel die entsprechende Farbe.
-     * 
-     * @param hitpoints Liste mit Strahl-Treffpunkten.
-     * @return Gerendertes Bild.
-     */
-    Image transformHitpointsToImage(std::vector<Hitpoint> hitpoints);
-
-    /**
      * @brief Berechnet die Hitpoints für eine Liste von Strahlen.
      * 
      * Nutzt KD-Tree zur effizienten Berechnung.
