@@ -1,7 +1,6 @@
 #pragma once
-#include "../Triangle.hpp"
+
 #include "AABB.hpp"
-#include <vector>
 
 struct KDNode {
     AABB bbox;

@@ -2,7 +2,6 @@
 #include <Eigen/Dense>
 #include "Image.hpp"
 #include "Light.hpp"
-#include "Material.hpp"
 #include "Camera.hpp"
 #include "Loader.hpp"
 

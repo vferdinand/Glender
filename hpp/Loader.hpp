@@ -1,11 +1,10 @@
 #pragma once
 
-#include "structs/RGBA.hpp"
-#include <vector>
-#include <cstdint>
 #include "Ray.hpp"
 #include "Material.hpp"
 #include "KDTree.hpp"
+#include <vector>
+#include <cstdint>
 #include <string>
 #include <fstream>
 #include <sstream>

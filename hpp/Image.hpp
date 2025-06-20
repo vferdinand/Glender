@@ -1,7 +1,6 @@
 #pragma once
 
 #include "structs/RGBA.hpp"
-#include <iostream>
 #include <fstream>
 #include <cstdint>
 #include <vector>

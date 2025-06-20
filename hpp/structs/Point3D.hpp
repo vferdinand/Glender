@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Vector3D.hpp"
 
 struct Point3D;

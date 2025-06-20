@@ -1,7 +1,5 @@
 #pragma once
-#include "Triangle.hpp"
 #include "Ray.hpp"
-#include "Hitpoint.hpp"
 #include "structs/KDPrim.hpp"
 #include "structs/KDNode.hpp"
 #include <vector>

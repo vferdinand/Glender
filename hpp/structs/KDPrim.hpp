@@ -1,7 +1,4 @@
 #pragma once
-#include "Vertex.hpp"
-#include "../Triangle.hpp"
-#include <vector>
 
 struct KDPrim {
     const Triangle* tri;

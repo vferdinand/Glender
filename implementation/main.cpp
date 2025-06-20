@@ -1,7 +1,3 @@
-#include <iostream>
-#include "../hpp/Loader.hpp"
-#include "../hpp/Camera.hpp"
-#include "../hpp/Image.hpp"
 #include "../hpp/Scene.hpp"
 
 // Generates real-time images of a car spinning around its center
@@ -152,7 +148,7 @@ void classic() {
      * 16  - 2560x1440  (QHD)
      * 24  - 3840x2160 (4K)
      */
-    scene.setCamera(camPos, camDir, 1.0f, 8);
+    scene.setCamera(camPos, camDir, 1.0f, 12);
 
     Image img = scene.generateImage();
 
