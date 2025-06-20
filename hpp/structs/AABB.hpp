@@ -4,7 +4,7 @@
 #include "../Ray.hpp"
 
 /**
- * @class AABB
+ * @struct AABB
  * @brief Achsenparallele Bounding Box zur räumlichen Partitionierung.
  *
  * Wird verwendet, um Ray-Triangle-Intersektionen durch hierarchische Raumaufteilung effizienter zu machen.

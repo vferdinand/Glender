@@ -21,28 +21,3 @@ struct Point3D {
         return {x - p.x, y - p.y, z - p.z};
     }
 };
-/*
-/// @brief Vektoraddition mit Punkt (Kommutativität)
-inline Point3D operator+(const Vector3D& vec, const Point3D& p) {
-    return p + vec;
-}
-
-/// @see Point3D operator+
-inline Point3D Point3D::operator+(const Vector3D& vec) const {
-    return {x + vec.x, y + vec.y, z + vec.z};
-}
-
-/// @see Point3D operator-
-inline Vector3D Point3D::operator-(const Point3D& p) const {
-    return {x - p.x, y - p.y, z - p.z};
-}
-
-
- * @brief Vektoraddition mit Punkt (Kommutativität: Vektor + Punkt = Punkt).
- * @param vec Der Vektor
- * @param p Der Punkt
- * @return Neuer Punkt nach Verschiebung
- 
-inline Point3D operator+(const Vector3D& vec, const Point3D& p) {
-    return p + vec;
-}*/
