@@ -59,7 +59,7 @@ RGBA Scene::computeShading(Hitpoint& hp) {
             return diffuse + ambient + specular;
         default:
             return diffuse + ambient + specular;
-    }
+    } 
 }
 
 

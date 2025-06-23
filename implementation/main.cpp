@@ -133,10 +133,14 @@ void combinedSpinnerFrames() {
 
 // Generates one image of a car with a fixed camera position and light direction
 void classic() {
+    /*
     Scene scene("Car.obj");
-
     Point3D camPos{ 4.0, 2.0, 4.0 };
     Vector3D camDir{ -1.0, -0.4, -1.0};
+    */
+    Scene scene("Russian_Gamingsetup.obj");
+    Point3D camPos{ 11.2, 14.0, 8.0 };
+    Vector3D camDir{ -2.0, -1.4, -1.0};
 
     scene.setLight(Vector3D{ 1.0, 1.0, 1.0 }.normalized());
     
@@ -152,7 +156,7 @@ void classic() {
 
     Image img = scene.generateImage();
 
-    img.save("Car.ppm");
+    img.save("Russian_Gamingsetup.ppm");
 }
 
 int main() {
