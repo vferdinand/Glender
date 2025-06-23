@@ -32,6 +32,15 @@ private:
     RGBA computeShading(Hitpoint& hp);
 
     /**
+     * @brief Berechnet die Farbe eines Hitpoints mit Spiegelung und optional Transparenz.
+     * 
+     * @param hp Treffpunkt des Strahls.
+     * @param depth Rekursionstiefe für Spiegelung.
+     * @return Farbwert mit Beleuchtung und Spiegelung.
+     */
+    RGBA computeShading(Hitpoint& hp, int depth);
+
+    /**
      * @brief Berechnet die Hitpoints für eine Liste von Strahlen.
      * 
      * Nutzt KD-Tree zur effizienten Berechnung.
@@ -41,6 +50,7 @@ private:
      */
     std::vector<Hitpoint> calculateHitpoints(std::vector<Ray>& rays);
 
+    Vector3D refract(const Vector3D& I, const Vector3D& N, float etaI, float etaT);
 public:
     /**
      * @brief Konstruktor der Szene.
