@@ -1,4 +1,6 @@
 # ignore ALL .json, .obj, .pdf files
+*.obj
+*.mtl
 *.json
 *.ppm
 *.mp4
