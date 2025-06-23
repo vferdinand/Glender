@@ -151,12 +151,61 @@ void classic() {
     img.save("Car.ppm");
 }
 
+void classicMutter() {
+    Scene scene("mutter_gewinde_200.obj");
+
+    Point3D camPos{ 18.0, 2.0, 18.0 };
+    Vector3D camDir{ -1.0, -0.1, -1.0};
+
+    scene.setLight(Vector3D{ 1.0, 1.0, 1.0 }.normalized());
+    
+    scene.setCamera(camPos, camDir, 1.0f, 12);
+
+    Image img = scene.generateImage();
+
+    img.save("Car.ppm");
+}
+
+void mutterSpinnerFrames(){
+    Scene scene("mutter_gewinde_200.obj");
+
+    const float PI = 3.14159265f;
+    const float radius = 24.3f;
+    const float height = 2.0f;
+    const int frames = 360;
+    const float stepAngle = 2 * PI / frames;
+    float angle = 0.98f;
+
+    for (int frame = 0; frame < frames; ++frame) {
+        float camX = radius * std::cos(angle);
+        float camZ = radius * std::sin(angle);
+        scene.setCamera(
+            Point3D{ camX, height, camZ },
+            Vector3D{ -camX, -1.7f, -camZ },
+            1.0f, 8
+        );
+
+        float lx = std::cos(angle);
+        float lz = std::sin(angle);
+        float ly = 1.0f;
+        scene.setLight(Vector3D{ lx, ly, lz }.normalized());
+
+        Image img = scene.generateImage();
+        char fname[64];
+        std::snprintf(fname, sizeof(fname), "obj/framesMutter/frame_%03d.ppm", frame);
+        img.save(fname);
+        std::cout << "Saved " << fname << "\n";
+        angle += stepAngle;
+    }
+}
+
 int main() {
     //carspinner();
     //lightspinner();
     //lightspinnerFrames();
     //carspinnerFrames();
     //combinedSpinnerFrames();
-    classic();
+    classicMutter();
+    //mutterSpinnerFrames();
     return 0;
 }
