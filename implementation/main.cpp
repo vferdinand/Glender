@@ -2,7 +2,7 @@
 
 // Generates real-time images of a car spinning around its center
 int carspinner() {
-    std::string file_path_obj = "Car.obj";
+    std::string file_path_obj = "CarSide.obj";
     Scene scene(file_path_obj);
 
     const float radius    = 5.3;
@@ -26,7 +26,7 @@ int carspinner() {
 
 // Generates real-time images of a car with light direction changing around it
 int lightspinner() {
-    std::string file_path_obj = "Car.obj";
+    std::string file_path_obj = "CarSide.obj";
     Scene scene(file_path_obj);
 
     Point3D camPos{ 4.0, 2.0, 4.0 };
@@ -101,10 +101,10 @@ void carspinnerFrames() {
 
 // Generates frames of a car spinning around its center with light direction changing
 void combinedSpinnerFrames() {
-    Scene scene("Car.obj");
+    Scene scene("CarSide.obj");
 
     const float PI = 3.14159265f;
-    const int frames = 100;
+    const int frames = 30;
     const float stepAngle = 2 * PI / frames;
     const float camRadius = 5.3f;
     const float camHeight = 1.4f;
@@ -115,7 +115,7 @@ void combinedSpinnerFrames() {
         float camZ = camRadius * std::sin(angle);
         Point3D camPos{ camX, camHeight, camZ };
         Vector3D camDir{ -camX, -0.4f, -camZ };
-        scene.setCamera(camPos, camDir, 1.0f, 8);
+        scene.setCamera(camPos, camDir, 1.0f, 4);
 
         float lx = std::cos(angle);
         float lz = std::sin(angle);
@@ -123,9 +123,9 @@ void combinedSpinnerFrames() {
         scene.setLight(Vector3D{ lx, ly, lz }.normalized());
 
         Image img = scene.generateImage();
-        std::string fname = "obj/frames3/frame_" + std::to_string(frame) + ".ppm";
+        char fname[64];
+        std::snprintf(fname, sizeof(fname), "obj/frames3/frame_%03d.ppm", frame);
         img.save(fname);
-
         std::cout << "Saved " << fname << "\n";
         angle += stepAngle;
     }
@@ -133,7 +133,7 @@ void combinedSpinnerFrames() {
 
 // Generates one image of a car with a fixed camera position and light direction
 void classic() {
-    Scene scene("Car.obj");
+    Scene scene("CarSide.obj");
 
     Point3D camPos{ 4.0, 2.0, 4.0 };
     Vector3D camDir{ -1.0, -0.4, -1.0};
@@ -209,7 +209,8 @@ int main() {
     //lightspinnerFrames();
     //carspinnerFrames();
     //combinedSpinnerFrames();
-    classicMutter();
+    //classicMutter();
     //mutterSpinnerFrames();
+    classic();
     return 0;
 }
