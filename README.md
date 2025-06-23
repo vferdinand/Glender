@@ -3,6 +3,9 @@
 compiler-Befehl falls Cmake nicht geht: 
 g++ implementation/*.cpp -Ihpp -std=c++17 -Wall -Wextra -o main
 
+Downloadlink for Russian Gamingsetup
+https://free3d.com/3d-model/--147007.html
+
 Aufgabenabschnitte werden seperat in den private Branches bearbeitet. Sind einzelne Parteien mit ihrem Teil fertig, wird hinzugefügter Code nach Guidelines dokumeniert und in den Development Branch gemerged.
 Nachdem ein Aufgabenabschnitt vollständig bearbeitet wurde, wird die funktionierende Version in den main Branch gemerged.
 
