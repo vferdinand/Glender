@@ -132,7 +132,53 @@ void combinedSpinnerFrames() {
 }
 
 // Generates one image of a car with a fixed camera position and light direction
-void classic() {
+void classicCar() {
+    Scene scene("Car.obj");
+    Point3D camPos{ 4.0, 2.0, 4.0 };
+    Vector3D camDir{ -1.0, -0.4, -1.0};
+   
+
+    scene.setLight(Vector3D{ 1.0, 1.0, 1.0 }.normalized());
+    
+    /**
+     * @brief Kurzübersicht zur Referenz der Werte & ihr scaling im 16:9 Format
+     * 1   - 160x90
+     * 8   - 1280x720   (HD)
+     * 12  - 1920x1080  (Full HD)
+     * 16  - 2560x1440  (QHD)
+     * 24  - 3840x2160 (4K)
+     */
+    scene.setCamera(camPos, camDir, 1.0f, 12);
+
+    Image img = scene.generateImage();
+
+    img.save("Car.ppm");
+}
+
+void classicGlassCube() {
+    Scene scene("GlassCube.obj");
+    Point3D camPos{ 3.0, 2.0, -4.0 };
+    Vector3D camDir{ -1.0, -0.5, 1.5};
+   
+
+    scene.setLight(Vector3D{ 1.0, 1.0, 1.0 }.normalized());
+    
+    /**
+     * @brief Kurzübersicht zur Referenz der Werte & ihr scaling im 16:9 Format
+     * 1   - 160x90
+     * 8   - 1280x720   (HD)
+     * 12  - 1920x1080  (Full HD)
+     * 16  - 2560x1440  (QHD)
+     * 24  - 3840x2160 (4K)
+     */
+    scene.setCamera(camPos, camDir, 1.0f, 12);
+
+    Image img = scene.generateImage();
+
+    img.save("GlassCube.ppm");
+}
+
+void classicRussian() {
     /*
     Scene scene("Car.obj");
     Point3D camPos{ 4.0, 2.0, 4.0 };
@@ -157,6 +203,29 @@ void classic() {
     Image img = scene.generateImage();
 
     img.save("Russian_Gamingsetup.ppm");
+}
+
+void classicLiving() {
+   
+    Scene scene("Living_Room.obj");
+    Point3D camPos{ 2.7, 1.25, 2.995};
+    Vector3D camDir{ -1.0, 0.0, -0.7};
+
+    scene.setLight(Vector3D{ 1.0, 1.0, 1.0 }.normalized());
+    
+    /**
+     * @brief Kurzübersicht zur Referenz der Werte & ihr scaling im 16:9 Format
+     * 1   - 160x90
+     * 8   - 1280x720   (HD)
+     * 12  - 1920x1080  (Full HD)
+     * 16  - 2560x1440  (QHD)
+     * 24  - 3840x2160 (4K)
+     */
+    scene.setCamera(camPos, camDir, 1.0f, 12);
+
+    Image img = scene.generateImage();
+
+    img.save("Living_Room.ppm");
 }
 
 void classicMutter() {
@@ -213,7 +282,7 @@ int main() {
     //lightspinnerFrames();
     //carspinnerFrames();
     //combinedSpinnerFrames();
-    classicMutter();
+    classicLiving();
     //mutterSpinnerFrames();
     return 0;
 }
