@@ -17,18 +17,30 @@ Image Scene::generateImage() {
     uint16_t height = camera.get_length_pixels();
     Image image(height, width);
 
-    for (uint16_t y = 0; y < height; ++y) {
-        for (uint16_t x = 0; x < width; ++x) {
-            Ray ray = camera.get_ray(x, y);  // Ray wird on-demand berechnet
-            Hitpoint hp;
-            if (kdtree->intersect(ray, hp)) {
-                // Beleuchtung berechnen (wie in transformHitpointsToImage)
-                RGBA col = computeShading(hp).clamp();  // Extrahiere die Beleuchtungslogik
-                image.set(y, x, col);
-            } else {
-                image.set(y, x, {0.1, 0.1, 0.2, 0.1});  // Hintergrundfarbe
+     // Choose number of threads
+    unsigned int num_threads = std::thread::hardware_concurrency();
+    if (num_threads > 2) num_threads -= 2;
+
+    ThreadPool pool(num_threads);
+    std::vector<std::future<void>> futures;
+        for (uint16_t y = 0; y < height; ++y) {
+            futures.push_back(pool.enqueue([&image, this, y, width]() {
+            for (uint16_t x = 0; x < width; ++x) {
+                Ray ray = camera.get_ray(x, y);  // Ray wird on-demand berechnet
+                Hitpoint hp;
+                if (kdtree->intersect(ray, hp)) {
+                    // Beleuchtung berechnen (wie in transformHitpointsToImage)
+                    RGBA col = computeShading(hp).clamp();  // Extrahiere die Beleuchtungslogik
+                    image.set(y, x, col);
+                } else {
+                    image.set(y, x, {0.1, 0.1, 0.2, 0.1});  // Hintergrundfarbe
+                }
             }
-        }
+        }));
+    }
+        // wait for all tasks to finish
+    for (auto& f : futures) {
+        f.get();
     }
     return image;
 }
