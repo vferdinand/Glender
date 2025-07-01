@@ -12,7 +12,10 @@ void Loader::loadOBJ(const std::string& filePathOBJ){
     }
     
     std::string line;
-    materials.push_back(Material("",{1.0,1.0,1.0,1.0}, {1.0,1.0,1.0,1.0}, {1.0,1.0,1.0,1.0}));
+    materials.push_back(Material("default",{1.0,1.0,1.0,1.0}, {1.0,1.0,1.0,1.0}, {1.0,1.0,1.0,1.0}));
+    materials.back().setShininess(8.0f);
+    materials.back().setDissolve(1.0f);
+    materials.back().setIllum(2);
     while (std::getline(fileOBJ, line)) {
         std::istringstream iss(line);
         std::string prefix;

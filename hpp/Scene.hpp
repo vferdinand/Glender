@@ -1,5 +1,6 @@
 #pragma once
 #include <Eigen/Dense>
+#include "ThreadPool.hpp"
 #include "Image.hpp"
 #include "Light.hpp"
 #include "Camera.hpp"

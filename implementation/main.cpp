@@ -132,11 +132,11 @@ void combinedSpinnerFrames() {
 }
 
 // Generates one image of a car with a fixed camera position and light direction
-void classic() {
+void classicCar() {
     Scene scene("Car.obj");
-
     Point3D camPos{ 4.0, 2.0, 4.0 };
     Vector3D camDir{ -1.0, -0.4, -1.0};
+   
 
     scene.setLight(Vector3D{ 1.0, 1.0, 1.0 }.normalized());
     
@@ -155,12 +155,134 @@ void classic() {
     img.save("Car.ppm");
 }
 
+void classicGlassCube() {
+    Scene scene("GlassCube.obj");
+    Point3D camPos{ 3.0, 2.0, -4.0 };
+    Vector3D camDir{ -1.0, -0.5, 1.5};
+   
+
+    scene.setLight(Vector3D{ 1.0, 1.0, 1.0 }.normalized());
+    
+    /**
+     * @brief Kurzübersicht zur Referenz der Werte & ihr scaling im 16:9 Format
+     * 1   - 160x90
+     * 8   - 1280x720   (HD)
+     * 12  - 1920x1080  (Full HD)
+     * 16  - 2560x1440  (QHD)
+     * 24  - 3840x2160 (4K)
+     */
+    scene.setCamera(camPos, camDir, 1.0f, 12);
+
+    Image img = scene.generateImage();
+
+    img.save("GlassCube.ppm");
+}
+
+void classicRussian() {
+    /*
+    Scene scene("Car.obj");
+    Point3D camPos{ 4.0, 2.0, 4.0 };
+    Vector3D camDir{ -1.0, -0.4, -1.0};
+    */
+    Scene scene("Russian_Gamingsetup.obj");
+    Point3D camPos{ 11.2, 14.0, 8.0 };
+    Vector3D camDir{ -2.0, -1.4, -1.0};
+
+    scene.setLight(Vector3D{ 1.0, 1.0, 1.0 }.normalized());
+    
+    /**
+     * @brief Kurzübersicht zur Referenz der Werte & ihr scaling im 16:9 Format
+     * 1   - 160x90
+     * 8   - 1280x720   (HD)
+     * 12  - 1920x1080  (Full HD)
+     * 16  - 2560x1440  (QHD)
+     * 24  - 3840x2160 (4K)
+     */
+    scene.setCamera(camPos, camDir, 1.0f, 12);
+
+    Image img = scene.generateImage();
+
+    img.save("Russian_Gamingsetup.ppm");
+}
+
+void classicLiving() {
+   
+    Scene scene("Living_Room.obj");
+    Point3D camPos{ 2.7, 1.25, 2.995};
+    Vector3D camDir{ -1.0, 0.0, -0.7};
+
+    scene.setLight(Vector3D{ 1.0, 1.0, 1.0 }.normalized());
+    
+    /**
+     * @brief Kurzübersicht zur Referenz der Werte & ihr scaling im 16:9 Format
+     * 1   - 160x90
+     * 8   - 1280x720   (HD)
+     * 12  - 1920x1080  (Full HD)
+     * 16  - 2560x1440  (QHD)
+     * 24  - 3840x2160 (4K)
+     */
+    scene.setCamera(camPos, camDir, 1.0f, 12);
+
+    Image img = scene.generateImage();
+
+    img.save("Living_Room.ppm");
+}
+
+void classicMutter() {
+    Scene scene("mutter_gewinde_60.obj");
+
+    Point3D camPos{ 18.0, 2.0, 18.0 };
+    Vector3D camDir{ -1.0, -0.1, -1.0};
+
+    scene.setLight(Vector3D{ 1.0, 1.0, 1.0 }.normalized());
+    
+    scene.setCamera(camPos, camDir, 1.0f, 12);
+
+    Image img = scene.generateImage();
+
+    img.save("Car3.ppm");
+}
+
+void mutterSpinnerFrames(){
+    Scene scene("mutter_gewinde_200.obj");
+
+    const float PI = 3.14159265f;
+    const float radius = 24.3f;
+    const float height = 2.0f;
+    const int frames = 360;
+    const float stepAngle = 2 * PI / frames;
+    float angle = 0.98f;
+
+    for (int frame = 0; frame < frames; ++frame) {
+        float camX = radius * std::cos(angle);
+        float camZ = radius * std::sin(angle);
+        scene.setCamera(
+            Point3D{ camX, height, camZ },
+            Vector3D{ -camX, -1.7f, -camZ },
+            1.0f, 8
+        );
+
+        float lx = std::cos(angle);
+        float lz = std::sin(angle);
+        float ly = 1.0f;
+        scene.setLight(Vector3D{ lx, ly, lz }.normalized());
+
+        Image img = scene.generateImage();
+        char fname[64];
+        std::snprintf(fname, sizeof(fname), "obj/framesMutter/frame_%03d.ppm", frame);
+        img.save(fname);
+        std::cout << "Saved " << fname << "\n";
+        angle += stepAngle;
+    }
+}
+
 int main() {
     //carspinner();
     //lightspinner();
     //lightspinnerFrames();
     //carspinnerFrames();
     //combinedSpinnerFrames();
-    classic();
+    classicLiving();
+    //mutterSpinnerFrames();
     return 0;
 }
