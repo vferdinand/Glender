@@ -49,7 +49,7 @@ Image Scene::generateImage() {
 RGBA Scene::computeShading(Hitpoint& hp) {
     const Triangle* tri = hp.getTriangle();
     Material m = materials.at(tri->getMaterialIndex());
-    Vector3D N = normals[tri->getNormalIndex()].normalized();
+    Vector3D N = computeInterpolatedNormal(hp); // Normale nun abhängig von Trefferstelle des Strahls 
     Vector3D L = light.getGlobalLightVec().normalized();  // Lichtrichtung
     //Vector3D E = camera.get_view().normalized();
     Vector3D E = (camera.get_eye() - hp.getPosition()).normalized();
@@ -74,7 +74,6 @@ RGBA Scene::computeShading(Hitpoint& hp) {
     } 
 }
 
-
 std::vector<Hitpoint> Scene::calculateHitpoints(std::vector<Ray>& rays) {
     std::vector<Hitpoint> hitpoints;
 
@@ -88,6 +87,33 @@ std::vector<Hitpoint> Scene::calculateHitpoints(std::vector<Ray>& rays) {
     }
 
     return hitpoints;
+}
+
+Vector3D Scene::computeInterpolatedNormal(Hitpoint hp) {
+    const Triangle* tri = hp.getTriangle();
+    if (!tri) return Vector3D(0.0f, 0.0f, 1.0f);  // Fallback
+
+    // Drei Normalenindizes abrufen
+    std::array<uint32_t, 3> normalIndices = tri->getNormalIndices();
+    uint32_t ni0 = normalIndices[0];
+    uint32_t ni1 = normalIndices[1];
+    uint32_t ni2 = normalIndices[2];
+
+    // Die zugehörigen Normalen abrufen
+    Vector3D n0 = normals[ni0];
+    Vector3D n1 = normals[ni1];
+    Vector3D n2 = normals[ni2];
+
+    //TODO
+    // Baryzentrische Koordinaten des Treffers
+    float u = hp.getU();
+    float v = hp.getV();
+    float w = 1.0f - u - v;
+
+    // Interpolierte Normale berechnen
+    Vector3D interpolated = (n0 * w + n1 * u + n2 * v).normalized();
+
+    return interpolated;
 }
 
 

@@ -169,18 +169,22 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ) {
                 continue;
             }
 
-            uint32_t normalIndexForAllTri = faceNormalIdx[0];
-
             // Fan‐triangulate: for N vertices, create (N−2) triangles:
             //   (0,1,2), (0,2,3), (0,3,4), ...
             for (size_t i = 1; i + 1 < faceVertexIdx.size(); ++i) {
-                // Build a small vector of exactly 3 indices:
                 std::vector<uint32_t> triVerts = {
                     faceVertexIdx[0],
                     faceVertexIdx[i],
                     faceVertexIdx[i + 1]
                 };
-                triangles.emplace_back(triVerts, normalIndexForAllTri, materialIndex);
+
+                std::array<uint32_t, 3> triNormals = {
+                    faceNormalIdx[0],
+                    faceNormalIdx[i],
+                    faceNormalIdx[i + 1]
+                };
+
+                triangles.emplace_back(triVerts, triNormals, materialIndex);
             }
         }
         // ignore any other prefixes
