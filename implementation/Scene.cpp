@@ -9,7 +9,7 @@ Scene::Scene(const std::string filePathObj){//}, const std::string filePathMtl){
     normals = loader.getNormals();
     materials = loader.getMaterials();
     kdtree = new KDTree(triangles, vertices);
-    light = Light(Vector3D(1.0f, 1.0f, 1.0f), RGBA{1.0, 1.0, 1.0, 1.0});
+    light = Light(Vector3D(1.0f, 1.0f, 1.0f), RGBA{5.0, 5.0, 5.0, 1.0});
 }
 
 Image Scene::generateImage() {
@@ -30,7 +30,7 @@ Image Scene::generateImage() {
                 Hitpoint hp;
                 if (kdtree->intersect(ray, hp)) {
                     // Beleuchtung berechnen (wie in transformHitpointsToImage)
-                    RGBA col = computeShading(hp).clamp();  // Extrahiere die Beleuchtungslogik
+                    RGBA col = computeShading(hp, ray, 0).clamp();  // Extrahiere die Beleuchtungslogik
                     image.set(y, x, col);
                 } else {
                     image.set(y, x, {0.1, 0.1, 0.2, 0.1});  // Hintergrundfarbe
@@ -46,23 +46,45 @@ Image Scene::generateImage() {
 }
 
 // Hilfsfunktion für Beleuchtung (aus transformHitpointsToImage extrahiert)
-RGBA Scene::computeShading(Hitpoint& hp) {
+RGBA Scene::computeShading( Hitpoint& hp, const Ray& ray, int depth) {
+    
     const Triangle* tri = hp.getTriangle();
     Material m = materials.at(tri->getMaterialIndex());
     Vector3D N = normals[tri->getNormalIndex()].normalized();
     Vector3D L = light.getGlobalLightVec().normalized();  // Lichtrichtung
     //Vector3D E = camera.get_view().normalized();
     Vector3D E = (camera.get_eye() - hp.getPosition()).normalized();
-    Vector3D R = (-L).reflected(N);
+    Vector3D R = (-L).reflect(N);
 
     float diffuseFactor = std::max(0.0f, N.dot(L));
     float specFactor = std::pow(std::max(0.0f, R.dot(E)), m.getShininess());
 
+    uint8_t maxDepth = 3;
+    
     RGBA diffuse = m.getDifuse() * diffuseFactor;
-    RGBA ambient = (m.getAmbient() * light.getLightColor()) * 0.05; // Ambient-Beleuchtung, hier mit einem festen Faktor
+    RGBA ambient = (m.getAmbient() * light.getLightColor()) * 0.2; // Ambient-Beleuchtung, hier mit einem festen Faktor
     RGBA specular = m.getSpecular() * specFactor * RGBA{1.0, 1.0, 1.0};
 
-    switch (m.getIllum()) {
+    RGBA localColor = ambient + diffuse + specular;
+    // Reflexion ergänzen
+
+    float kr = m.getReflectionFactor();
+    if (kr > 0.0f && depth < maxDepth) {
+        // reflektierte Richtung
+        Vector3D reflectedDir = (-ray.getDirection()).reflect(hp.getNormal());
+        Ray reflectedRay(hp.getPosition() + reflectedDir * 1e-4f, reflectedDir);
+
+        Hitpoint hp2;
+        if (kdtree->intersect(reflectedRay, hp2)) {
+            RGBA reflectedColor = computeShading(hp2, reflectedRay, depth + 1);
+
+            Point3D pos = hp.getPosition();
+
+            localColor = localColor * (1 - kr) + reflectedColor * kr;
+        }
+    }
+    return localColor;
+   /* switch (m.getIllum()) {
         case 0:
             return diffuse;
         case 1:
@@ -71,7 +93,7 @@ RGBA Scene::computeShading(Hitpoint& hp) {
             return diffuse + ambient + specular;
         default:
             return diffuse + ambient + specular;
-    } 
+    } */
 }
 
 

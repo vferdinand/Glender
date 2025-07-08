@@ -228,6 +228,24 @@ void classicLiving() {
     img.save("Living_Room.ppm");
 }
 
+void classicMirrorTest() {
+   
+    Scene scene("mirror_test.obj");
+
+    Point3D camPos{-8, 8, 15};
+    Vector3D camDir{8, -6, -15};
+    camDir = camDir.normalized();
+
+    scene.setCamera(camPos, camDir, 0.1f, 8);
+    scene.setLight(Vector3D{1, -1, 0}.normalized());
+
+    
+
+    Image img = scene.generateImage();
+
+    img.save("phong_test.ppm");
+}
+
 void classicMutter() {
     Scene scene("mutter_gewinde_60.obj");
 
@@ -282,7 +300,7 @@ int main() {
     //lightspinnerFrames();
     //carspinnerFrames();
     //combinedSpinnerFrames();
-    classicLiving();
+    classicCar();
     //mutterSpinnerFrames();
     return 0;
 }

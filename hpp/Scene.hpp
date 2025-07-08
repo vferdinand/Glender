@@ -5,6 +5,7 @@
 #include "Light.hpp"
 #include "Camera.hpp"
 #include "Loader.hpp"
+#include "Ray.hpp"
 
 /**
  * @brief Repräsentiert eine 3D-Szene mit Geometrie, Kamera, Beleuchtung und Render-Logik.
@@ -30,7 +31,7 @@ private:
      * @param hp Treffpunkt des Strahls.
      * @return Farbwert mit Beleuchtung.
      */
-    RGBA computeShading(Hitpoint& hp);
+    RGBA computeShading(Hitpoint& hp, const Ray& ray, int depth);
 
     /**
      * @brief Berechnet die Hitpoints für eine Liste von Strahlen.

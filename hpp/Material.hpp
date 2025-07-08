@@ -4,6 +4,7 @@
 
 class Material {
     private:
+        float reflectionFactor;
         std::string name;
         RGBA ambient; // Ambient color for the material
         RGBA difuse; // Diffuse color for the material
@@ -13,7 +14,7 @@ class Material {
         int8_t illum; // Optional: Illumination model (e.g., 0 for color on and ambient off, 1 for color on and ambient on, etc.)
     public:
         Material();
-        Material(std::string name, RGBA ambient, RGBA difuse, RGBA specular, float shininess = 8.0f, float disolve = 1.0f, int8_t illum = 2);
+        Material(std::string name, RGBA ambient, RGBA difuse, RGBA specular, float shininess = 8.0f, float disolve = 1.0f, int8_t illum = 2, float reflectionsFactor = 0.0f);
         const std::string getName() const;
         const RGBA getAmbient() const;
         const RGBA getDifuse() const;
@@ -28,4 +29,6 @@ class Material {
         void setShininess(float shininess);
         void setDissolve(float disolve);
         void setIllum(int8_t illum);
+        void setReflectionFactor(float reflectionFactor);
+        float getReflectionFactor() const;
 };
