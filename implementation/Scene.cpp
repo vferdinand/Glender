@@ -53,9 +53,16 @@ RGBA Scene::computeShading( Hitpoint& hp, const Ray& ray, int depth) {
     Vector3D L = light.getGlobalLightVec().normalized();
     Vector3D E = (camera.get_eye() - hp.getPosition()).normalized();
     Vector3D R = (-L).reflect(N);
+    
+    bool inShadow = false;
+    Ray shadowRay(hp.getPosition() + L * 1e-4f, L);
+    Hitpoint shadowHit;
+    if (kdtree->intersect(shadowRay, shadowHit)) {
+        inShadow = true;
+    }
 
-    float diffuseFactor = std::max(0.0f, N.dot(L));
-    float specFactor = std::pow(std::max(0.0f, R.dot(E)), m.getShininess());
+    float diffuseFactor = inShadow ? 0.0f : std::max(0.0f, N.dot(L));
+    float specFactor = inShadow ? 0.0f : std::pow(std::max(0.0f, R.dot(E)), m.getShininess());
 
     uint8_t maxDepth = 3;
     
