@@ -69,3 +69,15 @@ void Material::setReflectionFactor(float reflectionFactor) {
 float Material::getReflectionFactor() const { 
     return reflectionFactor; 
 }
+void Material::setTransparency(float kt) {
+    transparency = kt;
+}
+void Material::setIOR(float ni) {
+    ior = ni;
+}
+float Material::getTransparency() const {
+    return transparency;
+}
+float Material::getIOR() const {
+    return ior;
+}

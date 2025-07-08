@@ -95,4 +95,6 @@ public:
      * @param lightDir Vektor, der die Richtung des Lichts angibt.
      */
     void setLight(const Vector3D& lightDir);
+
+    bool refract(const Vector3D& I, const Vector3D& N, float eta, Vector3D& refracted) const;
 };

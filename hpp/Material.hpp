@@ -12,6 +12,8 @@ class Material {
         float shininess; // Optional: Shininess factor for specular highlights
         float disolve; // Optional: Dissolve factor for transparency or other effects
         int8_t illum; // Optional: Illumination model (e.g., 0 for color on and ambient off, 1 for color on and ambient on, etc.)
+        float transparency = 0.0f;
+        float ior =1.0f; //index of refraction
     public:
         Material();
         Material(std::string name, RGBA ambient, RGBA difuse, RGBA specular, float shininess = 8.0f, float disolve = 1.0f, int8_t illum = 2, float reflectionsFactor = 0.0f);
@@ -31,4 +33,8 @@ class Material {
         void setIllum(int8_t illum);
         void setReflectionFactor(float reflectionFactor);
         float getReflectionFactor() const;
+        void setTransparency(float kt);
+        void setIOR(float ni);
+        float getTransparency() const;
+        float getIOR() const;
 };

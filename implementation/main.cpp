@@ -300,7 +300,7 @@ int main() {
     //lightspinnerFrames();
     //carspinnerFrames();
     //combinedSpinnerFrames();
-    classicCar();
+    classicMirrorTest();
     //mutterSpinnerFrames();
     return 0;
 }
