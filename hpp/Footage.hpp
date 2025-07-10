@@ -3,7 +3,6 @@
 #include "Image.hpp"
 #include "Scene.hpp"
 
-
 class Footage {
 public:
     void classicCar(const std::string& file, int scale);
