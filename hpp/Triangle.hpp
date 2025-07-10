@@ -6,6 +6,7 @@
 class Triangle {
     private: 
         std::vector<uint32_t> vertexIndices;
+        std::vector<uint32_t> textureIndices;
         u_int16_t materialIndex;
         uint32_t normalIndex;
 
@@ -16,10 +17,10 @@ class Triangle {
         * und einen Farbindex in der colors-Liste dargestellt.
         * Der Farbindex ist optional und wird standardmäßig auf 0 gesetzt.
         */
-        Triangle(const std::vector<uint32_t>& vertexIndices, u_int32_t normalIndex, u_int16_t materialIndex = 0);
+        Triangle(const std::vector<uint32_t>& vertexIndices, u_int32_t normalIndex, u_int16_t materialIndex = 0, const std::vector<uint32_t>& textureIndices = {0,0});
 
         const std::vector<uint32_t>& getIndices() const;
-
+        const std::vector<uint32_t>& getTextureIndices() const;
         u_int16_t getMaterialIndex() const;
         uint32_t getNormalIndex() const;
 

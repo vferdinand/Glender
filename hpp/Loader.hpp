@@ -15,7 +15,8 @@ private:
     std::vector<Vector3D> normals;
     std::vector<Triangle> triangles;
     std::vector<Material> materials;
-
+    std::vector<Vector3D> texture_coord;
+    std::vector<std::string> textures;
     
     /**
      * @brief Lädt Farben und Materialeigenschaften aus einer .mtl-Datei.
