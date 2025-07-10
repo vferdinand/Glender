@@ -44,7 +44,7 @@ Image Scene::generateImage() {
     }
     return image;
 }
-
+    
 RGBA Scene::computeShading( Hitpoint& hp, const Ray& ray, int depth) {
     
     const Triangle* tri = hp.getTriangle();
@@ -53,25 +53,18 @@ RGBA Scene::computeShading( Hitpoint& hp, const Ray& ray, int depth) {
     Vector3D L = light.getGlobalLightVec().normalized();
     Vector3D E = (camera.get_eye() - hp.getPosition()).normalized();
     Vector3D R = (-L).reflect(N);
-    
-    bool inShadow = false;
-    Ray shadowRay(hp.getPosition() + L * 1e-4f, L);
-    Hitpoint shadowHit;
-    if (kdtree->intersect(shadowRay, shadowHit)) {
-        inShadow = true;
-    }
 
-    float diffuseFactor = inShadow ? 0.0f : std::max(0.0f, N.dot(L));
-    float specFactor = inShadow ? 0.0f : std::pow(std::max(0.0f, R.dot(E)), m.getShininess());
+    float diffuseFactor = std::max(0.0f, N.dot(L));
+    float specFactor = std::pow(std::max(0.0f, R.dot(E)), m.getShininess());
 
     uint8_t maxDepth = 3;
     
     RGBA diffuse = m.getDifuse() * diffuseFactor;
-    RGBA ambient = (m.getAmbient() * light.getLightColor()) * 0.2;
+    RGBA ambient = (m.getAmbient() * light.getLightColor()) * 0.05;
     RGBA specular = m.getSpecular() * specFactor * RGBA{1.0, 1.0, 1.0};
 
     RGBA localColor = ambient + diffuse + specular;
-
+      
     float kr = m.getReflectionFactor();
     if (kr > 0.0f && depth < maxDepth) {
         Vector3D reflectedDir = (-ray.getDirection()).reflect(hp.getNormal());
@@ -94,8 +87,9 @@ RGBA Scene::computeShading( Hitpoint& hp, const Ray& ray, int depth) {
                 localColor = localColor * (1 - kt) + refractedColor * kt;
             }
         }
-    }
+    } 
     return localColor;
+
 }
 
 
