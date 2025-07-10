@@ -95,4 +95,9 @@ public:
 
     // Gibt Referenz auf geladene Materialien zurück
     const std::vector<Material>& getMaterials() const;
+
+    // Gibt Referenz auf geladene Texturkoordinaten zurück
+    const std::vector<Vector3D>& getTextureCoords() const;
+    // Gibt Referenz auf geladene Texturen zurück
+    const std::vector<std::string>& getTextures() const;
 };

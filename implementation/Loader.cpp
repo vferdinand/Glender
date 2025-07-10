@@ -257,3 +257,12 @@ const std::vector<Vector3D>& Loader::getNormals() const {
 const std::vector<Material>& Loader::getMaterials() const {
     return materials;
 }
+
+// Gibt eine Referenz auf die geladenen Texturkoordinaten zurück.
+const std::vector<Vector3D>& Loader::getTextureCoords() const {
+    return texture_coord;
+}  
+// Gibt eine Referenz auf die geladenen Texturen zurück.
+const std::vector<std::string>& Loader::getTextures() const {
+    return textures;
+}

@@ -5,7 +5,8 @@ Scene::Scene(const std::string filePathObj){//}, const std::string filePathMtl){
     Loader loader(filePathObj);
     vertices = loader.getVertices();
     triangles = loader.getTriangles();
-
+    texture_coord = loader.getTextureCoords();
+    textures = loader.getTextures();
     normals = loader.getNormals();
     materials = loader.getMaterials();
     kdtree = new KDTree(triangles, vertices);

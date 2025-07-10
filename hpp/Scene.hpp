@@ -20,6 +20,8 @@ private:
     std::vector<Vertex> vertices;     ///< Alle geladenen Vertices
     std::vector<Vector3D> normals;    ///< Alle geladenen Normalen
     std::vector<Material> materials;  ///< Materialien (diffus, ambient, spekular)
+    std::vector<std::string> textures; ///< Texturen für Materialien
+    std::vector<Vector3D> texture_coord; ///< Texturkoordinaten für Vertices
 
     Camera camera;                    ///< Kameraobjekt (für Ray-Generierung)
     KDTree* kdtree = nullptr;         ///< KD-Tree zur Beschleunigung der Strahlschnittberechnung
