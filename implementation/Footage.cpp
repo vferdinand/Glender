@@ -7,7 +7,7 @@ void Footage::classicCar(const std::string& file, int scale) {
     scene.setLight(Vector3D{1.0, 1.0, 1.0}.normalized());
     scene.setCamera(camPos, camDir, 1.0f, scale);
     Image img = scene.generateImage();
-    img.save("output_classicCar.ppm");
+    img.save("Car.ppm");
 }
 
 void Footage::carspinner(const std::string& file, int scale) {
@@ -24,7 +24,7 @@ void Footage::carspinner(const std::string& file, int scale) {
         scene.setCamera(camPos, Vector3D{-camX, -0.4f, -camZ}, 1.0f, scale);
         scene.setLight(Vector3D{1.0f, 1.0f, 1.0f}.normalized());
         Image img = scene.generateImage();
-        img.save("output_carspinner.ppm");
+        img.save("Carspinner.ppm");
         angle += stepAngle;
         if (angle >= 2.0f * M_PI) angle -= 2.0f * M_PI;
     }
@@ -49,7 +49,7 @@ void Footage::lightspinner(const std::string& file, int scale) {
         Vector3D lightDir{x, y, z};
         scene.setLight(lightDir.normalized());
         Image img = scene.generateImage();
-        img.save("output_lightspinner.ppm");
+        img.save("Lightspinner.ppm");
         angle += stepAngle;
         if (angle >= 2.0f * M_PI) angle -= 2.0f * M_PI;
     }
