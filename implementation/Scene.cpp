@@ -144,7 +144,8 @@ Vector3D Scene::computeInterpolatedNormal(Hitpoint hp) {
 
 
 bool Scene::refract(const Vector3D& I, const Vector3D& N, float eta, Vector3D& refracted) const {
-    float cosi = std::clamp(-1.0f, 1.0f, I.dot(N));
+    float cosi = std::clamp(I.dot(N), -1.0f, 1.0f);
+
     float etai = 1.0f, etat = eta;
     Vector3D n = N;
 
