@@ -68,10 +68,22 @@ bool Loader::initializeColor(const std::string& filePathMTL){
             RGBA color;
             iss >> color.r >> color.g >> color.b;
             materials.back().setSpecular(color);
+        }else if (prefix == "Kr") {
+            float kr;
+            iss >> kr;
+            materials.back().setReflectionFactor(kr);
+        }else if (prefix == "Kt") {
+            float kt;
+            iss >> kt;
+            materials.back().setTransparency(kt);
         }else if (prefix == "Ns") {
             float shininess;
             iss >> shininess;
             materials.back().setShininess(shininess);
+        }else if (prefix == "Ni") {
+            float ni;
+            iss >> ni;
+            materials.back().setIOR(ni);
         }else if (prefix == "d" || prefix == "Tr") {
             float dissolve;
             iss >> dissolve;

@@ -8,8 +8,9 @@ Material::Material() {
     shininess = 0.0f;
     disolve = 1.0f;
     illum = 2; // Default illumination model
+    reflectionFactor = 0.0;
 }
-Material::Material(std::string name, RGBA ambient, RGBA difuse, RGBA specular, float shininess, float disolve, int8_t illum) {
+Material::Material(std::string name, RGBA ambient, RGBA difuse, RGBA specular, float shininess, float disolve, int8_t illum, float reflectionsFactor) {
     this->name = name;
     this->ambient = ambient;
     this->difuse = difuse;
@@ -17,6 +18,7 @@ Material::Material(std::string name, RGBA ambient, RGBA difuse, RGBA specular, f
     this->shininess = shininess;
     this->disolve = disolve;
     this->illum = illum;
+    this->reflectionFactor = reflectionsFactor;
 }
 const std::string Material::getName() const{
     return name;
@@ -60,4 +62,22 @@ void Material::setDissolve(float disolve){
 }
 void Material::setIllum(int8_t illum){
     this->illum = illum;
+}
+void Material::setReflectionFactor(float reflectionFactor) { 
+    this->reflectionFactor = reflectionFactor; 
+}
+float Material::getReflectionFactor() const { 
+    return reflectionFactor; 
+}
+void Material::setTransparency(float kt) {
+    transparency = kt;
+}
+void Material::setIOR(float ni) {
+    ior = ni;
+}
+float Material::getTransparency() const {
+    return transparency;
+}
+float Material::getIOR() const {
+    return ior;
 }

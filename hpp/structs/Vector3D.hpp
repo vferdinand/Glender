@@ -65,7 +65,7 @@ struct Vector3D {
         return len > 0.0f ? (*this) / len : Vector3D(0, 0, 0);
     }
 
-    Vector3D reflected(const Vector3D& normal) const {
+    Vector3D reflect(const Vector3D& normal) const {
         return (*this) - normal * (2.0f * this->dot(normal));
     }
 };

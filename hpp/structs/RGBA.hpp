@@ -45,7 +45,7 @@ struct RGBA {
  * @param color Farbe im RGBA-Format
  * @return Referenz auf den Ausgabestream
  */
-inline std::ostream& operator<<(std::ostream& os, const RGBA& color) {
+/*inline std::ostream& operator<<(std::ostream& os, const RGBA& color) {
     float r = color.r, g = color.g, b = color.b;
 
     if (r == 1.0f && g == 0.0f && b == 0.0f)
@@ -70,4 +70,12 @@ inline std::ostream& operator<<(std::ostream& os, const RGBA& color) {
         os << ".";  // Unrecognized / other
     return os;
 }
-
+*/
+inline std::ostream& operator<<(std::ostream& os, const RGBA& color) {
+    os << "("
+       << color.r << ", "
+       << color.g << ", "
+       << color.b << ", "
+       << color.a << ")";
+    return os;
+}
