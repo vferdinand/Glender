@@ -41,3 +41,19 @@ void Hitpoint::setDistance(float d) {
 void Hitpoint::setTriangle(const Triangle* tri) {
     triangle = tri;
 }
+
+float Hitpoint::getU() const {
+    return u;
+}
+
+void Hitpoint::setU(float newU) {
+    u = newU;
+}
+
+float Hitpoint::getV() const {
+    return v;
+}
+
+void Hitpoint::setV(float newV) {
+    v = newV;
+}

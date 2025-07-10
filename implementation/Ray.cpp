@@ -53,6 +53,8 @@ bool Ray::rayTriangleIntersect(const Ray& ray, const Vertex& v0, const Vertex& v
     if (t > EPSILON) {
         hit.setDistance(t);
         hit.setPosition(ray.getOrigin() + ray.getDirection() * t);
+        hit.setU(u);
+        hit.setV(v);
         return true;
     }
 

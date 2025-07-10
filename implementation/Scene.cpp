@@ -45,34 +45,29 @@ Image Scene::generateImage() {
     }
     return image;
 }
-
+    
 RGBA Scene::computeShading( Hitpoint& hp, const Ray& ray, int depth) {
     
     const Triangle* tri = hp.getTriangle();
     Material m = materials.at(tri->getMaterialIndex());
-    Vector3D N = normals[tri->getNormalIndex()].normalized();
-    Vector3D L = light.getGlobalLightVec().normalized();
+    Vector3D N = computeInterpolatedNormal(hp); // Normale nun abhängig von Trefferstelle des Strahls 
+    Vector3D L = light.getGlobalLightVec().normalized();  // Lichtrichtung
+    //Vector3D E = camera.get_view().normalized();
+
     Vector3D E = (camera.get_eye() - hp.getPosition()).normalized();
     Vector3D R = (-L).reflect(N);
-    
-    bool inShadow = false;
-    Ray shadowRay(hp.getPosition() + L * 1e-4f, L);
-    Hitpoint shadowHit;
-    if (kdtree->intersect(shadowRay, shadowHit)) {
-        inShadow = true;
-    }
 
-    float diffuseFactor = inShadow ? 0.0f : std::max(0.0f, N.dot(L));
-    float specFactor = inShadow ? 0.0f : std::pow(std::max(0.0f, R.dot(E)), m.getShininess());
+    float diffuseFactor = std::max(0.0f, N.dot(L));
+    float specFactor = std::pow(std::max(0.0f, R.dot(E)), m.getShininess());
 
     uint8_t maxDepth = 3;
     
     RGBA diffuse = m.getDifuse() * diffuseFactor;
-    RGBA ambient = (m.getAmbient() * light.getLightColor()) * 0.2;
+    RGBA ambient = (m.getAmbient() * light.getLightColor()) * 0.05;
     RGBA specular = m.getSpecular() * specFactor * RGBA{1.0, 1.0, 1.0};
 
     RGBA localColor = ambient + diffuse + specular;
-
+      
     float kr = m.getReflectionFactor();
     if (kr > 0.0f && depth < maxDepth) {
         Vector3D reflectedDir = (-ray.getDirection()).reflect(hp.getNormal());
@@ -95,10 +90,10 @@ RGBA Scene::computeShading( Hitpoint& hp, const Ray& ray, int depth) {
                 localColor = localColor * (1 - kt) + refractedColor * kt;
             }
         }
-    }
+    } 
     return localColor;
-}
 
+}
 
 std::vector<Hitpoint> Scene::calculateHitpoints(std::vector<Ray>& rays) {
     std::vector<Hitpoint> hitpoints;
@@ -115,8 +110,37 @@ std::vector<Hitpoint> Scene::calculateHitpoints(std::vector<Ray>& rays) {
     return hitpoints;
 }
 
+Vector3D Scene::computeInterpolatedNormal(Hitpoint hp) {
+    const Triangle* tri = hp.getTriangle();
+    if (!tri) return Vector3D(0.0f, 0.0f, 1.0f);  // Fallback
+
+    // Drei Normalenindizes abrufen
+    std::array<uint32_t, 3> normalIndices = tri->getNormalIndices();
+    uint32_t ni0 = normalIndices[0];
+    uint32_t ni1 = normalIndices[1];
+    uint32_t ni2 = normalIndices[2];
+
+    // Die zugehörigen Normalen abrufen
+    Vector3D n0 = normals[ni0];
+    Vector3D n1 = normals[ni1];
+    Vector3D n2 = normals[ni2];
+
+    //TODO
+    // Baryzentrische Koordinaten des Treffers
+    float u = hp.getU();
+    float v = hp.getV();
+    float w = 1.0f - u - v;
+
+    // Interpolierte Normale berechnen
+    Vector3D interpolated = (n0 * w + n1 * u + n2 * v).normalized();
+
+    return interpolated;
+}
+
+
 bool Scene::refract(const Vector3D& I, const Vector3D& N, float eta, Vector3D& refracted) const {
-    float cosi = std::clamp(-1.0f, 1.0f, I.dot(N));
+    float cosi = std::clamp(I.dot(N), -1.0f, 1.0f);
+
     float etai = 1.0f, etat = eta;
     Vector3D n = N;
 
@@ -135,6 +159,7 @@ bool Scene::refract(const Vector3D& I, const Vector3D& N, float eta, Vector3D& r
     refracted = I * etaRatio + n * (etaRatio * cosi - std::sqrt(k));
     return true;
 }
+
 
 void Scene::setCamera(const Point3D& eyePos, const Vector3D& viewDir, float pixelWidth, float pixelHeight, int horizontalPixels, int verticalPixels) {
     camera.set_everything(eyePos, viewDir, pixelWidth, pixelHeight, horizontalPixels, verticalPixels);

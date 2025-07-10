@@ -2,26 +2,20 @@
 #include "structs/Vertex.hpp"
 #include <vector>
 #include <cstdint>
+#include <array>
 
 class Triangle {
-    private: 
-        std::vector<uint32_t> vertexIndices;
-        std::vector<uint32_t> textureIndices;
-        u_int16_t materialIndex;
-        uint32_t normalIndex;
+private:
+    std::vector<uint32_t> vertexIndices;
+    std::vector<uint32_t> textureIndices;
+    u_int16_t materialIndex;
+    std::array<uint32_t, 3> normalIndices;
 
-    public:
-
-        /*
-        * Ein Dreieck wird durch drei Indizes in der vertexIndices-Liste
-        * und einen Farbindex in der colors-Liste dargestellt.
-        * Der Farbindex ist optional und wird standardmäßig auf 0 gesetzt.
-        */
-        Triangle(const std::vector<uint32_t>& vertexIndices, u_int32_t normalIndex, u_int16_t materialIndex = 0, const std::vector<uint32_t>& textureIndices = {0,0});
-
-        const std::vector<uint32_t>& getIndices() const;
-        const std::vector<uint32_t>& getTextureIndices() const;
-        u_int16_t getMaterialIndex() const;
-        uint32_t getNormalIndex() const;
-
+public:
+    Triangle(const std::vector<uint32_t>& vertexIndices, const std::array<uint32_t, 3>& normalIndices, u_int16_t materialIndex = 0,  const std::vector<uint32_t>& textureIndices = {0,0});
+    const std::vector<uint32_t>& getIndices() const;
+    const std::vector<uint32_t>& getTextureIndices() const;
+    const std::array<uint32_t, 3>& getNormalIndices() const;
+    u_int16_t getMaterialIndex() const;
 };
+

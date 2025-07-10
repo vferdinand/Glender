@@ -35,6 +35,9 @@ private:
      */
     RGBA computeShading(Hitpoint& hp, const Ray& ray, int depth);
 
+    Vector3D computeInterpolatedNormal(Hitpoint h);
+
+
     /**
      * @brief Berechnet die Hitpoints für eine Liste von Strahlen.
      * 
