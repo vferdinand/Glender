@@ -1,306 +1,60 @@
-#include "../hpp/Scene.hpp"
+#include "../hpp/Footage.hpp"
+#include <iostream>
+#include <string>
+#include <cmath>
+#include <cstdlib>
 
-// Generates real-time images of a car spinning around its center
-int carspinner() {
-    std::string file_path_obj = "Car.obj";
-    Scene scene(file_path_obj);
+// --- Auflösungsskala aus String ---
+int getScaleFromResolution(const std::string& res) {
+    if (res == "fullhd") return 12; // 1920x1080
+    if (res == "4k") return 24;     // 3840x2160
+    if(res == "8k") return 48;      // 7680x4320
+    if(res == "16k") return 96;      // 7680x4320
+    std::cerr << "Unbekannte Auflösung '" << res << "', verwende Full HD (12).\n";
+    return 12;
+}
 
-    const float radius    = 5.3;
-    const float height    = 1.4;
-    const float stepAngle = 0.04;
-    float angle = 0.98f;
+int main(int argc, char* argv[]) {
 
-    while (true) {
-        float camX = radius * std::cos(angle);
-        float camZ = radius * std::sin(angle);
-        Point3D camPos{ camX, height, camZ };
-        scene.setCamera(camPos, Vector3D{ -camX, -0.4, -camZ }, 1.0f, 1.0f, 255, 255);
-        Image img = scene.generateImage();
-        img.save("Car1.ppm");
-        angle += stepAngle;
-        if (angle >= 2.0 * M_PI) {
-            angle -= 2.0 * M_PI;
+    Footage footage;
+
+    if (argc < 2) {
+        std::cout << "Usage: ./main <obj-file> [resolution] [mode] [frames (nur für carspinnerframes)]\n";
+        std::cout << "Resolution options: hd, fullhd, 4k (default: fullhd)\n";
+        std::cout << "Modes: classic, carspinner, lightspinner, carspinnerframes\n";
+        return 1;
+    }
+
+    std::string file = argv[1];
+
+    std::string res = "fullhd";
+    std::string mode = "classic";
+    int frames = 0;  // Standardwert, wenn nicht angegeben
+
+    if (argc >= 3) res = argv[2];
+    if (argc >= 4) mode = argv[3];
+    if (argc >= 5) frames = std::atoi(argv[4]);  // 4. Index, da argv[0] = Programmname
+
+    int scale = getScaleFromResolution(res);
+
+    std::cout << "Datei: " << file << "\nAuflösung: " << res << " (Skalierung: " << scale << ")\nModus: " << mode << "\n";
+
+    if (mode == "classic") {
+        footage.classicCar(file, scale);
+    } else if (mode == "carspinner") {
+        footage.carspinner(file, scale);
+    } else if (mode == "lightspinner") {
+        footage.lightspinner(file, scale);
+    } else if (mode == "carspinnerframes") {
+        if (frames <= 0) {
+            std::cerr << "Für Modus 'carspinnerframes' muss eine positive Anzahl an Frames angegeben werden.\n";
+            return 1;
         }
+        footage.carspinnerFrames(file, scale, frames);
+    } else {
+        std::cerr << "Unbekannter Modus '" << mode << "'. Verfügbare Modi: classic, carspinner, lightspinner, carspinnerframes\n";
+        return 1;
     }
-}
 
-// Generates real-time images of a car with light direction changing around it
-int lightspinner() {
-    std::string file_path_obj = "Car.obj";
-    Scene scene(file_path_obj);
-
-    Point3D camPos{ 4.0, 2.0, 4.0 };
-    Vector3D camDir{ -1.0, -0.4, -1.0};
-    scene.setCamera(camPos, camDir, 1.0f, 3);
-
-    const float PI = 3.14159265f;
-    const int steps = 40;
-    const float radius = 1.0f;
-    const float stepAngle = 2 * PI / steps;
-    float y = 1.0f;
-    float angle = 0.0f;
-
-    while (true) {
-        float x = radius * std::cos(angle);
-        float z = radius * std::sin(angle);
-        Vector3D lightDir{ x, y, z };
-        scene.setLight(lightDir.normalized());
-        Image img = scene.generateImage();
-        img.save("Car.ppm");
-        angle += stepAngle;
-        if (angle >= 2.0f * M_PI) angle -= 2.0f * M_PI;
-    }
-}
-
-// Generates frames of a car with light direction changing around it
-void lightspinnerFrames() {
-    Scene scene("Car.obj");
-    scene.setCamera({4.0f, 2.0f, 4.0f}, {-1.0f, -0.4f, -1.0f}, 1.0f, 8);
-
-    const float PI = 3.14159265f;
-    const int steps = 100;
-    const float stepAngle = 2 * PI / steps;
-    float angle = 0.0f;
-
-    for (int frame = 0; frame < steps; ++frame) {
-        float x = std::cos(angle);
-        float z = std::sin(angle);
-        float y = 1.0f;
-        scene.setLight(Vector3D{ x, y, z }.normalized());
-        Image img = scene.generateImage();
-        img.save("obj/frames/frame_" + std::to_string(frame) + ".ppm");
-        angle += stepAngle;
-        std::cout << "Frame " << frame << " saved." << std::endl;
-    }
-}
-
-// Generates frames of a car spinning around its center with a fixed light direction
-void carspinnerFrames() {
-    Scene scene("Car.obj");
-
-    const float PI = 3.14159265f;
-    const float radius = 5.3f;
-    const float height = 1.4f;
-    const int frames = 100;
-    const float stepAngle = 2 * PI / frames;
-    float angle = 0.98f;
-
-    for (int frame = 0; frame < frames; ++frame) {
-        float camX = radius * std::cos(angle);
-        float camZ = radius * std::sin(angle);
-        scene.setCamera(
-            Point3D{ camX, height, camZ },
-            Vector3D{ -camX, -0.4f, -camZ },
-            1.0f, 8
-        );
-        Image img = scene.generateImage();
-        img.save("obj/frames2/frame_" + std::to_string(frame) + ".ppm");
-        angle += stepAngle;
-    }
-}
-
-// Generates frames of a car spinning around its center with light direction changing
-void combinedSpinnerFrames() {
-    Scene scene("Car.obj");
-
-    const float PI = 3.14159265f;
-    const int frames = 100;
-    const float stepAngle = 2 * PI / frames;
-    const float camRadius = 5.3f;
-    const float camHeight = 1.4f;
-    float angle = 0.0f;
-
-    for (int frame = 0; frame < frames; ++frame) {
-        float camX = camRadius * std::cos(angle);
-        float camZ = camRadius * std::sin(angle);
-        Point3D camPos{ camX, camHeight, camZ };
-        Vector3D camDir{ -camX, -0.4f, -camZ };
-        scene.setCamera(camPos, camDir, 1.0f, 8);
-
-        float lx = std::cos(angle);
-        float lz = std::sin(angle);
-        float ly = 1.0f;
-        scene.setLight(Vector3D{ lx, ly, lz }.normalized());
-
-        Image img = scene.generateImage();
-        std::string fname = "obj/frames3/frame_" + std::to_string(frame) + ".ppm";
-        img.save(fname);
-
-        std::cout << "Saved " << fname << "\n";
-        angle += stepAngle;
-    }
-}
-
-// Generates one image of a car with a fixed camera position and light direction
-void classicCar() {
-    Scene scene("Car.obj");
-    Point3D camPos{ 4.0, 2.0, 4.0 };
-    Vector3D camDir{ -1.0, -0.4, -1.0};
-   
-
-    scene.setLight(Vector3D{ 1.0, 1.0, 1.0 }.normalized());
-    
-    /**
-     * @brief Kurzübersicht zur Referenz der Werte & ihr scaling im 16:9 Format
-     * 1   - 160x90
-     * 8   - 1280x720   (HD)
-     * 12  - 1920x1080  (Full HD)
-     * 16  - 2560x1440  (QHD)
-     * 24  - 3840x2160 (4K)
-     */
-    scene.setCamera(camPos, camDir, 1.0f, 12);
-
-    Image img = scene.generateImage();
-
-    img.save("Car.ppm");
-}
-
-void classicGlassCube() {
-    Scene scene("GlassCube.obj");
-    Point3D camPos{ 3.0, 2.0, -4.0 };
-    Vector3D camDir{ -1.0, -0.5, 1.5};
-   
-
-    scene.setLight(Vector3D{ 1.0, 1.0, 1.0 }.normalized());
-    
-    /**
-     * @brief Kurzübersicht zur Referenz der Werte & ihr scaling im 16:9 Format
-     * 1   - 160x90
-     * 8   - 1280x720   (HD)
-     * 12  - 1920x1080  (Full HD)
-     * 16  - 2560x1440  (QHD)
-     * 24  - 3840x2160 (4K)
-     */
-    scene.setCamera(camPos, camDir, 1.0f, 12);
-
-    Image img = scene.generateImage();
-
-    img.save("GlassCube.ppm");
-}
-
-void classicRussian() {
-    /*
-    Scene scene("Car.obj");
-    Point3D camPos{ 4.0, 2.0, 4.0 };
-    Vector3D camDir{ -1.0, -0.4, -1.0};
-    */
-    Scene scene("Russian_Gamingsetup.obj");
-    Point3D camPos{ 11.2, 14.0, 8.0 };
-    Vector3D camDir{ -2.0, -1.4, -1.0};
-
-    scene.setLight(Vector3D{ 1.0, 1.0, 1.0 }.normalized());
-    
-    /**
-     * @brief Kurzübersicht zur Referenz der Werte & ihr scaling im 16:9 Format
-     * 1   - 160x90
-     * 8   - 1280x720   (HD)
-     * 12  - 1920x1080  (Full HD)
-     * 16  - 2560x1440  (QHD)
-     * 24  - 3840x2160 (4K)
-     */
-    scene.setCamera(camPos, camDir, 1.0f, 12);
-
-    Image img = scene.generateImage();
-
-    img.save("Russian_Gamingsetup.ppm");
-}
-
-void classicLiving() {
-   
-    Scene scene("Living_Room.obj");
-    Point3D camPos{ 2.7, 1.25, 2.995};
-    Vector3D camDir{ -1.0, 0.0, -0.7};
-
-    scene.setLight(Vector3D{ 1.0, 1.0, 1.0 }.normalized());
-    
-    /**
-     * @brief Kurzübersicht zur Referenz der Werte & ihr scaling im 16:9 Format
-     * 1   - 160x90
-     * 8   - 1280x720   (HD)
-     * 12  - 1920x1080  (Full HD)
-     * 16  - 2560x1440  (QHD)
-     * 24  - 3840x2160 (4K)
-     */
-    scene.setCamera(camPos, camDir, 1.0f, 12);
-
-    Image img = scene.generateImage();
-
-    img.save("Living_Room.ppm");
-}
-
-void classicMirrorTest() {
-   
-    Scene scene("mirror_test.obj");
-
-    Point3D camPos{-8, 8, 15};
-    Vector3D camDir{8, -6, -15};
-    camDir = camDir.normalized();
-
-    scene.setCamera(camPos, camDir, 0.1f, 8);
-    scene.setLight(Vector3D{1, -1, 0}.normalized());
-
-    
-
-    Image img = scene.generateImage();
-
-    img.save("phong_test.ppm");
-}
-
-void classicMutter() {
-    Scene scene("mutter_gewinde_60.obj");
-
-    Point3D camPos{ 18.0, 2.0, 18.0 };
-    Vector3D camDir{ -1.0, -0.1, -1.0};
-
-    scene.setLight(Vector3D{ 1.0, 1.0, 1.0 }.normalized());
-    
-    scene.setCamera(camPos, camDir, 1.0f, 12);
-
-    Image img = scene.generateImage();
-
-    img.save("Car3.ppm");
-}
-
-void mutterSpinnerFrames(){
-    Scene scene("mutter_gewinde_200.obj");
-
-    const float PI = 3.14159265f;
-    const float radius = 24.3f;
-    const float height = 2.0f;
-    const int frames = 360;
-    const float stepAngle = 2 * PI / frames;
-    float angle = 0.98f;
-
-    for (int frame = 0; frame < frames; ++frame) {
-        float camX = radius * std::cos(angle);
-        float camZ = radius * std::sin(angle);
-        scene.setCamera(
-            Point3D{ camX, height, camZ },
-            Vector3D{ -camX, -1.7f, -camZ },
-            1.0f, 8
-        );
-
-        float lx = std::cos(angle);
-        float lz = std::sin(angle);
-        float ly = 1.0f;
-        scene.setLight(Vector3D{ lx, ly, lz }.normalized());
-
-        Image img = scene.generateImage();
-        char fname[64];
-        std::snprintf(fname, sizeof(fname), "obj/framesMutter/frame_%03d.ppm", frame);
-        img.save(fname);
-        std::cout << "Saved " << fname << "\n";
-        angle += stepAngle;
-    }
-}
-
-int main() {
-    //carspinner();
-    //lightspinner();
-    //lightspinnerFrames();
-    //carspinnerFrames();
-    //combinedSpinnerFrames();
-    classicCar();
-    //mutterSpinnerFrames();
     return 0;
 }
