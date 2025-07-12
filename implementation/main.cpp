@@ -1,59 +1,78 @@
 #include "../hpp/Footage.hpp"
 #include <iostream>
 #include <string>
-#include <cmath>
+#include <algorithm>
 #include <cstdlib>
 
-// --- Auflösungsskala aus String ---
+std::string getBaseName(const std::string& path) {
+    auto pos = path.find_last_of("/\\");
+    std::string name = (pos == std::string::npos ? path : path.substr(pos + 1));
+    auto dot = name.find_last_of('.');
+    return (dot == std::string::npos ? name : name.substr(0, dot));
+}
+
 int getScaleFromResolution(const std::string& res) {
-    if (res == "fullhd") return 12; // 1920x1080
-    if (res == "4k") return 24;     // 3840x2160
-    if(res == "8k") return 48;      // 7680x4320
-    if(res == "16k") return 96;      // 7680x4320
-    std::cerr << "Unbekannte Auflösung '" << res << "', verwende Full HD (12).\n";
-    return 12;
+    if (res == "hd")      return 8;   // 1280×720
+    if (res == "fullhd")  return 12;  // 1920×1080
+    if (res == "4k")      return 24;  // 3840×2160
+    if (res == "8k")      return 48;  // 7680×4320
+    if (res == "16k")     return 96;  // 15360×8640
+    std::cerr << "Unbekannte Auflösung '" << res 
+              << "', verwende Full HD (12).\n";
+    return 12;// 2) Auflösung einlesen oder Default „fullhd“
 }
 
 int main(int argc, char* argv[]) {
-
-    Footage footage;
-
     if (argc < 2) {
-        std::cout << "Usage: ./main <obj-file> [resolution] [mode] [frames (nur für carspinnerframes)]\n";
-        std::cout << "Resolution options: hd, fullhd, 4k (default: fullhd)\n";
-        std::cout << "Modes: classic, carspinner, lightspinner, carspinnerframes\n";
+        std::cerr << "Usage: ./main <obj-file> [resolution]\n";
+        std::cerr << "Resolution options: hd, fullhd, 4k, 8k, 16k (default: fullhd)\n";
         return 1;
     }
 
     std::string file = argv[1];
+    std::string base = getBaseName(file);
 
-    std::string res = "fullhd";
-    std::string mode = "classic";
-    int frames = 0;  // Standardwert, wenn nicht angegeben
-
-    if (argc >= 3) res = argv[2];
-    if (argc >= 4) mode = argv[3];
-    if (argc >= 5) frames = std::atoi(argv[4]);  // 4. Index, da argv[0] = Programmname
-
+    std::string res = (argc >= 3 ? argv[2] : "fullhd");
     int scale = getScaleFromResolution(res);
 
-    std::cout << "Datei: " << file << "\nAuflösung: " << res << " (Skalierung: " << scale << ")\nModus: " << mode << "\n";
+    std::cout << "Datei: " << file 
+              << "\nAuflösung: " << res << " (Scale=" << scale << ")"
+              << "\nErkannter Basisname: " << base << "\n\n";
 
-    if (mode == "classic") {
-        footage.classicCar(file, scale);
-    } else if (mode == "carspinner") {
-        footage.carspinner(file, scale);
-    } else if (mode == "lightspinner") {
-        footage.lightspinner(file, scale);
-    } else if (mode == "carspinnerframes") {
-        if (frames <= 0) {
-            std::cerr << "Für Modus 'carspinnerframes' muss eine positive Anzahl an Frames angegeben werden.\n";
-            return 1;
+    Footage footage;
+
+    if (base == "Russian_Gamingsetup") {
+        footage.classicRussian(scale);
+    }
+    else if (base == "GlassCube") {
+        footage.classicGlassCube(scale);
+    }
+    else if (base == "Living_Room" || base == "LivingRoom") {
+        footage.classicLiving(scale);
+    }
+    else if (base == "mirror_test") {
+        footage.classicMirrorTest(scale);
+    }
+    else if (base == "mutter_gewinde_60") {
+        footage.classicMutter(scale);
+    }
+    else if (base == "mutter_gewinde_200") {
+        footage.mutterSpinnerFrames(scale);
+    }
+    else if (base == "combinedSpinnerFrames") {
+        footage.combinedSpinnerFrames(scale);
+    }
+    else if (base == "Car" || base == "car") {
+        footage.classicCar(scale);
+    }
+    else {
+        
+        if (base.find("spinner") != std::string::npos) {
+            footage.carspinnerFrames(scale);
         }
-        footage.carspinnerFrames(file, scale, frames);
-    } else {
-        std::cerr << "Unbekannter Modus '" << mode << "'. Verfügbare Modi: classic, carspinner, lightspinner, carspinnerframes\n";
-        return 1;
+        else {
+            footage.classicCar(scale);
+        }
     }
 
     return 0;

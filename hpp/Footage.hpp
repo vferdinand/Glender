@@ -5,8 +5,16 @@
 
 class Footage {
 public:
-    void classicCar(const std::string& file, int scale);
-    void carspinner(const std::string& file, int scale);
-    void lightspinner(const std::string& file, int scale);
-    void carspinnerFrames(const std::string& file, int scale, int frames);
+    void mutterSpinnerFrames(int scale);
+    void classicMutter(int scale);
+    void classicMirrorTest(int scale);
+    void classicLiving(int scale);
+    void classicRussian(int scale);
+    void classicGlassCube(int scale);
+    void classicCar(int scale);
+    void combinedSpinnerFrames(int scale);
+    void carspinnerFrames(int scale);
+    void lightspinnerFrames(int scale);
+    int lightspinner(int scale);
+    int carspinner(int scale);
 };
