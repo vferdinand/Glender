@@ -66,6 +66,24 @@ RGBA Scene::computeShading( Hitpoint& hp, const Ray& ray, int depth) {
     RGBA ambient = (m.getAmbient() * light.getLightColor()) * 0.05;
     RGBA specular = m.getSpecular() * specFactor * RGBA{1.0, 1.0, 1.0};
 
+    RGBA diffuseColor;
+
+    if (tri->getTextureIndices().size() == 3) {
+        // 1. UV-Koordinaten interpolieren
+        float u = hp.getU();
+        float v = hp.getV();
+        float w = 1.0f - u - v;
+
+        Vector3D uv0 = texture_coord[tri->getTextureIndices().at(0)];
+        Vector3D uv1 = texture_coord[tri->getTextureIndices().at(1)];
+        Vector3D uv2 = texture_coord[tri->getTextureIndices().at(2)];
+
+        Vector3D uv = uv0 * w + uv1 * u + uv2 * v;
+
+        // 2. Textur lookup
+        diffuse = textures.at(m.getDiffuseTex()).sample(uv) * diffuseFactor;
+    }
+
     RGBA localColor = ambient + diffuse + specular;
       
     float kr = m.getReflectionFactor();
