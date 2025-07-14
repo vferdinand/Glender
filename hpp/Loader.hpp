@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Texture.hpp"
 #include "Ray.hpp"
 #include "Material.hpp"
 #include "KDTree.hpp"
@@ -17,7 +18,7 @@ private:
     std::vector<Triangle> triangles;
     std::vector<Material> materials;
     std::vector<Vector3D> texture_coord;
-    std::vector<std::string> textures;
+    std::vector<Texture> textures;
     
     /**
      * @brief Lädt Farben und Materialeigenschaften aus einer .mtl-Datei.
@@ -100,5 +101,5 @@ public:
     // Gibt Referenz auf geladene Texturkoordinaten zurück
     const std::vector<Vector3D>& getTextureCoords() const;
     // Gibt Referenz auf geladene Texturen zurück
-    const std::vector<std::string>& getTextures() const;
+    const std::vector<Texture>& getTextures() const;
 };

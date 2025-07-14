@@ -6,6 +6,7 @@
 #include "Camera.hpp"
 #include "Loader.hpp"
 #include "Ray.hpp"
+#include "Texture.hpp"
 
 /**
  * @brief Repräsentiert eine 3D-Szene mit Geometrie, Kamera, Beleuchtung und Render-Logik.
@@ -20,7 +21,7 @@ private:
     std::vector<Vertex> vertices;     ///< Alle geladenen Vertices
     std::vector<Vector3D> normals;    ///< Alle geladenen Normalen
     std::vector<Material> materials;  ///< Materialien (diffus, ambient, spekular)
-    std::vector<std::string> textures; ///< Texturen für Materialien
+    std::vector<Texture> textures; ///< Texturen für Materialien
     std::vector<Vector3D> texture_coord; ///< Texturkoordinaten für Vertices
 
     Camera camera;                    ///< Kameraobjekt (für Ray-Generierung)
@@ -37,6 +38,7 @@ private:
 
     Vector3D computeInterpolatedNormal(Hitpoint h);
 
+    RGBA textureInterpolation(Hitpoint& hp, const std::vector<uint32_t>& textureIndices, Material& m);
 
     /**
      * @brief Berechnet die Hitpoints für eine Liste von Strahlen.

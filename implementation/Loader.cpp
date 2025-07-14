@@ -95,7 +95,7 @@ bool Loader::initializeColor(const std::string& filePathMTL){
         }else if (prefix == "map_Kd") {
             std::string tex;
             iss >> tex;
-            textures.push_back(tex);
+            textures.push_back(Texture("obj/" + tex));
             materials.back().setDiffuseTex(static_cast<u_int8_t>(textures.size() - 1));
         }
     }
@@ -267,6 +267,6 @@ const std::vector<Vector3D>& Loader::getTextureCoords() const {
     return texture_coord;
 }  
 // Gibt eine Referenz auf die geladenen Texturen zurück.
-const std::vector<std::string>& Loader::getTextures() const {
+const std::vector<Texture>& Loader::getTextures() const {
     return textures;
 }

@@ -69,19 +69,7 @@ RGBA Scene::computeShading( Hitpoint& hp, const Ray& ray, int depth) {
     RGBA diffuseColor;
 
     if (tri->getTextureIndices().size() == 3) {
-        // 1. UV-Koordinaten interpolieren
-        float u = hp.getU();
-        float v = hp.getV();
-        float w = 1.0f - u - v;
-
-        Vector3D uv0 = texture_coord[tri->getTextureIndices().at(0)];
-        Vector3D uv1 = texture_coord[tri->getTextureIndices().at(1)];
-        Vector3D uv2 = texture_coord[tri->getTextureIndices().at(2)];
-
-        Vector3D uv = uv0 * w + uv1 * u + uv2 * v;
-
-        // 2. Textur lookup
-        diffuse = textures.at(m.getDiffuseTex()).sample(uv) * diffuseFactor;
+        diffuse = textureInterpolation(hp, tri->getTextureIndices(), m) * diffuseFactor;
     }
 
     RGBA localColor = ambient + diffuse + specular;
@@ -155,6 +143,21 @@ Vector3D Scene::computeInterpolatedNormal(Hitpoint hp) {
     return interpolated;
 }
 
+RGBA Scene::textureInterpolation(Hitpoint& hp, const std::vector<uint32_t>& textureIndices, Material& m) {
+    // 1. UV-Koordinaten interpolieren
+    float u = hp.getU();
+    float v = hp.getV();
+    float w = 1.0f - u - v;
+
+    Vector3D uv0 = texture_coord[textureIndices.at(0)];
+    Vector3D uv1 = texture_coord[textureIndices.at(1)];
+    Vector3D uv2 = texture_coord[textureIndices.at(2)];
+
+    Vector3D uv = uv0 * w + uv1 * u + uv2 * v;
+
+    // 2. Textur lookup
+    return textures.at(m.getDiffuseTex()).sample(uv);
+}
 
 bool Scene::refract(const Vector3D& I, const Vector3D& N, float eta, Vector3D& refracted) const {
     float cosi = std::clamp(I.dot(N), -1.0f, 1.0f);

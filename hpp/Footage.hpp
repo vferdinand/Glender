@@ -9,4 +9,5 @@ public:
     void carspinner(const std::string& file, int scale);
     void lightspinner(const std::string& file, int scale);
     void carspinnerFrames(const std::string& file, int scale, int frames);
+    void classicCottage(const std::string& file, int scale);
 };

@@ -51,6 +51,8 @@ int main(int argc, char* argv[]) {
             return 1;
         }
         footage.carspinnerFrames(file, scale, frames);
+    }else if (mode == "cotage") {
+        footage.classicCottage(file, scale);
     } else {
         std::cerr << "Unbekannter Modus '" << mode << "'. Verfügbare Modi: classic, carspinner, lightspinner, carspinnerframes\n";
         return 1;

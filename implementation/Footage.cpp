@@ -75,3 +75,14 @@ void Footage::carspinnerFrames(const std::string& file, int scale, int frames) {
         angle += stepAngle;
     }
 }
+
+
+void Footage::classicCottage(const std::string& file, int scale) {
+    Scene scene(file);
+    Point3D camPos{4.0, 2.0, 4.0};
+    Vector3D camDir{-1.0, -0.4, -1.0};
+    scene.setLight(Vector3D{1.0, 1.0, 1.0}.normalized());
+    scene.setCamera(camPos, camDir, 1.0f, scale);
+    Image img = scene.generateImage();
+    img.save("output_classicCottage.ppm");
+}
