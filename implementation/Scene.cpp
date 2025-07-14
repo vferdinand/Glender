@@ -156,7 +156,7 @@ RGBA Scene::textureInterpolation(Hitpoint& hp, const std::vector<uint32_t>& text
     Vector3D uv = uv0 * w + uv1 * u + uv2 * v;
 
     // 2. Textur lookup
-    return textures.at(m.getDiffuseTex()).sample(uv);
+    return textures.at(0).sample(uv);//m.getDiffuseTex()).sample(uv);
 }
 
 bool Scene::refract(const Vector3D& I, const Vector3D& N, float eta, Vector3D& refracted) const {

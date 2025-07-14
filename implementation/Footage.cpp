@@ -1,4 +1,5 @@
 #include "../hpp/Footage.hpp"
+#include <iomanip>
 
 void Footage::classicCar(const std::string& file, int scale) {
     Scene scene(file);
@@ -79,10 +80,62 @@ void Footage::carspinnerFrames(const std::string& file, int scale, int frames) {
 
 void Footage::classicCottage(const std::string& file, int scale) {
     Scene scene(file);
-    Point3D camPos{4.0, 2.0, 4.0};
-    Vector3D camDir{-1.0, -0.4, -1.0};
+    Point3D camPos{30.0, 8.5, 30.0};
+    Vector3D camDir{-1.0, -0.1, -1.0};
     scene.setLight(Vector3D{1.0, 1.0, 1.0}.normalized());
     scene.setCamera(camPos, camDir, 1.0f, scale);
     Image img = scene.generateImage();
     img.save("output_classicCottage.ppm");
+}
+
+void Footage::cottageSpinner(const std::string& file, int scale) {
+    Scene scene(file);
+    scene.setLight(Vector3D{1.0, 1.0, 1.0}.normalized());
+    const float radius = 50.3f;
+    const float height = 9.5f;
+    const float stepAngle = 0.04f;
+    float angle = 0.98f;
+
+    while (true) {
+        float camX = radius * std::cos(angle);
+        float camZ = radius * std::sin(angle);
+        Point3D camPos{camX, height, camZ};
+        scene.setCamera(camPos, Vector3D{-camX, -1.9f, -camZ}, 1.0f, scale);
+       
+        Image img = scene.generateImage();
+        img.save("output_cottage_spinner.ppm");
+        angle += stepAngle;
+        if (angle >= 2.0f * M_PI) angle -= 2.0f * M_PI;
+    }
+}
+
+void Footage::cottageSpinnerFrames(const std::string& file, int scale, int frames) {
+    Scene scene(file);
+    const float PI = 3.14159265f;
+    const float radius = 50.3f;
+    const float height = 9.5f;
+    const float stepAngle = 2 * PI / frames;
+    float angle = 0.98f;
+
+    // Breite anhand der höchsten Frame‑Zahl bestimmen (z. B. 250 → "250" ⇒ width = 3)
+    int width = std::to_string(frames - 1).length();
+
+    for (int frame = 0; frame < frames; ++frame) {
+        float camX = radius * std::cos(angle);
+        float camZ = radius * std::sin(angle);
+        scene.setCamera(Point3D{camX, height, camZ},
+                        Vector3D{-camX, -1.9f, -camZ},
+                        1.0f, scale);
+        scene.setLight(Vector3D{1.0, 1.0, 1.0}.normalized());
+        Image img = scene.generateImage();
+
+        // Frame‑Nummer mit führenden Nullen formatieren
+        std::ostringstream oss;
+        oss << "obj/frames_cottage/frame_" << std::setw(width) << std::setfill('0') << frame << ".ppm";
+        std::string fname = oss.str();
+
+        img.save(fname);
+        std::cout << "Saved " << fname << '\n';
+        angle += stepAngle;
+    }
 }

@@ -5,6 +5,7 @@
 Texture::Texture(const std::string& filePath) : filePath(filePath) {
 
     int w, h, channels;
+    stbi_set_flip_vertically_on_load(true);
     stbi_uc* data = stbi_load(filePath.c_str(), &w, &h, &channels, STBI_rgb_alpha);
     if (!data) {
         throw std::runtime_error("stbi_load failed for " + filePath + ": " + stbi_failure_reason());
