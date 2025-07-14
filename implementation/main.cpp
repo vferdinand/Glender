@@ -59,6 +59,7 @@ int main(int argc, char* argv[]) {
         footage.cottageSpinner(file, scale);
     }else if (mode == "cottagespinnerframes") {
         if (frames <= 0) {
+            // ./main cottage_obj.obj test cottagespinnerframes 20
             std::cerr << "Für Modus 'cottagespinnerframes' muss eine positive Anzahl an Frames angegeben werden.\n";
             return 1;
         }
