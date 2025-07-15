@@ -92,6 +92,11 @@ bool Loader::initializeColor(const std::string& filePathMTL){
             int8_t illum;
             iss >> illum;
             materials.back().setIllum(illum);
+        }else if (prefix == "map_Kd") {
+            std::string tex;
+            iss >> tex;
+            textures.push_back(Texture("obj/" + tex));
+            materials.back().setDiffuseTex(static_cast<u_int8_t>(textures.size() - 1));
         }
     }
     fileMTL.close();
@@ -118,6 +123,12 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ) {
             iss >> v.x >> v.y >> v.z;
             normals.push_back(v);
 
+        } else if (prefix == "vt") {
+            Vector3D v;
+            iss >> v.x >> v.y;
+            v.z = 0.0f;
+            texture_coord.push_back(v);
+
         } else if (prefix == "v") {
             Vertex v;
             iss >> v.x >> v.y >> v.z;
@@ -135,46 +146,37 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ) {
             // Collect all vertex‐indices (+ possible normal‐indices) on this line.
             std::vector<uint32_t> faceVertexIdx;
             std::vector<uint32_t> faceNormalIdx;
+            std::vector<uint32_t> faceTexIdx;
 
             std::string vertexToken;
             while (iss >> vertexToken) {
+                uint32_t vIndex = 0, vtIndex = 0, vnIndex = 0;
+
                 size_t firstSlash  = vertexToken.find('/');
                 size_t secondSlash = std::string::npos;
 
-                uint32_t vIndex = 0;
-                uint32_t nIndex = 0;
-
-                if (firstSlash == std::string::npos) {
-                    // format: "v"
-                    vIndex = static_cast<uint32_t>(std::stoi(vertexToken)) - 1;
-                    nIndex = 0;
+                if (firstSlash == std::string::npos) {          // "v"
+                    vIndex = std::stoul(vertexToken) - 1;
                 } else {
                     secondSlash = vertexToken.find('/', firstSlash + 1);
-                    {
-                        std::string vStr = vertexToken.substr(0, firstSlash);
-                        vIndex = static_cast<uint32_t>(std::stoi(vStr)) - 1;
-                    }
-                    if (secondSlash == std::string::npos) {
-                        // format: "v/vt"
-                        nIndex = 0;
+                    vIndex = std::stoul(vertexToken.substr(0, firstSlash)) - 1;
+
+                    if (secondSlash == std::string::npos) {     // "v/vt"
+                        vtIndex = std::stoul(vertexToken.substr(firstSlash + 1)) - 1;
                     } else {
-                        // format: "v//vn" or "v/vt/vn"
-                        std::string vnStr = vertexToken.substr(secondSlash + 1);
-                        if (!vnStr.empty()) {
-                            try {
-                                nIndex = static_cast<uint32_t>(std::stoi(vnStr)) - 1;
-                            } catch (const std::invalid_argument&) {
-                                std::cerr << "Warnung: Ungültiger Normalenindex in Zeile: " << line << std::endl;
-                                nIndex = 0;
-                            }
-                        } else {
-                            nIndex = 0;
+                        if (secondSlash > firstSlash + 1) {     // "v/vt/vn"
+                            vtIndex = std::stoul(vertexToken.substr(firstSlash + 1,
+                                        secondSlash - firstSlash - 1)) - 1;
                         }
+                        // Rest kann "vn" oder leer sein ("v//vn")
+                        std::string vnStr = vertexToken.substr(secondSlash + 1);
+                        if (!vnStr.empty()) vnIndex = std::stoul(vnStr) - 1;
                     }
                 }
 
                 faceVertexIdx.push_back(vIndex);
-                faceNormalIdx.push_back(nIndex);
+                faceTexIdx.push_back(vtIndex);
+                faceNormalIdx.push_back(vnIndex);
             }
 
             if (faceVertexIdx.size() < 3) {
@@ -184,6 +186,12 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ) {
             // Fan‐triangulate: for N vertices, create (N−2) triangles:
             //   (0,1,2), (0,2,3), (0,3,4), ...
             for (size_t i = 1; i + 1 < faceVertexIdx.size(); ++i) {
+                // Build a small vector of exactly 3 indices:
+                std::vector<uint32_t> triTex   = {          //  <‑‑ neu
+                    faceTexIdx[0],
+                    faceTexIdx[i],
+                    faceTexIdx[i + 1]
+                };
                 std::vector<uint32_t> triVerts = {
                     faceVertexIdx[0],
                     faceVertexIdx[i],
@@ -196,7 +204,7 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ) {
                     faceNormalIdx[i + 1]
                 };
 
-                triangles.emplace_back(triVerts, triNormals, materialIndex);
+                triangles.emplace_back(triVerts, triNormals, materialIndex, triTex);
             }
         }
         // ignore any other prefixes
@@ -204,7 +212,10 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ) {
     std::cout << "Dummkopf Loaded " << vertices.size() << " vertices, "
               << normals.size() << " normals, "
               << triangles.size() << " triangles, "
-              << materials.size() << " materials." << std::endl;
+              << materials.size() << " materials." 
+              << textures.size() << " textures."
+                << " from " << filePathOBJ << "."
+              << std::endl;
     fileOBJ.close();
     return true;
 }
@@ -249,4 +260,13 @@ const std::vector<Vector3D>& Loader::getNormals() const {
 // Gibt eine Referenz auf die geladenen Materialien zurück.
 const std::vector<Material>& Loader::getMaterials() const {
     return materials;
+}
+
+// Gibt eine Referenz auf die geladenen Texturkoordinaten zurück.
+const std::vector<Vector3D>& Loader::getTextureCoords() const {
+    return texture_coord;
+}  
+// Gibt eine Referenz auf die geladenen Texturen zurück.
+const std::vector<Texture>& Loader::getTextures() const {
+    return textures;
 }

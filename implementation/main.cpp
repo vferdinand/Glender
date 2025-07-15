@@ -6,6 +6,8 @@
 
 // --- Auflösungsskala aus String ---
 int getScaleFromResolution(const std::string& res) {
+    if (res == "mini") return 2; // klein
+    if (res == "test") return 4; // klein
     if (res == "fullhd") return 12; // 1920x1080
     if (res == "4k") return 24;     // 3840x2160
     if(res == "8k") return 48;      // 7680x4320
@@ -51,6 +53,17 @@ int main(int argc, char* argv[]) {
             return 1;
         }
         footage.carspinnerFrames(file, scale, frames);
+    }else if (mode == "cottage") {
+        footage.classicCottage(file, scale);
+    } else if (mode == "cottagespinner") {
+        footage.cottageSpinner(file, scale);
+    }else if (mode == "cottagespinnerframes") {
+        if (frames <= 0) {
+            // ./main cottage_obj.obj test cottagespinnerframes 20
+            std::cerr << "Für Modus 'cottagespinnerframes' muss eine positive Anzahl an Frames angegeben werden.\n";
+            return 1;
+        }
+        footage.cottageSpinnerFrames(file, scale, frames);
     } else {
         std::cerr << "Unbekannter Modus '" << mode << "'. Verfügbare Modi: classic, carspinner, lightspinner, carspinnerframes\n";
         return 1;

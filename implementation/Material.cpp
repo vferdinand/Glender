@@ -81,3 +81,9 @@ float Material::getTransparency() const {
 float Material::getIOR() const {
     return ior;
 }
+void Material::setDiffuseTex( u_int8_t diffuseTex) {
+    this->diffuseTex = diffuseTex;
+}
+u_int8_t Material::getDiffuseTex() {
+    return diffuseTex;
+}
