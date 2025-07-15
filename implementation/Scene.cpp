@@ -54,18 +54,45 @@ RGBA Scene::computeShading( Hitpoint& hp, const Ray& ray, int depth) {
     //Vector3D E = camera.get_view().normalized();
 
     Vector3D E = (camera.get_eye() - hp.getPosition()).normalized();
-    Vector3D R = (-L).reflect(N);
+    //Vector3D R = (-L).reflect(N);
+    Vector3D H = (L + E).normalized(); // halfway vector
 
+   // std::cout << "R·E: " << H.dot(E) << std::endl;
     float diffuseFactor = std::max(0.0f, N.dot(L));
-    float specFactor = std::pow(std::max(0.0f, R.dot(E)), m.getShininess());
+    float specFactor = std::pow(std::max(0.0f, H.dot(E)), m.getShininess());
 
     uint8_t maxDepth = 3;
     
     RGBA diffuse = m.getDifuse() * diffuseFactor;
-    RGBA ambient = (m.getAmbient() * light.getLightColor()) * 0.05;
+    RGBA ambient = (m.getAmbient() * light.getLightColor()) * 0.01;
     RGBA specular = m.getSpecular() * specFactor * RGBA{1.0, 1.0, 1.0};
 
     RGBA localColor = ambient + diffuse + specular;
+
+    /**
+     * Diffuser Global Illumination (color bleeding)
+     * 
+     * Licht, das eine Oberfläche trifft, wird diffus in alle Richtungen gestreut. Diese gestreuten Lichtstrahlen beleuchten wiederum andere Oberflächen
+     */
+    /*int numSamples = 8;
+    RGBA indirectDiffuse = RGBA{0.0, 0.0, 0.0};
+
+    for (int i = 0; i < numSamples; ++i) {
+        Vector3D dir = randomHemisphereDirection(N);
+        Ray bounceRay(hp.getPosition() + dir * 1e-4f, dir);
+
+        Hitpoint bounceHit;
+        if (kdtree->intersect(bounceRay, bounceHit)) {
+            const Triangle* triB = bounceHit.getTriangle();
+            Material mB = materials.at(triB->getMaterialIndex());
+
+            float cosine = std::max(0.0f, dir.dot(computeInterpolatedNormal(bounceHit)));
+            indirectDiffuse = indirectDiffuse + mB.getDifuse() * cosine;
+        }
+    }
+
+    indirectDiffuse = indirectDiffuse * (1.0f / numSamples);
+    localColor = localColor + indirectDiffuse * 0.5f; */
       
     float kr = m.getReflectionFactor();
     if (kr > 0.0f && depth < maxDepth) {
@@ -76,7 +103,18 @@ RGBA Scene::computeShading( Hitpoint& hp, const Ray& ray, int depth) {
         if (kdtree->intersect(reflectedRay, hp2)) {
             RGBA reflectedColor = computeShading(hp2, reflectedRay, depth + 1);
             localColor = localColor * (1 - kr) + reflectedColor * kr;
-        }
+
+        if (m.getName() == "Mirror") {
+Material m2 = materials.at(hp2.getTriangle()->getMaterialIndex());
+std::cout << "Reflektiert: " << m2.getName() << " at Position: "
+          << hp2.getPosition().x << ", "
+          << hp2.getPosition().y << ", "
+          << hp2.getPosition().z << std::endl;
+}
+        
+
+            return reflectedColor;
+        } 
     }
     float kt = m.getTransparency();
     if (kt > 0.0f && depth < maxDepth) {
@@ -89,8 +127,8 @@ RGBA Scene::computeShading( Hitpoint& hp, const Ray& ray, int depth) {
                 localColor = localColor * (1 - kt) + refractedColor * kt;
             }
         }
-    } 
-    return localColor;
+    }
+    return localColor; 
 
 }
 
@@ -157,6 +195,29 @@ bool Scene::refract(const Vector3D& I, const Vector3D& N, float eta, Vector3D& r
 
     refracted = I * etaRatio + n * (etaRatio * cosi - std::sqrt(k));
     return true;
+}
+
+Vector3D Scene::randomHemisphereDirection(const Vector3D& normal) {
+    float u = static_cast<float>(rand()) / RAND_MAX;
+    float v = static_cast<float>(rand()) / RAND_MAX;
+
+    float theta = acosf(sqrtf(1.0f - u));
+    float phi = 2.0f * M_PI * v;
+
+    float x = sinf(theta) * cosf(phi);
+    float y = sinf(theta) * sinf(phi);
+    float z = cosf(theta);
+
+    Vector3D dir(x, y, z);
+
+    // Orthonormal basis
+    Vector3D tangent = normal.cross(Vector3D(0.0f, 1.0f, 0.0));
+    if (tangent.length() < 1e-3f) tangent = normal.cross(Vector3D(1.0f, 0.0f, 0.0f));
+    tangent = tangent.normalized();
+    Vector3D bitangent = normal.cross(tangent);
+
+    // Transform to world space
+    return (tangent * x + bitangent * y + normal * z).normalized();
 }
 
 

@@ -100,4 +100,6 @@ public:
     void setLight(const Vector3D& lightDir);
 
     bool refract(const Vector3D& I, const Vector3D& N, float eta, Vector3D& refracted) const;
+
+    Vector3D randomHemisphereDirection(const Vector3D& normal);
 };
