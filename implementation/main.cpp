@@ -9,6 +9,7 @@ int getScaleFromResolution(const std::string& res) {
     if (res == "mini") return 2; // klein
     if (res == "test") return 4; // klein
     if (res == "fullhd") return 12; // 1920x1080
+    if (res == "2k") return 16;      // 2048x1080
     if (res == "4k") return 24;     // 3840x2160
     if(res == "8k") return 48;      // 7680x4320
     if(res == "16k") return 96;      // 7680x4320
