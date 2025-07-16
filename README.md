@@ -58,17 +58,17 @@ make
 ### Klassisches Rendering (Fokus-Modus)
 
 ```bash
-./main model.obj fullhd classic
+./main Car.obj fullhd classic
 ```
 
-* Lädt `model.obj`
+* Lädt `Car.obj`
 * Rendert in Full HD
 * Verwendet den statischen `classic`-Modus (z. B. Fahrzeug- oder Architekturansicht)
 
 ### Spinner-Beispiel
 
 ```bash
-./main car.obj test spinner
+./main Car.obj test spinner
 ```
 
 * Lädt `car.obj`
@@ -80,7 +80,7 @@ make
 ## Beispiel für Frames (nur bei `frames`-Modus)
 
 ```bash
-./main haus.obj mini cottagespinnerframes 20
+./main Car.obj mini cottagespinnerframes 20
 ```
 
 * Erstellt 20 Einzelbilder einer Cottage-Rotation in kleiner Auflösung
