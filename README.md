@@ -1,17 +1,105 @@
-# Glender
+#Glender
+---
 
-compiler-Befehl falls Cmake nicht geht: 
-g++ implementation/*.cpp -Ihpp -std=c++17 -Wall -Wextra -o main
+#  3D Renderer
 
-Downloadlink for Russian Gamingsetup
-https://free3d.com/3d-model/--147007.html
+Dieses Tool rendert 3D-Objekte aus `.obj`-Dateien in verschiedenen Auflösungen und Modi. Es unterstützt verschiedene Darstellungsarten wie klassische Darstellung oder rotierende "Spinner"-Animationen.
 
-Aufgabenabschnitte werden seperat in den private Branches bearbeitet. Sind einzelne Parteien mit ihrem Teil fertig, wird hinzugefügter Code nach Guidelines dokumeniert und in den Development Branch gemerged.
-Nachdem ein Aufgabenabschnitt vollständig bearbeitet wurde, wird die funktionierende Version in den main Branch gemerged.
+## Kompilieren
 
-Documentation in Doxygen Javadoc-style:
-https://www.doxygen.nl/manual/docblocks.html#cppblock
-Eigen/Dense ist muss installiert sein,um zu compilen
+```bash
+make
+```
+
+---
+
+## Verwendung
+
+```bash
+./main <obj-datei> [auflösung] [modus] [frames]
+```
+
+* `<obj-datei>`: Pfad zur `.obj`-Datei, die gerendert werden soll.
+* `[auflösung]`: (optional) Render-Auflösung. Standard: `fullhd`
+* `[modus]`: (optional) Render-Modus. Standard: `classic`
+* `[frames]`: (nur für Modus `frames`) Anzahl der Frames
+
+---
+
+## Auflösungen
+
+| Name   | Beschreibung       | Skalierung |
+| ------ | ------------------ | ---------- |
+| mini   | Sehr klein         | 2          |
+| test   | Klein (Testzwecke) | 4          |
+| fullhd | Standard (1080p)   | 12         |
+| 2k     | Kinoauflösung      | 16         |
+| 4k     | Ultra HD           | 24         |
+| 8k     | Sehr hoch          | 48         |
+| 16k    | Extrem hoch        | 96         |
+
+---
+
+## 🎮 Modi
+
+| Modus                  | Beschreibung                                  |
+| ---------------------- | --------------------------------------------- |
+| `classic`              | Statisches Rendering                          |
+| `spinner`              | Rotation eines Fahrzeugs                      |
+| `frames`               | Frame-by-Frame-Export einer Spinner-Animation |
+| `cottage`              | Statische Cottage-Ansicht (falls vorhanden)   |
+| `cottagespinner`       | Cottage-Spinner                               |
+| `cottagespinnerframes` | Cottage-Frames mit Rotation                   |
+
+---
+
+## Beispielnutzung
+
+### Klassisches Rendering (Fokus-Modus)
+
+```bash
+./main model.obj fullhd classic
+```
+
+* Lädt `model.obj`
+* Rendert in Full HD
+* Verwendet den statischen `classic`-Modus (z. B. Fahrzeug- oder Architekturansicht)
+
+### Spinner-Beispiel
+
+```bash
+./main car.obj test spinner
+```
+
+* Lädt `car.obj`
+* Nutzt die `test`-Auflösung für schnelle Vorschau
+* Zeigt das Modell in einer rotierenden `spinner`-Ansicht
+
+---
+
+## Beispiel für Frames (nur bei `frames`-Modus)
+
+```bash
+./main haus.obj mini cottagespinnerframes 20
+```
+
+* Erstellt 20 Einzelbilder einer Cottage-Rotation in kleiner Auflösung
+
+---
+
+##  Fehlerbehandlung
+
+* **Unbekannter Modus**: Es wird eine Fehlermeldung angezeigt, wenn der Modus nicht erkannt wird.
+* **Fehlende Frames**: Bei Modus `cottagespinnerframes` muss ein `frames`-Wert angegeben werden.
+* **Ungültige Auflösung**: Fällt zurück auf `fullhd`, wenn eine ungültige Angabe gemacht wird.
+
+---
 
 
-Befehl für das schnellste make: make -j$(nproc)
+## Hinweis
+
+Dieses Tool ist modular erweiterbar. Weitere Modi und Auflösungen können bei Bedarf ergänzt werden.
+
+---
+
+Wenn du möchtest, kann ich dir die README auch direkt als Datei ausgeben. Sag einfach Bescheid!
