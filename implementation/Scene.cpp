@@ -66,8 +66,6 @@ RGBA Scene::computeShading( Hitpoint& hp, const Ray& ray, int depth) {
     RGBA ambient = (m.getAmbient() * light.getLightColor()) * 0.05;
     RGBA specular = m.getSpecular() * specFactor * RGBA{1.0, 1.0, 1.0};
 
-    RGBA diffuseColor;
-
     if (tri->getTextureIndices().size() == 3) {
         diffuse = textureInterpolation(hp, tri->getTextureIndices(), m) * diffuseFactor;
     }
@@ -156,7 +154,7 @@ RGBA Scene::textureInterpolation(Hitpoint& hp, const std::vector<uint32_t>& text
     Vector3D uv = uv0 * w + uv1 * u + uv2 * v;
 
     // 2. Textur lookup
-    return textures.at(0).sample(uv);//m.getDiffuseTex()).sample(uv);
+    return textures.at(m.getDiffuseTex()).sample(uv);
 }
 
 bool Scene::refract(const Vector3D& I, const Vector3D& N, float eta, Vector3D& refracted) const {

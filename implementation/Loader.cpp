@@ -204,6 +204,9 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ) {
                     faceNormalIdx[i + 1]
                 };
 
+                if (triTex.at(0) == 0 && triTex.at(1) == 0 && triTex.at(2) == 0) {
+                    triTex = {0};
+                }
                 triangles.emplace_back(triVerts, triNormals, materialIndex, triTex);
             }
         }
@@ -213,6 +216,7 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ) {
               << normals.size() << " normals, "
               << triangles.size() << " triangles, "
               << materials.size() << " materials." 
+              << texture_coord.size() << " texture coordinates, "
               << textures.size() << " textures."
                 << " from " << filePathOBJ << "."
               << std::endl;
