@@ -14,7 +14,6 @@ public:
     ThreadPool(size_t num_threads);
     ~ThreadPool();
 
-    // submit a task
     template<class F, class... Args>
     auto enqueue(F&& f, Args&&... args) 
         -> std::future<typename std::invoke_result<F, Args...>::type>;
@@ -53,7 +52,6 @@ inline ThreadPool::ThreadPool(size_t num_threads) : stop(false) {
     }
 }
 
-// destructor
 inline ThreadPool::~ThreadPool() {
     stop = true;
     condition.notify_all();
@@ -61,7 +59,6 @@ inline ThreadPool::~ThreadPool() {
         worker.join();
 }
 
-// enqueue method
 template<class F, class... Args>
 auto ThreadPool::enqueue(F&& f, Args&&... args)
     -> std::future<typename std::invoke_result<F, Args...>::type>

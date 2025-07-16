@@ -143,7 +143,7 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ) {
             }
 
         } else if (prefix == "f") {
-            // Collect all vertex‐indices (+ possible normal‐indices) on this line.
+            
             std::vector<uint32_t> faceVertexIdx;
             std::vector<uint32_t> faceNormalIdx;
             std::vector<uint32_t> faceTexIdx;
@@ -168,7 +168,7 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ) {
                             vtIndex = std::stoul(vertexToken.substr(firstSlash + 1,
                                         secondSlash - firstSlash - 1)) - 1;
                         }
-                        // Rest kann "vn" oder leer sein ("v//vn")
+                        
                         std::string vnStr = vertexToken.substr(secondSlash + 1);
                         if (!vnStr.empty()) vnIndex = std::stoul(vnStr) - 1;
                     }
@@ -183,11 +183,8 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ) {
                 continue;
             }
 
-            // Fan‐triangulate: for N vertices, create (N−2) triangles:
-            //   (0,1,2), (0,2,3), (0,3,4), ...
             for (size_t i = 1; i + 1 < faceVertexIdx.size(); ++i) {
-                // Build a small vector of exactly 3 indices:
-                std::vector<uint32_t> triTex   = {          //  <‑‑ neu
+                std::vector<uint32_t> triTex   = {          
                     faceTexIdx[0],
                     faceTexIdx[i],
                     faceTexIdx[i + 1]
@@ -210,7 +207,6 @@ bool Loader::initializeVerticiesTriangles(const std::string& filePathOBJ) {
                 triangles.emplace_back(triVerts, triNormals, materialIndex, triTex);
             }
         }
-        // ignore any other prefixes
     }
     std::cout << "Dummkopf Loaded " << vertices.size() << " vertices, "
               << normals.size() << " normals, "
@@ -228,7 +224,6 @@ void Loader::buildKDTreeAndIntersect(const Ray& ray) {
     KDTree* kdtree = new KDTree(triangles, vertices);
     Hitpoint hit;
     if (kdtree->intersect(ray, hit)) {
-        // Treffer behandeln
         std::cout << "Treffer bei t=" << hit.getT() << std::endl;
     } else {
         std::cout << "Kein Treffer." << std::endl;
@@ -246,31 +241,27 @@ int16_t Loader::locateMaterial(const std::string& material) {
     return -1;
 }
 
-// Gibt eine Referenz auf die geladenen Vertices zurück.
 const std::vector<Vertex>& Loader::getVertices() const {
     return vertices;
 }
 
-// Gibt eine Referenz auf die geladenen Dreiecke zurück.
 const std::vector<Triangle>& Loader::getTriangles() const {
     return triangles;
 }
 
-// Gibt eine Referenz auf die geladenen Normalen zurück.
+
 const std::vector<Vector3D>& Loader::getNormals() const {
     return normals;
 }
 
-// Gibt eine Referenz auf die geladenen Materialien zurück.
 const std::vector<Material>& Loader::getMaterials() const {
     return materials;
 }
 
-// Gibt eine Referenz auf die geladenen Texturkoordinaten zurück.
 const std::vector<Vector3D>& Loader::getTextureCoords() const {
     return texture_coord;
 }  
-// Gibt eine Referenz auf die geladenen Texturen zurück.
+
 const std::vector<Texture>& Loader::getTextures() const {
     return textures;
 }

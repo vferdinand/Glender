@@ -1,7 +1,7 @@
 #include "../hpp/Scene.hpp"
 
 
-Scene::Scene(const std::string filePathObj){//}, const std::string filePathMtl){
+Scene::Scene(const std::string filePathObj){
     Loader loader(filePathObj);
     vertices = loader.getVertices();
     triangles = loader.getTriangles();
@@ -18,7 +18,6 @@ Image Scene::generateImage() {
     uint16_t height = camera.get_length_pixels();
     Image image(height, width);
 
-     // Choose number of threads
     unsigned int num_threads = std::thread::hardware_concurrency();
     if (num_threads > 2) num_threads -= 2;
 
@@ -27,19 +26,18 @@ Image Scene::generateImage() {
         for (uint16_t y = 0; y < height; ++y) {
             futures.push_back(pool.enqueue([&image, this, y, width]() {
             for (uint16_t x = 0; x < width; ++x) {
-                Ray ray = camera.get_ray(x, y);  // Ray wird on-demand berechnet
+                Ray ray = camera.get_ray(x, y);
                 Hitpoint hp;
                 if (kdtree->intersect(ray, hp)) {
-                    // Beleuchtung berechnen (wie in transformHitpointsToImage)
-                    RGBA col = computeShading(hp, ray, 0).clamp();  // Extrahiere die Beleuchtungslogik
+                    RGBA col = computeShading(hp, ray, 0).clamp();
                     image.set(y, x, col);
                 } else {
-                    image.set(y, x, {0.1, 0.1, 0.2, 0.1});  // Hintergrundfarbe
+                    image.set(y, x, {0.1, 0.1, 0.2, 0.1});
                 }
             }
         }));
     }
-        // wait for all tasks to finish
+
     for (auto& f : futures) {
         f.get();
     }
@@ -50,15 +48,12 @@ RGBA Scene::computeShading( Hitpoint& hp, const Ray& ray, int depth) {
     
     const Triangle* tri = hp.getTriangle();
     Material m = materials.at(tri->getMaterialIndex());
-    Vector3D N = computeInterpolatedNormal(hp); // Normale nun abhängig von Trefferstelle des Strahls 
-    Vector3D L = light.getGlobalLightVec().normalized();  // Lichtrichtung
-    //Vector3D E = camera.get_view().normalized();
+    Vector3D N = computeInterpolatedNormal(hp);
+    Vector3D L = light.getGlobalLightVec().normalized(); 
 
     Vector3D E = (camera.get_eye() - hp.getPosition()).normalized();
-    //Vector3D R = (-L).reflect(N);
-    Vector3D H = (L + E).normalized(); // halfway vector
+    Vector3D H = (L + E).normalized();
 
-   // std::cout << "R·E: " << H.dot(E) << std::endl;
     float diffuseFactor = std::max(0.0f, N.dot(L));
     float specFactor = std::pow(std::max(0.0f, H.dot(E)), m.getShininess());
 
@@ -74,31 +69,6 @@ RGBA Scene::computeShading( Hitpoint& hp, const Ray& ray, int depth) {
 
     RGBA localColor = ambient + diffuse + specular;
 
-    /**
-     * Diffuser Global Illumination (color bleeding)
-     * 
-     * Licht, das eine Oberfläche trifft, wird diffus in alle Richtungen gestreut. Diese gestreuten Lichtstrahlen beleuchten wiederum andere Oberflächen
-     */
-    /*int numSamples = 8;
-    RGBA indirectDiffuse = RGBA{0.0, 0.0, 0.0};
-
-    for (int i = 0; i < numSamples; ++i) {
-        Vector3D dir = randomHemisphereDirection(N);
-        Ray bounceRay(hp.getPosition() + dir * 1e-4f, dir);
-
-        Hitpoint bounceHit;
-        if (kdtree->intersect(bounceRay, bounceHit)) {
-            const Triangle* triB = bounceHit.getTriangle();
-            Material mB = materials.at(triB->getMaterialIndex());
-
-            float cosine = std::max(0.0f, dir.dot(computeInterpolatedNormal(bounceHit)));
-            indirectDiffuse = indirectDiffuse + mB.getDifuse() * cosine;
-        }
-    }
-
-    indirectDiffuse = indirectDiffuse * (1.0f / numSamples);
-    localColor = localColor + indirectDiffuse * 0.5f; */
-      
     float kr = m.getReflectionFactor();
     if (kr > 0.0f && depth < maxDepth) {
         Vector3D reflectedDir = (-ray.getDirection()).reflect(hp.getNormal());
@@ -108,15 +78,6 @@ RGBA Scene::computeShading( Hitpoint& hp, const Ray& ray, int depth) {
         if (kdtree->intersect(reflectedRay, hp2)) {
             RGBA reflectedColor = computeShading(hp2, reflectedRay, depth + 1);
             localColor = localColor * (1 - kr) + reflectedColor * kr;
-
-        if (m.getName() == "Mirror") {
-Material m2 = materials.at(hp2.getTriangle()->getMaterialIndex());
-std::cout << "Reflektiert: " << m2.getName() << " at Position: "
-          << hp2.getPosition().x << ", "
-          << hp2.getPosition().y << ", "
-          << hp2.getPosition().z << std::endl;
-}
-        
 
             return reflectedColor;
         } 
@@ -154,33 +115,28 @@ std::vector<Hitpoint> Scene::calculateHitpoints(std::vector<Ray>& rays) {
 
 Vector3D Scene::computeInterpolatedNormal(Hitpoint hp) {
     const Triangle* tri = hp.getTriangle();
-    if (!tri) return Vector3D(0.0f, 0.0f, 1.0f);  // Fallback
+    if (!tri) return Vector3D(0.0f, 0.0f, 1.0f);  
 
-    // Drei Normalenindizes abrufen
     std::array<uint32_t, 3> normalIndices = tri->getNormalIndices();
     uint32_t ni0 = normalIndices[0];
     uint32_t ni1 = normalIndices[1];
     uint32_t ni2 = normalIndices[2];
 
-    // Die zugehörigen Normalen abrufen
     Vector3D n0 = normals[ni0];
     Vector3D n1 = normals[ni1];
     Vector3D n2 = normals[ni2];
 
-    //TODO
-    // Baryzentrische Koordinaten des Treffers
     float u = hp.getU();
     float v = hp.getV();
     float w = 1.0f - u - v;
 
-    // Interpolierte Normale berechnen
     Vector3D interpolated = (n0 * w + n1 * u + n2 * v).normalized();
 
     return interpolated;
 }
 
 RGBA Scene::textureInterpolation(Hitpoint& hp, const std::vector<uint32_t>& textureIndices, Material& m) {
-    // 1. UV-Koordinaten interpolieren
+
     float u = hp.getU();
     float v = hp.getV();
     float w = 1.0f - u - v;
@@ -191,7 +147,6 @@ RGBA Scene::textureInterpolation(Hitpoint& hp, const std::vector<uint32_t>& text
 
     Vector3D uv = uv0 * w + uv1 * u + uv2 * v;
 
-    // 2. Textur lookup
     return textures.at(m.getDiffuseTex()).sample(uv);
 }
 
@@ -216,30 +171,6 @@ bool Scene::refract(const Vector3D& I, const Vector3D& N, float eta, Vector3D& r
     refracted = I * etaRatio + n * (etaRatio * cosi - std::sqrt(k));
     return true;
 }
-
-Vector3D Scene::randomHemisphereDirection(const Vector3D& normal) {
-    float u = static_cast<float>(rand()) / RAND_MAX;
-    float v = static_cast<float>(rand()) / RAND_MAX;
-
-    float theta = acosf(sqrtf(1.0f - u));
-    float phi = 2.0f * M_PI * v;
-
-    float x = sinf(theta) * cosf(phi);
-    float y = sinf(theta) * sinf(phi);
-    float z = cosf(theta);
-
-    Vector3D dir(x, y, z);
-
-    // Orthonormal basis
-    Vector3D tangent = normal.cross(Vector3D(0.0f, 1.0f, 0.0));
-    if (tangent.length() < 1e-3f) tangent = normal.cross(Vector3D(1.0f, 0.0f, 0.0f));
-    tangent = tangent.normalized();
-    Vector3D bitangent = normal.cross(tangent);
-
-    // Transform to world space
-    return (tangent * x + bitangent * y + normal * z).normalized();
-}
-
 
 void Scene::setCamera(const Point3D& eyePos, const Vector3D& viewDir, float pixelWidth, float pixelHeight, int horizontalPixels, int verticalPixels) {
     camera.set_everything(eyePos, viewDir, pixelWidth, pixelHeight, horizontalPixels, verticalPixels);

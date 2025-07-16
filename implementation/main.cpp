@@ -32,11 +32,11 @@ int main(int argc, char* argv[]) {
 
     std::string res = "fullhd";
     std::string mode = "classic";
-    int frames = 0;  // Standardwert, wenn nicht angegeben
+    int frames = 0; 
 
     if (argc >= 3) res = argv[2];
     if (argc >= 4) mode = argv[3];
-    if (argc >= 5) frames = std::atoi(argv[4]);  // 4. Index, da argv[0] = Programmname
+    if (argc >= 5) frames = std::atoi(argv[4]);
 
     int scale = getScaleFromResolution(res);
 

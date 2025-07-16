@@ -33,7 +33,7 @@ bool Ray::rayTriangleIntersect(const Ray& ray, const Vertex& v0, const Vertex& v
 
     Vector3D h = Ray::cross(this->direction, edge2);
     float a = Ray::dot(edge1, h);
-    if (std::abs(a) < EPSILON) return false;  // Parallel
+    if (std::abs(a) < EPSILON) return false;
 
     float f = 1.0f / a;
     Vector3D s = {

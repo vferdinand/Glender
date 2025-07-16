@@ -36,8 +36,30 @@ private:
      */
     RGBA computeShading(Hitpoint& hp, const Ray& ray, int depth);
 
+    /**
+     * @brief Berechnet die interpolierte Normalenrichtung an einem Hitpoint.
+     * 
+     * Verwendet die baryzentrischen Koordinaten des Hitpoints und die Normalen
+     * der zugehörigen Dreiecks-Eckpunkte, um eine geglättete Normale zu berechnen.
+     * Falls kein Dreieck vorhanden ist, wird eine Standard-Normale zurückgegeben.
+     * 
+     * @param hp Der Hitpoint, für den die interpolierte Normale berechnet werden soll.
+     * @return Die interpolierte und normalisierte Normale als Vector3D.
+     */
     Vector3D computeInterpolatedNormal(Hitpoint h);
 
+    /**
+     * @brief Führt eine bilineare Interpolation der Texturkoordinaten an einem Hitpoint durch.
+     * 
+     * Nutzt die baryzentrischen Koordinaten des Hitpoints und die UV-Koordinaten der
+     * Dreieckseckpunkte zur Berechnung der interpolierten Texturkoordinate. Anschließend wird
+     * der Farbwert aus der zugehörigen Textur des Materials abgetastet.
+     * 
+     * @param hp Der Hitpoint, an dem die Texturfarbe bestimmt werden soll.
+     * @param textureIndices Indizes der Texturkoordinaten im UV-Array.
+     * @param m Das Material, welches die zugehörige Textur enthält.
+     * @return Interpolierter Farbwert (RGBA) an der Hitpoint-Position.
+     */
     RGBA textureInterpolation(Hitpoint& hp, const std::vector<uint32_t>& textureIndices, Material& m);
 
     /**
@@ -103,7 +125,18 @@ public:
      */
     void setLight(const Vector3D& lightDir);
 
+    /**
+     * @brief Berechnet die gebrochene Richtung eines einfallenden Strahls.
+     * 
+     * Führt die Brechungsberechnung basierend auf dem Snelliusschen Gesetz durch.
+     * Dabei wird zwischen Ein- und Austritt des Strahls unterschieden.
+     * Gibt an, ob Brechung möglich ist (kein Totalreflexion).
+     * 
+     * @param I Einfallender Richtungsvektor (normalisiert).
+     * @param N Normalenvektor an der Grenzfläche (normalisiert).
+     * @param eta Brechungsindex des Materials.
+     * @param refracted Ausgabeparameter für den berechneten gebrochenen Vektor.
+     * @return true, wenn Brechung möglich ist (kein Totalreflexion); false sonst.
+     */
     bool refract(const Vector3D& I, const Vector3D& N, float eta, Vector3D& refracted) const;
-
-    Vector3D randomHemisphereDirection(const Vector3D& normal);
 };

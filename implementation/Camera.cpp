@@ -14,20 +14,17 @@ Vector3D Camera::cross(const Vector3D& a, const Vector3D& b) {
 }
 
 Ray Camera::calculate_ray ( u_int32_t x , u_int32_t y ) const {
-    //calculate basevectors 
+
     Vector3D forward = normalize(view);
     Vector3D right = normalize(cross(Vector3D{0, 1, 0}, forward));
     Vector3D up = cross(forward, right); 
 
-    //pixelsize
     float pixel_width = width / widthPixels;
     float pixel_height = height / lengthPixels;
 
-     //left-right | top-down-scan
     float u = (x + 0.5f) * pixel_width - (width / 2.0f);
     float v = (height / 2.0f) - (y + 0.5f) * pixel_height;
 
-    //calculate raydirection
     Point3D pixel_pos = eye + (forward + right * u + up * v);
     Vector3D direction = normalize(pixel_pos - eye);
 
