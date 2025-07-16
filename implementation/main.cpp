@@ -44,21 +44,13 @@ int main(int argc, char* argv[]) {
 
     if (mode == "classic") {
         footage.classicCar(file, scale);
-    } else if (mode == "carspinner") {
+    } else if (mode == "spinner") {
         footage.carspinner(file, scale);
-    } else if (mode == "lightspinner") {
-        footage.lightspinner(file, scale);
-    } else if (mode == "carspinnerframes") {
-        if (frames <= 0) {
-            std::cerr << "Für Modus 'carspinnerframes' muss eine positive Anzahl an Frames angegeben werden.\n";
-            return 1;
-        }
-        footage.carspinnerFrames(file, scale, frames);
     }else if (mode == "cottage") {
         footage.classicCottage(file, scale);
     } else if (mode == "cottagespinner") {
         footage.cottageSpinner(file, scale);
-    }else if (mode == "cottagespinnerframes") {
+    }else if (mode == "frames") {
         if (frames <= 0) {
             // ./main cottage_obj.obj test cottagespinnerframes 20
             std::cerr << "Für Modus 'cottagespinnerframes' muss eine positive Anzahl an Frames angegeben werden.\n";
