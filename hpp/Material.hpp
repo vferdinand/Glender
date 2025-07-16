@@ -14,6 +14,7 @@ class Material {
         int8_t illum; // Optional: Illumination model (e.g., 0 for color on and ambient off, 1 for color on and ambient on, etc.)
         float transparency = 0.0f;
         float ior =1.0f; //index of refraction
+        u_int8_t diffuseTex;
     public:
         Material();
         Material(std::string name, RGBA ambient, RGBA difuse, RGBA specular, float shininess = 8.0f, float disolve = 1.0f, int8_t illum = 2, float reflectionsFactor = 0.0f);
@@ -37,4 +38,6 @@ class Material {
         void setIOR(float ni);
         float getTransparency() const;
         float getIOR() const;
+        void setDiffuseTex(u_int8_t diffuseTex);
+        u_int8_t getDiffuseTex();
 };

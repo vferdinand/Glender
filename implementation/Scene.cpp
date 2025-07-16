@@ -5,7 +5,8 @@ Scene::Scene(const std::string filePathObj){//}, const std::string filePathMtl){
     Loader loader(filePathObj);
     vertices = loader.getVertices();
     triangles = loader.getTriangles();
-
+    texture_coord = loader.getTextureCoords();
+    textures = loader.getTextures();
     normals = loader.getNormals();
     materials = loader.getMaterials();
     kdtree = new KDTree(triangles, vertices);
@@ -66,6 +67,12 @@ RGBA Scene::computeShading( Hitpoint& hp, const Ray& ray, int depth) {
     RGBA diffuse = m.getDifuse() * diffuseFactor;
     RGBA ambient = (m.getAmbient() * light.getLightColor()) * 0.01;
     RGBA specular = m.getSpecular() * specFactor * RGBA{1.0, 1.0, 1.0};
+
+    RGBA diffuseColor;
+
+    if (tri->getTextureIndices().size() == 3) {
+        diffuse = textureInterpolation(hp, tri->getTextureIndices(), m) * diffuseFactor;
+    }
 
     RGBA localColor = ambient + diffuse + specular;
 
@@ -174,6 +181,21 @@ Vector3D Scene::computeInterpolatedNormal(Hitpoint hp) {
     return interpolated;
 }
 
+RGBA Scene::textureInterpolation(Hitpoint& hp, const std::vector<uint32_t>& textureIndices, Material& m) {
+    // 1. UV-Koordinaten interpolieren
+    float u = hp.getU();
+    float v = hp.getV();
+    float w = 1.0f - u - v;
+
+    Vector3D uv0 = texture_coord[textureIndices.at(0)];
+    Vector3D uv1 = texture_coord[textureIndices.at(1)];
+    Vector3D uv2 = texture_coord[textureIndices.at(2)];
+
+    Vector3D uv = uv0 * w + uv1 * u + uv2 * v;
+
+    // 2. Textur lookup
+    return textures.at(0).sample(uv);//m.getDiffuseTex()).sample(uv);
+}
 
 bool Scene::refract(const Vector3D& I, const Vector3D& N, float eta, Vector3D& refracted) const {
     float cosi = std::clamp(I.dot(N), -1.0f, 1.0f);
